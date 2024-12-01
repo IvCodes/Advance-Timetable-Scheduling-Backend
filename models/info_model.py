@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List 
+from typing import List
 
 class UniversityInfo(BaseModel):
     institution_name: str
@@ -10,5 +10,6 @@ class DayOfOperation(BaseModel):
     long_name: str
 
 class PeriodOfOperation(BaseModel):
-    name: int
+    name: str
     long_name: str
+    is_interval: bool
