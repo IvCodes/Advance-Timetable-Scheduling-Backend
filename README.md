@@ -3,12 +3,10 @@
 ## Project Description
 The University Scheduler Backend is an advanced timetable scheduling system that uses multiple AI algorithms to generate optimal schedules for universities. The system employs Genetic Algorithms (GA), Constraint Optimization (CO), Reinforcement Learning (RL), and comprehensive evaluation metrics to create conflict-free timetables while considering various constraints.
 
-## Architecture
-
-### System Overview 
+## System Architecture
 
 ```mermaid
-graph TD
+flowchart TD
     A[Frontend] --> B[FastAPI Backend]
     B --> C[Authentication]
     B --> D[Data Management]
@@ -18,92 +16,141 @@ graph TD
     E --> H[RL Algorithm]
     E --> I[Evaluation]
     D --> J[(Database)]
-
 ```
 
-### Installation Steps  
+## Component Architecture
 
+```mermaid
+flowchart TD
+    subgraph Frontend
+    A[React UI] --> B[Redux State]
+    B --> C[API Integration]
+    end
+
+    subgraph Backend
+    D[FastAPI] --> E[Routers]
+    D --> F[Models]
+    D --> G[Services]
+    end
+
+    subgraph Algorithms
+    H[GA] --> K[Evaluation]
+    I[CO] --> K
+    J[RL] --> K
+    end
+
+    C --> D
+    G --> K
+```
+
+## Authentication Flow
+
+```mermaid
+sequenceDiagram
+    User->>Frontend: Login Request
+    Frontend->>Auth: Authenticate
+    Auth->>Database: Validate
+    Database-->>Auth: User Data
+    Auth-->>Frontend: JWT Token
+    Frontend-->>User: Success
+```
+
+## Setup Instructions
+
+### Prerequisites
+- Python 3.8+
+- MongoDB
+- Virtual Environment
+
+### Installation Steps
+```bash
+# Clone the repository
 git clone https://github.com/your-repo/university-scheduler-backend.git
 cd university-scheduler-backend
 
-
+# Create and activate virtual environment
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 .\venv\Scripts\activate   # Windows
 
-
+# Install dependencies
 pip install -r requirements.txt
 
-fastapi dev run
+# Run the application
+uvicorn main:app --reload
+```
 
+## Project Structure
+```
+university-scheduler-backend/
+├── generator/
+│   ├── algorithms/
+│   │   ├── ga/
+│   │   ├── co/
+│   │   ├── rl/
+│   │   └── eval/
+│   └── data_collector.py
+├── models/
+├── routers/
+├── services/
+├── utils/
+└── data_insertion/
+```
+
+## Team Members and Responsibilities
+
+### Member 1 - Authentication & GA Algorithm
+- **Components**:
+  - /models/user_model.py
+  - /models/info_model.py
+  - /routers/user_router.py
+  - /generator/algorithms/ga/
+- **Responsibilities**:
+  - User authentication
+  - JWT implementation
+  - GA Algorithm optimization
+
+### Member 2 - Academic Structure & CO Algorithm
+- **Components**:
+  - /models/year_model.py
+  - /models/faculty_model.py
+  - /routers/year_routes.py
+  - /generator/algorithms/co/
+- **Responsibilities**:
+  - Academic year management
+  - Faculty operations
+  - CO Algorithm development
+
+### Member 3 - Resource Management & RL Algorithm
+- **Components**:
+  - /models/activity_model.py
+  - /models/space_model.py
+  - /routers/activity_routes.py
+  - /generator/algorithms/rl/
+- **Responsibilities**:
+  - Activity scheduling
+  - Space allocation
+  - RL Algorithm implementation
+
+### Member 4 - Timetable & Algorithm Evaluation
+- **Components**:
+  - /models/timetable_model.py
+  - /models/constraint_model.py
+  - /routers/timetable_routes.py
+  - /generator/algorithms/eval/
+- **Responsibilities**:
+  - Timetable generation
+  - Constraint management
+  - Algorithm evaluation
 
 ## API Documentation
 API documentation is available at `/docs` when running the server.
 
+## Contributing
+1. Create a feature branch
+2. Make your changes
+3. Write/update tests
+4. Submit a pull request
 
-## Detailed Architecture
-
-### Component Interaction
-```mermaid
-graph TD
-    subgraph Frontend
-        A[React UI] --> B[Redux State]
-        B --> C[API Integration]
-    end
-    
-    subgraph Backend
-        D[FastAPI] --> E[Routers]
-        D --> F[Models]
-        D --> G[Services]
-        
-        subgraph Algorithms
-            H[Genetic Algorithm]
-            I[Constraint Optimization]
-            J[Reinforcement Learning]
-            K[Evaluation Metrics]
-        end
-        
-        subgraph Data
-            L[MongoDB]
-            M[Data Insertion]
-            N[Data Validation]
-        end
-    end
-    
-    C --> D
-    E --> L
-    F --> L  
-
-```
-
-### Authentication Flow 
-
-sequenceDiagram
-    participant U as User
-    participant F as Frontend
-    participant A as Auth Service
-    participant D as Database
-    
-    U->>F: Login Request
-    F->>A: Authenticate
-    A->>D: Validate Credentials
-    D-->>A: User Data
-    A-->>F: JWT Token
-    F-->>U: Auth Success
-
-
-
-### Scheduling Process
-
-graph TD
-    A[Input Data] --> B[Data Collector]
-    B --> C{Algorithm Selection}
-    C --> D[GA]
-    C --> E[CO]
-    C --> F[RL]
-    D --> G[Evaluation]
-    E --> G
-    F --> G
-    G --> H[Best Schedule]
-    H --> I[Output]
-
+## License
+MIT License
