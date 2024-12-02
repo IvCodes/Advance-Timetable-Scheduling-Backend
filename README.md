@@ -62,7 +62,7 @@ sequenceDiagram
     F-->>U: Auth Success
 
 ```
-
+```mermaid
 graph TD
     A[Input Data] --> B[Data Collector]
     B --> C{Algorithm Selection}
@@ -74,4 +74,4 @@ graph TD
     F --> G
     G --> H[Best Schedule]
     H --> I[Output]
-
+```
