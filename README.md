@@ -75,3 +75,28 @@ graph TD
     G --> H[Best Schedule]
     H --> I[Output]
 ```
+## Setup Instructions
+
+### Prerequisites
+- Python 3.8+
+- MongoDB
+- Virtual Environment
+
+### Installation Steps
+```bash
+# Clone the repository
+git clone https://github.com/your-repo/university-scheduler-backend.git
+cd university-scheduler-backend
+
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+.\venv\Scripts\activate   # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+uvicorn main:app --reload
+fastapi dev run
+```
