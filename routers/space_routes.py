@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from models.space_model import Space
-from database import db
+from utils.database import db
 from typing import List
 from routers.user_router import get_current_user
 

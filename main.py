@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from database import test_connection
+from utils.database import test_connection
 from routers import user_router, info_router, faculty_routes, module_routes, year_routes, space_routes
 
 app = FastAPI(

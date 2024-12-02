@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from models.user_model import User, UserCreate, LoginModel
-from database import db
+from utils.database import db
 from passlib.context import CryptContext
 from typing import List
 from utils.jwt_util import create_access_token, verify_access_token
