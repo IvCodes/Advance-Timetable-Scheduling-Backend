@@ -1,5 +1,7 @@
-from pydantic import BaseModel, model_validator
-from typing import List, Optional
+from pydantic import BaseModel, Field, model_validator
+from typing import List, Dict, Union, Optional
+from datetime import datetime
+import re
 
 class Applicability(BaseModel):
     teachers: Optional[List[str]] = []
@@ -15,3 +17,15 @@ class Applicability(BaseModel):
         if not any(values.values()):
             raise ValueError("At least one applicability list must be non-empty.")
         return values
+
+class Constraint(BaseModel):
+    code: str = Field(..., regex=r"^[A-Z]{2}-\d{3}$")
+    type: str = Field(..., regex=r"^(time|space|miscellaneous)$")
+    scope: str = Field(..., regex=r"^(teacher|student|activity|space|general)$")
+    name: str
+    description: Optional[str] = None
+    settings: Dict[str, Union[int, str, float, bool]] = Field(default_factory=dict)
+    applicability: Applicability
+    weight: int = 100
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
