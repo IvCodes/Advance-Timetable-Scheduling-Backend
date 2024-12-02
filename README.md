@@ -76,7 +76,6 @@ graph TD
 
 
 
-### Authentication Flow 
 
 sequenceDiagram
     participant U as User
@@ -93,7 +92,6 @@ sequenceDiagram
 
 
 
-### Scheduling Process
 
 graph TD
     A[Input Data] --> B[Data Collector]
