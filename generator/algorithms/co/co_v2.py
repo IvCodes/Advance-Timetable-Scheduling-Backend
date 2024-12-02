@@ -20,7 +20,6 @@ years = []
 activities = []
 
 def get_data():
-    globle
     global days, facilities, modules, periods, students, teachers, years, activities
     days = get_days()
     facilities = get_spaces()
