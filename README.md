@@ -61,8 +61,7 @@ sequenceDiagram
     A-->>F: JWT Token
     F-->>U: Auth Success
 
-
-
+```
 
 graph TD
     A[Input Data] --> B[Data Collector]
