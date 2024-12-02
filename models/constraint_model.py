@@ -29,3 +29,9 @@ class Constraint(BaseModel):
     weight: int = 100
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    @model_validator
+    def validate_constraint(cls, values):
+        if not values.get("settings"):
+            raise ValueError("Settings must be provided for a constraint.")
+        return values
