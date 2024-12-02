@@ -7,3 +7,4 @@ class Module(BaseModel):
     name: str
     long_name: str
     description: Optional[str]
+    address: str
