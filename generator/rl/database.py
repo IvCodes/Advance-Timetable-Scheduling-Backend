@@ -9,7 +9,7 @@ db = client["TimeTable_Wiz"]
 # Test the connection
 def test_connection():
     try:
-     
+        # The ismaster command is cheap and does not require auth
         client.admin.command('ismaster')
         print("MongoDB connection successful!")
         return True

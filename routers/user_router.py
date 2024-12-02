@@ -1,12 +1,15 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from models.user_model import User, UserCreate, LoginModel
-from database import db
+from utils.database import db
 from passlib.context import CryptContext
 from typing import List
 from utils.jwt_util import create_access_token, verify_access_token
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from datetime import timedelta
+import logging
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -53,12 +56,35 @@ async def register_user(user: UserCreate):
 
 @router.post("/login")
 async def login_user(credentials: LoginModel):
-    user = db["Users"].find_one({"id": credentials.id})
-    if not user or not verify_password(credentials.password, user["hashed_password"]):
-        raise HTTPException(status_code=401, detail="Invalid ID or password")
-    
-    access_token = create_access_token(data={"sub": user["id"]})
-    return {"access_token": access_token, "token_type": "bearer", "role": user["role"]}
+    try:
+        user = db["Users"].find_one({"id": credentials.id})
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid ID or password")
+        
+        if not verify_password(credentials.password, user["hashed_password"]):
+            raise HTTPException(status_code=401, detail="Invalid ID or password")
+        
+        access_token = create_access_token(data={"sub": user["id"]})
+        return {"access_token": access_token, "token_type": "bearer", "role": user["role"]}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Login error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error during login")
+
+@router.get("/all", response_model=List[User])
+async def get_all_users(current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Permission denied")
+    users = list(db["Users"].find())
+    return users
+
+@router.get("/faculty", response_model=List[User])
+async def get_all_faculty(current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Permission denied")
+    faculty_members = list(db["Users"].find({"role": "faculty"}))
+    return faculty_members
 
 @router.get("/{user_id}", response_model=User)
 async def get_user(user_id: str, current_user: dict = Depends(get_current_user)):
