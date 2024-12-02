@@ -28,3 +28,30 @@ async def generate_timetable():
         }
     return {"message": "Timetable generated", "eval": eval }
 
+def save_timetable(li, algorithm):
+    subgroups = [
+        "SEM101", "SEM102", "SEM201", "SEM202",
+        "SEM301", "SEM302", "SEM401", "SEM402"
+    ]
+    semester_timetables = {semester: [] for semester in subgroups}  
+
+    for activity in li:
+        subgroup_id = activity["subgroup"] 
+        semester_timetables[subgroup_id].append(activity)
+    index = 0
+    for semester, activities in semester_timetables.items():
+        db["Timetable"].replace_one(
+            {
+                "$and": [
+                    {"semester": semester},
+                    {"algorithm": algorithm}
+                ]
+            },
+            {
+            "code": generate_timetable_code(index, algorithm),
+            "algorithm": algorithm,
+             "semester": semester, 
+             "timetable": activities},
+            upsert=True
+        )
+        index +=1
