@@ -63,7 +63,6 @@ sequenceDiagram
 
 
 
-### Scheduling Process
 
 graph TD
     A[Input Data] --> B[Data Collector]
