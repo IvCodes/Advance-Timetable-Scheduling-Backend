@@ -35,15 +35,6 @@ def calculate_conflicts(timetable):
 
     return conflicts
 
-def calculate_room_utilization(timetable):
-    total_utilization = 0
-    total_entries = len(timetable["timetable"])
-
-    for entry in timetable["timetable"]:
-        room_capacity = entry["room"]["capacity"]
-        students = 100
-        utilization = (students / room_capacity) * 100
-        total_utilization += utilization
 
     return total_utilization / total_entries if total_entries > 0 else 0
 
