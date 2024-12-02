@@ -5,4 +5,4 @@ class Faculty(BaseModel):
     code: str
     short_name: str
     long_name: str
-    short name
+    
