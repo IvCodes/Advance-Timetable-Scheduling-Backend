@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models.module_model import Module
-from database import db
+from utils.database import db
 from typing import List
 from routers.user_router import get_current_user
 
@@ -36,7 +36,8 @@ async def update_module(module_code: str, module: Module, current_user: dict = D
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail=f"Module with code {module_code} not found.")
-    return module
+    modules = db["modules"].find()
+    return modules
 
 
 @router.delete("/modules/{module_code}")
