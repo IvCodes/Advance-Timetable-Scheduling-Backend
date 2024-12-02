@@ -78,3 +78,12 @@ async def get_timetables():
     return out
 
 from bson import ObjectId
+
+def clean_mongo_documents(doc):
+    if isinstance(doc, list):
+        return [clean_mongo_documents(item) for item in doc]
+    if isinstance(doc, dict):
+        return {key: clean_mongo_documents(value) for key, value in doc.items()}
+    if isinstance(doc, ObjectId):
+        return str(doc)
+    return doc
