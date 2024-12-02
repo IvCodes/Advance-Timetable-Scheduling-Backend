@@ -55,3 +55,26 @@ def save_timetable(li, algorithm):
             upsert=True
         )
         index +=1
+#generate unique timetable codes for each algorithm and semester       
+def generate_timetable_code(index, algorithm):
+    return f"{algorithm}-TT000{index}"
+
+@router.get("/timetables")
+async def get_timetables():
+    timetables = list(db["Timetable"].find())
+    cleaned_timetables = clean_mongo_documents(timetables)
+    eval =  evaluate()
+    for algorithm, scores in eval.items():
+        average_score = sum(scores) / len(scores)
+        eval[algorithm] = {
+            "average_score": average_score,
+        }
+    
+    out ={
+        "timetables": cleaned_timetables,
+        "eval": eval
+    }
+    
+    return out
+
+from bson import ObjectId
