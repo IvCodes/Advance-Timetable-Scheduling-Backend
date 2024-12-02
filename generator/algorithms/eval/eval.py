@@ -122,31 +122,4 @@ def evaluate():
         best_score = -1
         best_algorithm = None
 
-        print(f"Results for Semester: {semester}")
-        for timetable in schedules:
-            conflict_count = calculate_conflicts(timetable)
-            utilization = calculate_room_utilization(timetable)
-            overlap_count = calculate_period_overlap(timetable)
-            score = evaluate_timetable(conflict_count, utilization, overlap_count)
 
-            algorithm = timetable["algorithm"]
-            algorithm_scores[algorithm].append(score)
-
-            print(f"  Algorithm: {algorithm}, Code: {timetable['code']}, Score: {score:.2f}")
-
-            if score > best_score:
-                best_score = score
-                best_algorithm = algorithm
-
-        if best_algorithm:
-            wins[best_algorithm] += 1
-            print(f"  Best Algorithm for {semester}: {best_algorithm} (Score: {best_score:.2f})\n")
-
-    print("\nOverall Algorithm Performance:")
-    for algorithm, scores in algorithm_scores.items():
-        average_score = sum(scores) / len(scores)
-        print(f"  Algorithm: {algorithm}")
-        print(f"    Average Score: {average_score:.2f}")
-        print(f"    Wins: {wins[algorithm]}")
-
-    return algorithm_scores
