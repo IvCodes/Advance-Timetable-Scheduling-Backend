@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from utils.database import db
+from database import db
 from typing import List
 from generator.algorithms.ga.ga import *
 from generator.algorithms.co.co_v2 import *
