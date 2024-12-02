@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, status
+from pymongo import ReplaceOne
 from models.info_model import UniversityInfo, PeriodOfOperation, DayOfOperation
-from database import db
+from utils.database import db
 from typing import List
 from fastapi.security import OAuth2PasswordBearer
 from routers.user_router import get_current_user
@@ -29,19 +30,29 @@ async def update_university_info(university_info: UniversityInfo, current_user: 
         {}, {"$set": university_info.dict()}
     )
     if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="University information not found.")
+        db["university_info"].insert_one(university_info.model_dump())
+        # raise HTTPException(status_code=404, detail="University information not found.")
     return university_info
 
 
 @router.post("/days", response_model=List[DayOfOperation])
 async def add_days_of_operation(days: List[DayOfOperation], current_user: dict = Depends(get_admin_role)):
+    days_collection = db["days_of_operation"]
+    existing_days = list(days_collection.find())
+    existing_days = {day['name'] for day in existing_days}
+
+    print("Existing days: ", existing_days)
+    print("New days: ", {day.name for day in days})
+
     for day in days:
-        existing_day = db["days_of_operation"].find_one({"name": day.name})
-        if existing_day:
-            raise HTTPException(status_code=400, detail=f"Day {day.name} already exists.")
+        if day.name not in existing_days:
+            days_collection.insert_one(day.model_dump())
     
-    db["days_of_operation"].insert_many([day.dict() for day in days])
-    return days
+    for day in existing_days:
+        if day not in {day.name for day in days}:
+            days_collection.delete_one({"name": day})
+
+    return list(days_collection.find())
 
 
 @router.get("/days", response_model=List[DayOfOperation])
@@ -50,28 +61,6 @@ async def get_days_of_operation(current_user: dict = Depends(get_admin_role)):
     return days
 
 
-@router.put("/days", response_model=List[DayOfOperation])
-async def update_days_of_operation(days: List[DayOfOperation], current_user: dict = Depends(get_admin_role)):
-    updated_days = []
-    for day in days:
-        result = db["days_of_operation"].update_one(
-            {"name": day.name}, {"$set": day.dict()}
-        )
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail=f"Day {day.name} not found.")
-        updated_days.append(day)
-    return updated_days
-
-
-@router.delete("/days", response_model=List[str])
-async def delete_days_of_operation(day_names: List[str], current_user: dict = Depends(get_admin_role)):
-    deleted_days = []
-    for day_name in day_names:
-        result = db["days_of_operation"].delete_one({"name": day_name})
-        if result.deleted_count == 0:
-            raise HTTPException(status_code=404, detail=f"Day {day_name} not found.")
-        deleted_days.append(day_name)
-    return {"message": f"Days {', '.join(deleted_days)} deleted successfully"}
 
 
 @router.post("/periods", response_model=List[PeriodOfOperation])
@@ -93,14 +82,25 @@ async def get_periods_of_operation(current_user: dict = Depends(get_admin_role))
 
 @router.put("/periods", response_model=List[PeriodOfOperation])
 async def update_periods_of_operation(periods: List[PeriodOfOperation], current_user: dict = Depends(get_admin_role)):
+    collection = db["periods_of_operation"]
+
+    existing_periods = list(collection.find())  
+    existing_period_names = {period['name'] for period in existing_periods}
+
     updated_periods = []
     for period in periods:
-        result = db["periods_of_operation"].update_one(
-            {"name": period.name}, {"$set": period.dict()}
-        )
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail=f"Period {period.name} not found.")
+        period_data = period.model_dump()
+        if period.name not in existing_period_names:
+            collection.insert_one(period_data) 
+        else:
+            collection.replace_one({"name": period.name}, period_data)  
         updated_periods.append(period)
+
+    incoming_period_names = {period.name for period in periods}
+    for period in existing_periods:
+        if period['name'] not in incoming_period_names:
+            collection.delete_one({"name": period['name']})
+
     return updated_periods
 
 
