@@ -1,5 +1,8 @@
 # University Scheduler Backend
 
+Project 24-25J-238
+
+
 ## Project Description
 The University Scheduler Backend is an advanced timetable scheduling system that uses multiple AI algorithms to generate optimal schedules for universities. The system employs Genetic Algorithms (GA), Constraint Optimization (CO), Reinforcement Learning (RL), and comprehensive evaluation metrics to create conflict-free timetables while considering various constraints.
 
