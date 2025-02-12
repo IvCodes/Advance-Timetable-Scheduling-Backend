@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.models.faculty_model import Faculty
-from utils.database import db
+from app.utils.database import db
 from typing import List
 from app.routers.user_router import get_current_user
 

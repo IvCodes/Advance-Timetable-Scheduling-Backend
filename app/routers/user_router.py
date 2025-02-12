@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from app.models.user_model import User, UserCreate, LoginModel
-from utils.database import db
+from app.utils.database import db
 from passlib.context import CryptContext
 from typing import List
-from utils.jwt_util import create_access_token, verify_access_token
+from app.utils.jwt_util import create_access_token, verify_access_token
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from datetime import timedelta

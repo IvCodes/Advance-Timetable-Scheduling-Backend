@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from pymongo import ReplaceOne
 from app.models.info_model import UniversityInfo, PeriodOfOperation, DayOfOperation
-from utils.database import db
+from app.utils.database import db
 from typing import List
 from fastapi.security import OAuth2PasswordBearer
 from app.routers.user_router import get_current_user
