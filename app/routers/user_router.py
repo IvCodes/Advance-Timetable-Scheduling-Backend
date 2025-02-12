@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, status
-from models.user_model import User, UserCreate, LoginModel
+from app.models.user_model import User, UserCreate, LoginModel
 from utils.database import db
 from passlib.context import CryptContext
 from typing import List

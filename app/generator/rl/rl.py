@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 from typing import List, Dict
-from generator.data_collector import *
+from app.generator.data_collector import *
 import random
 
 class SchedulingEnvironment:

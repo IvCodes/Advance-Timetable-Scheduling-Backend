@@ -1,6 +1,5 @@
-from pymongo import MongoClient
 from datetime import datetime
-from database import client, db
+from app.utils.database import db
 import json
 
 constraints_collection = db["constraints"]
