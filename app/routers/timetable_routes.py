@@ -1,14 +1,10 @@
-from fastapi import APIRouter, HTTPException, Depends
-from database import db
-from typing import List
-from generator.algorithms.ga.ga import *
-from generator.algorithms.co.co_v2 import *
+from fastapi import APIRouter
+from app.utils.database import db
+from app.generator.algorithms.ga.ga import *
+from app.generator.algorithms.co.co_v2 import *
 # from generator.algorithms.rl.rl_train import *
 from generator.algorithms.rl.rl import *
 from generator.algorithms.eval.eval import *
-
-from models.timetable_model import Timetable
-
 
 router = APIRouter()
 

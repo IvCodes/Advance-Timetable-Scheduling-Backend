@@ -1,0 +1,4352 @@
+{
+  "faculties": [
+    {
+      "name": "Computing",
+      "code": "FCSC",
+      "departments": [
+        "Computer Science and Software Engineering",
+        "Information Technology",
+        "Cyber Security",
+        "Interactive Media",
+        "Information Systems Engineering",
+        "Data Science"
+      ]
+    }
+  ],
+  "modules": [
+    {
+      "code": "IT1010",
+      "name": "Introduction to Computing",
+      "long_name": "Introduction to Computing",
+      "description": "Basic computing concepts"
+    },
+    {
+      "code": "IT1020",
+      "name": "IP",
+      "long_name": "Introduction to Programming",
+      "description": "Programming fundamentals"
+    },
+    {
+      "code": "IT1030",
+      "name": "MC",
+      "long_name": "Mathematics for Computing",
+      "description": "Mathematical concepts"
+    },
+    {
+      "code": "IT1040",
+      "name": "DBMS",
+      "long_name": "Database Management Systems",
+      "description": "Database fundamentals"
+    },
+    {
+      "code": "IT1550",
+      "name": "OOP",
+      "long_name": "Object Oriented Programming",
+      "description": "OOP concepts"
+    },
+    {
+      "code": "IT1560",
+      "name": "Web Development",
+      "long_name": "Web Development",
+      "description": "Web development basics"
+    },
+    {
+      "code": "IT1570",
+      "name": "Statistics",
+      "long_name": "Statistics for IT",
+      "description": "Statistical methods"
+    },
+    {
+      "code": "IT1580",
+      "name": "DSA",
+      "long_name": "Data Structures and Algorithms",
+      "description": "Data structures basics"
+    },
+    {
+      "code": "IT2010",
+      "name": "Advanced Programming",
+      "long_name": "Advanced Programming",
+      "description": "Advanced programming concepts"
+    },
+    {
+      "code": "IT2020",
+      "name": "DBMS II",
+      "long_name": "Advanced Database Systems",
+      "description": "Advanced database concepts"
+    },
+    {
+      "code": "IT2030",
+      "name": "Software Engineering",
+      "long_name": "Software Engineering",
+      "description": "Software engineering principles"
+    },
+    {
+      "code": "IT2040",
+      "name": "Networking",
+      "long_name": "Computer Networks II",
+      "description": "Advanced networking concepts"
+    },
+    {
+      "code": "IT2550",
+      "name": "Mobile Development",
+      "long_name": "Mobile Application Development",
+      "description": "Mobile app development"
+    },
+    {
+      "code": "IT2560",
+      "name": "Web Programming",
+      "long_name": "Advanced Web Programming",
+      "description": "Advanced web development"
+    },
+    {
+      "code": "IT2570",
+      "name": "OS",
+      "long_name": "Operating Systems",
+      "description": "Operating systems concepts"
+    },
+    {
+      "code": "IT2580",
+      "name": "Security",
+      "long_name": "Information Security",
+      "description": "Information security basics"
+    },
+    {
+      "code": "IT3010",
+      "name": "Project Management",
+      "long_name": "Software Project Management",
+      "description": "Project management principles"
+    },
+    {
+      "code": "IT3020",
+      "name": "DS",
+      "long_name": "Data Science",
+      "description": "Introduction to data science"
+    },
+    {
+      "code": "IT3030",
+      "name": "AI",
+      "long_name": "Artificial Intelligence",
+      "description": "AI fundamentals"
+    },
+    {
+      "code": "IT3040",
+      "name": "Cloud Computing",
+      "long_name": "Cloud Computing",
+      "description": "Cloud computing concepts"
+    },
+    {
+      "code": "IT3550",
+      "name": "ML",
+      "long_name": "Machine Learning",
+      "description": "Machine learning fundamentals"
+    },
+    {
+      "code": "IT3560",
+      "name": "Research Methods",
+      "long_name": "Research Methods",
+      "description": "Research methodology"
+    },
+    {
+      "code": "IT3570",
+      "name": "DevOps",
+      "long_name": "DevOps Practices",
+      "description": "DevOps principles"
+    },
+    {
+      "code": "IT3580",
+      "name": "QA",
+      "long_name": "Quality Assurance",
+      "description": "Software quality assurance"
+    },
+    {
+      "code": "IT4010",
+      "name": "Research Project",
+      "long_name": "Research Project I",
+      "description": "Final year research project"
+    },
+    {
+      "code": "IT4020",
+      "name": "Enterprise Architecture",
+      "long_name": "Enterprise Architecture",
+      "description": "Enterprise systems design"
+    },
+    {
+      "code": "IT4030",
+      "name": "Business Analytics",
+      "long_name": "Business Analytics",
+      "description": "Business analytics and intelligence"
+    },
+    {
+      "code": "IT4550",
+      "name": "Research Project II",
+      "long_name": "Research Project II",
+      "description": "Final year research project continuation"
+    },
+    {
+      "code": "IT4560",
+      "name": "Emerging Technologies",
+      "long_name": "Emerging Technologies",
+      "description": "Latest technology trends"
+    },
+    {
+      "code": "IT4570",
+      "name": "Professional Practice",
+      "long_name": "Professional Practice",
+      "description": "Professional development"
+    }
+  ],
+  "spaces": [
+    {
+      "name": "A401",
+      "long_name": "Main Lecture Hall A401",
+      "code": "LH401",
+      "capacity": 200,
+      "attributes": {
+        "projector": "Yes",
+        "computers": "No",
+        "air_conditioned": "Yes"
+      }
+    },
+    {
+      "name": "A501",
+      "long_name": "Main Lecture Hall A501",
+      "code": "LH501",
+      "capacity": 200,
+      "attributes": {
+        "projector": "Yes",
+        "computers": "No",
+        "air_conditioned": "Yes"
+      }
+    },
+    {
+      "name": "B501",
+      "long_name": "Computer Lab B501",
+      "code": "LAB501",
+      "capacity": 60,
+      "attributes": {
+        "projector": "Yes",
+        "computers": "Yes",
+        "air_conditioned": "Yes"
+      }
+    },
+    {
+      "name": "B502",
+      "long_name": "Computer Lab B502",
+      "code": "LAB502",
+      "capacity": 60,
+      "attributes": {
+        "projector": "Yes",
+        "computers": "Yes",
+        "air_conditioned": "Yes"
+      }
+    }
+  ],
+  "years": [
+    {
+      "id": "Y1S1.1",
+      "year": 1,
+      "semester": 1,
+      "group_num": 1,
+      "size": 40
+    },
+    {
+      "id": "Y1S1.2",
+      "year": 1,
+      "semester": 1,
+      "group_num": 2,
+      "size": 40
+    },
+    {
+      "id": "Y1S1.3",
+      "year": 1,
+      "semester": 1,
+      "group_num": 3,
+      "size": 40
+    },
+    {
+      "id": "Y1S1.4",
+      "year": 1,
+      "semester": 1,
+      "group_num": 4,
+      "size": 40
+    },
+    {
+      "id": "Y1S1.5",
+      "year": 1,
+      "semester": 1,
+      "group_num": 5,
+      "size": 40
+    },
+    {
+      "id": "Y1S2.1",
+      "year": 1,
+      "semester": 2,
+      "group_num": 1,
+      "size": 40
+    },
+    {
+      "id": "Y1S2.2",
+      "year": 1,
+      "semester": 2,
+      "group_num": 2,
+      "size": 40
+    },
+    {
+      "id": "Y1S2.3",
+      "year": 1,
+      "semester": 2,
+      "group_num": 3,
+      "size": 40
+    },
+    {
+      "id": "Y1S2.4",
+      "year": 1,
+      "semester": 2,
+      "group_num": 4,
+      "size": 40
+    },
+    {
+      "id": "Y1S2.5",
+      "year": 1,
+      "semester": 2,
+      "group_num": 5,
+      "size": 40
+    },
+    {
+      "id": "Y2S1.1",
+      "year": 2,
+      "semester": 1,
+      "group_num": 1,
+      "size": 40
+    },
+    {
+      "id": "Y2S1.2",
+      "year": 2,
+      "semester": 1,
+      "group_num": 2,
+      "size": 40
+    },
+    {
+      "id": "Y2S1.3",
+      "year": 2,
+      "semester": 1,
+      "group_num": 3,
+      "size": 40
+    },
+    {
+      "id": "Y2S1.4",
+      "year": 2,
+      "semester": 1,
+      "group_num": 4,
+      "size": 40
+    },
+    {
+      "id": "Y2S1.5",
+      "year": 2,
+      "semester": 1,
+      "group_num": 5,
+      "size": 40
+    },
+    {
+      "id": "Y2S2.1",
+      "year": 2,
+      "semester": 2,
+      "group_num": 1,
+      "size": 40
+    },
+    {
+      "id": "Y2S2.2",
+      "year": 2,
+      "semester": 2,
+      "group_num": 2,
+      "size": 40
+    },
+    {
+      "id": "Y2S2.3",
+      "year": 2,
+      "semester": 2,
+      "group_num": 3,
+      "size": 40
+    },
+    {
+      "id": "Y2S2.4",
+      "year": 2,
+      "semester": 2,
+      "group_num": 4,
+      "size": 40
+    },
+    {
+      "id": "Y2S2.5",
+      "year": 2,
+      "semester": 2,
+      "group_num": 5,
+      "size": 40
+    },
+    {
+      "id": "Y3S1.1",
+      "year": 3,
+      "semester": 1,
+      "group_num": 1,
+      "size": 40
+    },
+    {
+      "id": "Y3S1.2",
+      "year": 3,
+      "semester": 1,
+      "group_num": 2,
+      "size": 40
+    },
+    {
+      "id": "Y3S1.3",
+      "year": 3,
+      "semester": 1,
+      "group_num": 3,
+      "size": 40
+    },
+    {
+      "id": "Y3S1.4",
+      "year": 3,
+      "semester": 1,
+      "group_num": 4,
+      "size": 40
+    },
+    {
+      "id": "Y3S1.5",
+      "year": 3,
+      "semester": 1,
+      "group_num": 5,
+      "size": 40
+    },
+    {
+      "id": "Y3S2.1",
+      "year": 3,
+      "semester": 2,
+      "group_num": 1,
+      "size": 40
+    },
+    {
+      "id": "Y3S2.2",
+      "year": 3,
+      "semester": 2,
+      "group_num": 2,
+      "size": 40
+    },
+    {
+      "id": "Y3S2.3",
+      "year": 3,
+      "semester": 2,
+      "group_num": 3,
+      "size": 40
+    },
+    {
+      "id": "Y3S2.4",
+      "year": 3,
+      "semester": 2,
+      "group_num": 4,
+      "size": 40
+    },
+    {
+      "id": "Y3S2.5",
+      "year": 3,
+      "semester": 2,
+      "group_num": 5,
+      "size": 40
+    },
+    {
+      "id": "Y4S1.1",
+      "year": 4,
+      "semester": 1,
+      "group_num": 1,
+      "size": 40
+    },
+    {
+      "id": "Y4S1.2",
+      "year": 4,
+      "semester": 1,
+      "group_num": 2,
+      "size": 40
+    },
+    {
+      "id": "Y4S1.3",
+      "year": 4,
+      "semester": 1,
+      "group_num": 3,
+      "size": 40
+    },
+    {
+      "id": "Y4S1.4",
+      "year": 4,
+      "semester": 1,
+      "group_num": 4,
+      "size": 40
+    },
+    {
+      "id": "Y4S1.5",
+      "year": 4,
+      "semester": 1,
+      "group_num": 5,
+      "size": 40
+    },
+    {
+      "id": "Y4S2.1",
+      "year": 4,
+      "semester": 2,
+      "group_num": 1,
+      "size": 40
+    },
+    {
+      "id": "Y4S2.2",
+      "year": 4,
+      "semester": 2,
+      "group_num": 2,
+      "size": 40
+    },
+    {
+      "id": "Y4S2.3",
+      "year": 4,
+      "semester": 2,
+      "group_num": 3,
+      "size": 40
+    },
+    {
+      "id": "Y4S2.4",
+      "year": 4,
+      "semester": 2,
+      "group_num": 4,
+      "size": 40
+    },
+    {
+      "id": "Y4S2.5",
+      "year": 4,
+      "semester": 2,
+      "group_num": 5,
+      "size": 40
+    }
+  ],
+  "users": [
+    {
+      "id": "FA0000001",
+      "first_name": "Chandimal",
+      "last_name": "Jayawardena",
+      "username": "chandimal.jayawardena",
+      "role": "lecturer",
+      "department": "Cyber Security"
+    },
+    {
+      "id": "FA0000002",
+      "first_name": "Kushani",
+      "last_name": "Perera",
+      "username": "kushani.perera",
+      "role": "lecturer",
+      "department": "Computer Science and Software Engineering"
+    },
+    {
+      "id": "FA0000003",
+      "first_name": "Sasika",
+      "last_name": "Kumarasinghe",
+      "username": "sasika.kumarasinghe",
+      "role": "lecturer",
+      "department": "Computer Science and Software Engineering"
+    },
+    {
+      "id": "FA0000004",
+      "first_name": "Dhishan",
+      "last_name": "Dhammearatchi",
+      "username": "dhishan.dhammearatchi",
+      "role": "lecturer",
+      "department": "Cyber Security"
+    },
+    {
+      "id": "FA0000005",
+      "first_name": "Uthpala",
+      "last_name": "Samarakoon",
+      "username": "uthpala.samarakoon",
+      "role": "lecturer",
+      "department": "Computer Science and Software Engineering"
+    },
+    {
+      "id": "FA0000006",
+      "first_name": "Dilshan",
+      "last_name": "Silva",
+      "username": "dilshan.silva",
+      "role": "lecturer",
+      "department": "Information Technology"
+    },
+    {
+      "id": "FA0000007",
+      "first_name": "Rajitha",
+      "last_name": "Dissanayake",
+      "username": "rajitha.dissanayake",
+      "role": "lecturer",
+      "department": "Cyber Security"
+    },
+    {
+      "id": "FA0000008",
+      "first_name": "Thilini",
+      "last_name": "Fernando",
+      "username": "thilini.fernando",
+      "role": "lecturer",
+      "department": "Information Technology"
+    },
+    {
+      "id": "FA0000009",
+      "first_name": "Samadhi",
+      "last_name": "Rathnayaka",
+      "username": "samadhi.rathnayaka",
+      "role": "lecturer",
+      "department": "Computer Science and Software Engineering"
+    },
+    {
+      "id": "FA0000010",
+      "first_name": "Kavindi",
+      "last_name": "Gunawardena",
+      "username": "kavindi.gunawardena",
+      "role": "lecturer",
+      "department": "Information Technology"
+    },
+    {
+      "id": "IT703519",
+      "first_name": "Student296",
+      "last_name": "Learner187",
+      "username": "it158305",
+      "role": "student",
+      "year_group": "Y1S1.1"
+    },
+    {
+      "id": "IT678676",
+      "first_name": "Student68",
+      "last_name": "Learner150",
+      "username": "it236861",
+      "role": "student",
+      "year_group": "Y1S1.2"
+    },
+    {
+      "id": "IT433711",
+      "first_name": "Student170",
+      "last_name": "Learner113",
+      "username": "it995730",
+      "role": "student",
+      "year_group": "Y1S1.3"
+    },
+    {
+      "id": "IT262427",
+      "first_name": "Student37",
+      "last_name": "Learner145",
+      "username": "it991833",
+      "role": "student",
+      "year_group": "Y1S1.4"
+    },
+    {
+      "id": "IT761792",
+      "first_name": "Student211",
+      "last_name": "Learner55",
+      "username": "it871899",
+      "role": "student",
+      "year_group": "Y1S1.5"
+    },
+    {
+      "id": "IT738600",
+      "first_name": "Student273",
+      "last_name": "Learner17",
+      "username": "it618021",
+      "role": "student",
+      "year_group": "Y1S2.1"
+    },
+    {
+      "id": "IT674840",
+      "first_name": "Student230",
+      "last_name": "Learner25",
+      "username": "it395682",
+      "role": "student",
+      "year_group": "Y1S2.2"
+    },
+    {
+      "id": "IT622476",
+      "first_name": "Student256",
+      "last_name": "Learner235",
+      "username": "it272324",
+      "role": "student",
+      "year_group": "Y1S2.3"
+    },
+    {
+      "id": "IT673742",
+      "first_name": "Student129",
+      "last_name": "Learner280",
+      "username": "it319548",
+      "role": "student",
+      "year_group": "Y1S2.4"
+    },
+    {
+      "id": "IT397951",
+      "first_name": "Student14",
+      "last_name": "Learner29",
+      "username": "it538902",
+      "role": "student",
+      "year_group": "Y1S2.5"
+    },
+    {
+      "id": "IT266779",
+      "first_name": "Student199",
+      "last_name": "Learner275",
+      "username": "it344675",
+      "role": "student",
+      "year_group": "Y2S1.1"
+    },
+    {
+      "id": "IT173141",
+      "first_name": "Student126",
+      "last_name": "Learner112",
+      "username": "it949176",
+      "role": "student",
+      "year_group": "Y2S1.2"
+    },
+    {
+      "id": "IT335084",
+      "first_name": "Student152",
+      "last_name": "Learner226",
+      "username": "it871913",
+      "role": "student",
+      "year_group": "Y2S1.3"
+    },
+    {
+      "id": "IT756472",
+      "first_name": "Student167",
+      "last_name": "Learner36",
+      "username": "it310733",
+      "role": "student",
+      "year_group": "Y2S1.4"
+    },
+    {
+      "id": "IT810986",
+      "first_name": "Student11",
+      "last_name": "Learner131",
+      "username": "it523776",
+      "role": "student",
+      "year_group": "Y2S1.5"
+    },
+    {
+      "id": "IT760021",
+      "first_name": "Student222",
+      "last_name": "Learner19",
+      "username": "it633277",
+      "role": "student",
+      "year_group": "Y2S2.1"
+    },
+    {
+      "id": "IT297734",
+      "first_name": "Student272",
+      "last_name": "Learner128",
+      "username": "it856139",
+      "role": "student",
+      "year_group": "Y2S2.2"
+    },
+    {
+      "id": "IT308823",
+      "first_name": "Student288",
+      "last_name": "Learner293",
+      "username": "it501691",
+      "role": "student",
+      "year_group": "Y2S2.3"
+    },
+    {
+      "id": "IT617801",
+      "first_name": "Student219",
+      "last_name": "Learner27",
+      "username": "it610427",
+      "role": "student",
+      "year_group": "Y2S2.4"
+    },
+    {
+      "id": "IT143379",
+      "first_name": "Student74",
+      "last_name": "Learner142",
+      "username": "it285667",
+      "role": "student",
+      "year_group": "Y2S2.5"
+    },
+    {
+      "id": "IT518278",
+      "first_name": "Student57",
+      "last_name": "Learner34",
+      "username": "it389526",
+      "role": "student",
+      "year_group": "Y3S1.1"
+    },
+    {
+      "id": "IT557660",
+      "first_name": "Student132",
+      "last_name": "Learner55",
+      "username": "it348524",
+      "role": "student",
+      "year_group": "Y3S1.2"
+    },
+    {
+      "id": "IT589436",
+      "first_name": "Student245",
+      "last_name": "Learner42",
+      "username": "it202878",
+      "role": "student",
+      "year_group": "Y3S1.3"
+    },
+    {
+      "id": "IT352711",
+      "first_name": "Student255",
+      "last_name": "Learner246",
+      "username": "it182524",
+      "role": "student",
+      "year_group": "Y3S1.4"
+    },
+    {
+      "id": "IT345269",
+      "first_name": "Student16",
+      "last_name": "Learner198",
+      "username": "it844364",
+      "role": "student",
+      "year_group": "Y3S1.5"
+    },
+    {
+      "id": "IT971921",
+      "first_name": "Student154",
+      "last_name": "Learner130",
+      "username": "it759265",
+      "role": "student",
+      "year_group": "Y3S2.1"
+    },
+    {
+      "id": "IT549281",
+      "first_name": "Student263",
+      "last_name": "Learner300",
+      "username": "it782926",
+      "role": "student",
+      "year_group": "Y3S2.2"
+    },
+    {
+      "id": "IT537405",
+      "first_name": "Student296",
+      "last_name": "Learner79",
+      "username": "it934063",
+      "role": "student",
+      "year_group": "Y3S2.3"
+    },
+    {
+      "id": "IT103516",
+      "first_name": "Student17",
+      "last_name": "Learner17",
+      "username": "it620352",
+      "role": "student",
+      "year_group": "Y3S2.4"
+    },
+    {
+      "id": "IT527707",
+      "first_name": "Student182",
+      "last_name": "Learner201",
+      "username": "it225391",
+      "role": "student",
+      "year_group": "Y3S2.5"
+    },
+    {
+      "id": "IT963632",
+      "first_name": "Student193",
+      "last_name": "Learner19",
+      "username": "it871882",
+      "role": "student",
+      "year_group": "Y4S1.1"
+    },
+    {
+      "id": "IT897239",
+      "first_name": "Student44",
+      "last_name": "Learner197",
+      "username": "it335354",
+      "role": "student",
+      "year_group": "Y4S1.2"
+    },
+    {
+      "id": "IT110124",
+      "first_name": "Student1",
+      "last_name": "Learner291",
+      "username": "it995262",
+      "role": "student",
+      "year_group": "Y4S1.3"
+    },
+    {
+      "id": "IT238732",
+      "first_name": "Student271",
+      "last_name": "Learner240",
+      "username": "it991425",
+      "role": "student",
+      "year_group": "Y4S1.4"
+    },
+    {
+      "id": "IT415852",
+      "first_name": "Student35",
+      "last_name": "Learner230",
+      "username": "it504133",
+      "role": "student",
+      "year_group": "Y4S1.5"
+    },
+    {
+      "id": "IT109853",
+      "first_name": "Student180",
+      "last_name": "Learner286",
+      "username": "it877858",
+      "role": "student",
+      "year_group": "Y4S2.1"
+    },
+    {
+      "id": "IT655408",
+      "first_name": "Student297",
+      "last_name": "Learner288",
+      "username": "it670170",
+      "role": "student",
+      "year_group": "Y4S2.2"
+    },
+    {
+      "id": "IT805205",
+      "first_name": "Student4",
+      "last_name": "Learner176",
+      "username": "it354355",
+      "role": "student",
+      "year_group": "Y4S2.3"
+    },
+    {
+      "id": "IT267211",
+      "first_name": "Student230",
+      "last_name": "Learner139",
+      "username": "it430601",
+      "role": "student",
+      "year_group": "Y4S2.4"
+    },
+    {
+      "id": "IT365154",
+      "first_name": "Student57",
+      "last_name": "Learner211",
+      "username": "it721234",
+      "role": "student",
+      "year_group": "Y4S2.5"
+    }
+  ],
+  "activities": [
+    {
+      "code": "AC-001",
+      "name": "Introduction to Computing Lecture",
+      "subject": "IT1010",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-002",
+      "name": "Introduction to Computing Tutorial - Group 1",
+      "subject": "IT1010",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y1S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-003",
+      "name": "Introduction to Computing Tutorial - Group 2",
+      "subject": "IT1010",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-004",
+      "name": "Introduction to Computing Tutorial - Group 3",
+      "subject": "IT1010",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y1S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-005",
+      "name": "Introduction to Computing Tutorial - Group 4",
+      "subject": "IT1010",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y1S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-006",
+      "name": "Introduction to Computing Tutorial - Group 5",
+      "subject": "IT1010",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y1S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-007",
+      "name": "IP Lecture",
+      "subject": "IT1020",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-008",
+      "name": "IP Tutorial - Group 1",
+      "subject": "IT1020",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y1S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-009",
+      "name": "IP Tutorial - Group 2",
+      "subject": "IT1020",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y1S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-010",
+      "name": "IP Tutorial - Group 3",
+      "subject": "IT1020",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y1S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-011",
+      "name": "IP Tutorial - Group 4",
+      "subject": "IT1020",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y1S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-012",
+      "name": "IP Tutorial - Group 5",
+      "subject": "IT1020",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-013",
+      "name": "MC Lecture",
+      "subject": "IT1030",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-014",
+      "name": "MC Tutorial - Group 1",
+      "subject": "IT1030",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y1S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-015",
+      "name": "MC Tutorial - Group 2",
+      "subject": "IT1030",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y1S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-016",
+      "name": "MC Tutorial - Group 3",
+      "subject": "IT1030",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y1S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-017",
+      "name": "MC Tutorial - Group 4",
+      "subject": "IT1030",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y1S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-018",
+      "name": "MC Tutorial - Group 5",
+      "subject": "IT1030",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y1S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-019",
+      "name": "DBMS Lecture",
+      "subject": "IT1040",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-020",
+      "name": "DBMS Tutorial - Group 1",
+      "subject": "IT1040",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-021",
+      "name": "DBMS Tutorial - Group 2",
+      "subject": "IT1040",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y1S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-022",
+      "name": "DBMS Tutorial - Group 3",
+      "subject": "IT1040",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y1S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-023",
+      "name": "DBMS Tutorial - Group 4",
+      "subject": "IT1040",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y1S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-024",
+      "name": "DBMS Tutorial - Group 5",
+      "subject": "IT1040",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y1S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-025",
+      "name": "OOP Lecture",
+      "subject": "IT1550",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-026",
+      "name": "OOP Tutorial - Group 1",
+      "subject": "IT1550",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-027",
+      "name": "OOP Tutorial - Group 2",
+      "subject": "IT1550",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y1S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-028",
+      "name": "OOP Tutorial - Group 3",
+      "subject": "IT1550",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y1S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-029",
+      "name": "OOP Tutorial - Group 4",
+      "subject": "IT1550",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y1S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-030",
+      "name": "OOP Tutorial - Group 5",
+      "subject": "IT1550",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y1S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-031",
+      "name": "Web Development Lecture",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-032",
+      "name": "Web Development Tutorial - Group 1",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y1S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-033",
+      "name": "Web Development Tutorial - Group 2",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-034",
+      "name": "Web Development Tutorial - Group 3",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-035",
+      "name": "Web Development Tutorial - Group 4",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y1S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-036",
+      "name": "Web Development Tutorial - Group 5",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y1S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-037",
+      "name": "Web Development Practical - Group 1",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y1S2.1"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-038",
+      "name": "Web Development Practical - Group 2",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S2.2"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-039",
+      "name": "Web Development Practical - Group 3",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y1S2.3"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-040",
+      "name": "Web Development Practical - Group 4",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S2.4"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-041",
+      "name": "Web Development Practical - Group 5",
+      "subject": "IT1560",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y1S2.5"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-042",
+      "name": "Statistics Lecture",
+      "subject": "IT1570",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-043",
+      "name": "Statistics Tutorial - Group 1",
+      "subject": "IT1570",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y1S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-044",
+      "name": "Statistics Tutorial - Group 2",
+      "subject": "IT1570",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-045",
+      "name": "Statistics Tutorial - Group 3",
+      "subject": "IT1570",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y1S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-046",
+      "name": "Statistics Tutorial - Group 4",
+      "subject": "IT1570",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y1S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-047",
+      "name": "Statistics Tutorial - Group 5",
+      "subject": "IT1570",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y1S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-048",
+      "name": "DSA Lecture",
+      "subject": "IT1580",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-049",
+      "name": "DSA Tutorial - Group 1",
+      "subject": "IT1580",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y1S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-050",
+      "name": "DSA Tutorial - Group 2",
+      "subject": "IT1580",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y1S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-051",
+      "name": "DSA Tutorial - Group 3",
+      "subject": "IT1580",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y1S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-052",
+      "name": "DSA Tutorial - Group 4",
+      "subject": "IT1580",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y1S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-053",
+      "name": "DSA Tutorial - Group 5",
+      "subject": "IT1580",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y1S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-054",
+      "name": "Advanced Programming Lecture",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-055",
+      "name": "Advanced Programming Tutorial - Group 1",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y2S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-056",
+      "name": "Advanced Programming Tutorial - Group 2",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y2S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-057",
+      "name": "Advanced Programming Tutorial - Group 3",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y2S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-058",
+      "name": "Advanced Programming Tutorial - Group 4",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y2S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-059",
+      "name": "Advanced Programming Tutorial - Group 5",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y2S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-060",
+      "name": "Advanced Programming Practical - Group 1",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y2S1.1"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-061",
+      "name": "Advanced Programming Practical - Group 2",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y2S1.2"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-062",
+      "name": "Advanced Programming Practical - Group 3",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y2S1.3"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-063",
+      "name": "Advanced Programming Practical - Group 4",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y2S1.4"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-064",
+      "name": "Advanced Programming Practical - Group 5",
+      "subject": "IT2010",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y2S1.5"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-065",
+      "name": "DBMS II Lecture",
+      "subject": "IT2020",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-066",
+      "name": "DBMS II Tutorial - Group 1",
+      "subject": "IT2020",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y2S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-067",
+      "name": "DBMS II Tutorial - Group 2",
+      "subject": "IT2020",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y2S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-068",
+      "name": "DBMS II Tutorial - Group 3",
+      "subject": "IT2020",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y2S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-069",
+      "name": "DBMS II Tutorial - Group 4",
+      "subject": "IT2020",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y2S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-070",
+      "name": "DBMS II Tutorial - Group 5",
+      "subject": "IT2020",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y2S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-071",
+      "name": "Software Engineering Lecture",
+      "subject": "IT2030",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-072",
+      "name": "Software Engineering Tutorial - Group 1",
+      "subject": "IT2030",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y2S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-073",
+      "name": "Software Engineering Tutorial - Group 2",
+      "subject": "IT2030",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y2S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-074",
+      "name": "Software Engineering Tutorial - Group 3",
+      "subject": "IT2030",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y2S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-075",
+      "name": "Software Engineering Tutorial - Group 4",
+      "subject": "IT2030",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y2S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-076",
+      "name": "Software Engineering Tutorial - Group 5",
+      "subject": "IT2030",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y2S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-077",
+      "name": "Networking Lecture",
+      "subject": "IT2040",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-078",
+      "name": "Networking Tutorial - Group 1",
+      "subject": "IT2040",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y2S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-079",
+      "name": "Networking Tutorial - Group 2",
+      "subject": "IT2040",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y2S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-080",
+      "name": "Networking Tutorial - Group 3",
+      "subject": "IT2040",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y2S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-081",
+      "name": "Networking Tutorial - Group 4",
+      "subject": "IT2040",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y2S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-082",
+      "name": "Networking Tutorial - Group 5",
+      "subject": "IT2040",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y2S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-083",
+      "name": "Mobile Development Lecture",
+      "subject": "IT2550",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-084",
+      "name": "Mobile Development Tutorial - Group 1",
+      "subject": "IT2550",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y2S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-085",
+      "name": "Mobile Development Tutorial - Group 2",
+      "subject": "IT2550",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y2S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-086",
+      "name": "Mobile Development Tutorial - Group 3",
+      "subject": "IT2550",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y2S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-087",
+      "name": "Mobile Development Tutorial - Group 4",
+      "subject": "IT2550",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y2S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-088",
+      "name": "Mobile Development Tutorial - Group 5",
+      "subject": "IT2550",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y2S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-089",
+      "name": "Web Programming Lecture",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-090",
+      "name": "Web Programming Tutorial - Group 1",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y2S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-091",
+      "name": "Web Programming Tutorial - Group 2",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y2S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-092",
+      "name": "Web Programming Tutorial - Group 3",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y2S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-093",
+      "name": "Web Programming Tutorial - Group 4",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y2S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-094",
+      "name": "Web Programming Tutorial - Group 5",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y2S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-095",
+      "name": "Web Programming Practical - Group 1",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y2S2.1"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-096",
+      "name": "Web Programming Practical - Group 2",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y2S2.2"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-097",
+      "name": "Web Programming Practical - Group 3",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y2S2.3"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-098",
+      "name": "Web Programming Practical - Group 4",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y2S2.4"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-099",
+      "name": "Web Programming Practical - Group 5",
+      "subject": "IT2560",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y2S2.5"
+      ],
+      "duration": 2,
+      "type": "Practical",
+      "space_requirements": [
+        "Computer Lab"
+      ]
+    },
+    {
+      "code": "AC-100",
+      "name": "OS Lecture",
+      "subject": "IT2570",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-101",
+      "name": "OS Tutorial - Group 1",
+      "subject": "IT2570",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y2S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-102",
+      "name": "OS Tutorial - Group 2",
+      "subject": "IT2570",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y2S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-103",
+      "name": "OS Tutorial - Group 3",
+      "subject": "IT2570",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y2S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-104",
+      "name": "OS Tutorial - Group 4",
+      "subject": "IT2570",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y2S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-105",
+      "name": "OS Tutorial - Group 5",
+      "subject": "IT2570",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y2S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-106",
+      "name": "Security Lecture",
+      "subject": "IT2580",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-107",
+      "name": "Security Tutorial - Group 1",
+      "subject": "IT2580",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y2S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-108",
+      "name": "Security Tutorial - Group 2",
+      "subject": "IT2580",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y2S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-109",
+      "name": "Security Tutorial - Group 3",
+      "subject": "IT2580",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y2S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-110",
+      "name": "Security Tutorial - Group 4",
+      "subject": "IT2580",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y2S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-111",
+      "name": "Security Tutorial - Group 5",
+      "subject": "IT2580",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y2S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-112",
+      "name": "Project Management Lecture",
+      "subject": "IT3010",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-113",
+      "name": "Project Management Tutorial - Group 1",
+      "subject": "IT3010",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y3S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-114",
+      "name": "Project Management Tutorial - Group 2",
+      "subject": "IT3010",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y3S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-115",
+      "name": "Project Management Tutorial - Group 3",
+      "subject": "IT3010",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y3S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-116",
+      "name": "Project Management Tutorial - Group 4",
+      "subject": "IT3010",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y3S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-117",
+      "name": "Project Management Tutorial - Group 5",
+      "subject": "IT3010",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y3S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-118",
+      "name": "DS Lecture",
+      "subject": "IT3020",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-119",
+      "name": "DS Tutorial - Group 1",
+      "subject": "IT3020",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y3S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-120",
+      "name": "DS Tutorial - Group 2",
+      "subject": "IT3020",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y3S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-121",
+      "name": "DS Tutorial - Group 3",
+      "subject": "IT3020",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y3S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-122",
+      "name": "DS Tutorial - Group 4",
+      "subject": "IT3020",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y3S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-123",
+      "name": "DS Tutorial - Group 5",
+      "subject": "IT3020",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y3S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-124",
+      "name": "AI Lecture",
+      "subject": "IT3030",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-125",
+      "name": "AI Tutorial - Group 1",
+      "subject": "IT3030",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y3S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-126",
+      "name": "AI Tutorial - Group 2",
+      "subject": "IT3030",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y3S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-127",
+      "name": "AI Tutorial - Group 3",
+      "subject": "IT3030",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y3S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-128",
+      "name": "AI Tutorial - Group 4",
+      "subject": "IT3030",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y3S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-129",
+      "name": "AI Tutorial - Group 5",
+      "subject": "IT3030",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y3S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-130",
+      "name": "Cloud Computing Lecture",
+      "subject": "IT3040",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-131",
+      "name": "Cloud Computing Tutorial - Group 1",
+      "subject": "IT3040",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y3S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-132",
+      "name": "Cloud Computing Tutorial - Group 2",
+      "subject": "IT3040",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y3S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-133",
+      "name": "Cloud Computing Tutorial - Group 3",
+      "subject": "IT3040",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y3S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-134",
+      "name": "Cloud Computing Tutorial - Group 4",
+      "subject": "IT3040",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y3S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-135",
+      "name": "Cloud Computing Tutorial - Group 5",
+      "subject": "IT3040",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y3S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-136",
+      "name": "ML Lecture",
+      "subject": "IT3550",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-137",
+      "name": "ML Tutorial - Group 1",
+      "subject": "IT3550",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y3S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-138",
+      "name": "ML Tutorial - Group 2",
+      "subject": "IT3550",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y3S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-139",
+      "name": "ML Tutorial - Group 3",
+      "subject": "IT3550",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y3S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-140",
+      "name": "ML Tutorial - Group 4",
+      "subject": "IT3550",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y3S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-141",
+      "name": "ML Tutorial - Group 5",
+      "subject": "IT3550",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y3S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-142",
+      "name": "Research Methods Lecture",
+      "subject": "IT3560",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-143",
+      "name": "Research Methods Tutorial - Group 1",
+      "subject": "IT3560",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y3S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-144",
+      "name": "Research Methods Tutorial - Group 2",
+      "subject": "IT3560",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y3S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-145",
+      "name": "Research Methods Tutorial - Group 3",
+      "subject": "IT3560",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y3S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-146",
+      "name": "Research Methods Tutorial - Group 4",
+      "subject": "IT3560",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y3S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-147",
+      "name": "Research Methods Tutorial - Group 5",
+      "subject": "IT3560",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y3S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-148",
+      "name": "DevOps Lecture",
+      "subject": "IT3570",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-149",
+      "name": "DevOps Tutorial - Group 1",
+      "subject": "IT3570",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y3S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-150",
+      "name": "DevOps Tutorial - Group 2",
+      "subject": "IT3570",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y3S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-151",
+      "name": "DevOps Tutorial - Group 3",
+      "subject": "IT3570",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y3S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-152",
+      "name": "DevOps Tutorial - Group 4",
+      "subject": "IT3570",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y3S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-153",
+      "name": "DevOps Tutorial - Group 5",
+      "subject": "IT3570",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y3S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-154",
+      "name": "QA Lecture",
+      "subject": "IT3580",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-155",
+      "name": "QA Tutorial - Group 1",
+      "subject": "IT3580",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y3S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-156",
+      "name": "QA Tutorial - Group 2",
+      "subject": "IT3580",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y3S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-157",
+      "name": "QA Tutorial - Group 3",
+      "subject": "IT3580",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y3S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-158",
+      "name": "QA Tutorial - Group 4",
+      "subject": "IT3580",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y3S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-159",
+      "name": "QA Tutorial - Group 5",
+      "subject": "IT3580",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y3S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-160",
+      "name": "Research Project Lecture",
+      "subject": "IT4010",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-161",
+      "name": "Research Project Tutorial - Group 1",
+      "subject": "IT4010",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y4S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-162",
+      "name": "Research Project Tutorial - Group 2",
+      "subject": "IT4010",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y4S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-163",
+      "name": "Research Project Tutorial - Group 3",
+      "subject": "IT4010",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y4S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-164",
+      "name": "Research Project Tutorial - Group 4",
+      "subject": "IT4010",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y4S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-165",
+      "name": "Research Project Tutorial - Group 5",
+      "subject": "IT4010",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y4S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-166",
+      "name": "Enterprise Architecture Lecture",
+      "subject": "IT4020",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-167",
+      "name": "Enterprise Architecture Tutorial - Group 1",
+      "subject": "IT4020",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y4S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-168",
+      "name": "Enterprise Architecture Tutorial - Group 2",
+      "subject": "IT4020",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y4S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-169",
+      "name": "Enterprise Architecture Tutorial - Group 3",
+      "subject": "IT4020",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y4S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-170",
+      "name": "Enterprise Architecture Tutorial - Group 4",
+      "subject": "IT4020",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y4S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-171",
+      "name": "Enterprise Architecture Tutorial - Group 5",
+      "subject": "IT4020",
+      "teacher_ids": [
+        "FA0000009"
+      ],
+      "subgroup_ids": [
+        "Y4S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-172",
+      "name": "Business Analytics Lecture",
+      "subject": "IT4030",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-173",
+      "name": "Business Analytics Tutorial - Group 1",
+      "subject": "IT4030",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y4S1.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-174",
+      "name": "Business Analytics Tutorial - Group 2",
+      "subject": "IT4030",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y4S1.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-175",
+      "name": "Business Analytics Tutorial - Group 3",
+      "subject": "IT4030",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y4S1.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-176",
+      "name": "Business Analytics Tutorial - Group 4",
+      "subject": "IT4030",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y4S1.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-177",
+      "name": "Business Analytics Tutorial - Group 5",
+      "subject": "IT4030",
+      "teacher_ids": [
+        "FA0000003"
+      ],
+      "subgroup_ids": [
+        "Y4S1.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-178",
+      "name": "Research Project II Lecture",
+      "subject": "IT4550",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-179",
+      "name": "Research Project II Tutorial - Group 1",
+      "subject": "IT4550",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y4S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-180",
+      "name": "Research Project II Tutorial - Group 2",
+      "subject": "IT4550",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y4S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-181",
+      "name": "Research Project II Tutorial - Group 3",
+      "subject": "IT4550",
+      "teacher_ids": [
+        "FA0000002"
+      ],
+      "subgroup_ids": [
+        "Y4S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-182",
+      "name": "Research Project II Tutorial - Group 4",
+      "subject": "IT4550",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y4S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-183",
+      "name": "Research Project II Tutorial - Group 5",
+      "subject": "IT4550",
+      "teacher_ids": [
+        "FA0000007"
+      ],
+      "subgroup_ids": [
+        "Y4S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-184",
+      "name": "Emerging Technologies Lecture",
+      "subject": "IT4560",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-185",
+      "name": "Emerging Technologies Tutorial - Group 1",
+      "subject": "IT4560",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y4S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-186",
+      "name": "Emerging Technologies Tutorial - Group 2",
+      "subject": "IT4560",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y4S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-187",
+      "name": "Emerging Technologies Tutorial - Group 3",
+      "subject": "IT4560",
+      "teacher_ids": [
+        "FA0000010"
+      ],
+      "subgroup_ids": [
+        "Y4S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-188",
+      "name": "Emerging Technologies Tutorial - Group 4",
+      "subject": "IT4560",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y4S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-189",
+      "name": "Emerging Technologies Tutorial - Group 5",
+      "subject": "IT4560",
+      "teacher_ids": [
+        "FA0000006"
+      ],
+      "subgroup_ids": [
+        "Y4S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-190",
+      "name": "Professional Practice Lecture",
+      "subject": "IT4570",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
+      ],
+      "duration": 2,
+      "type": "Lecture",
+      "space_requirements": [
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-191",
+      "name": "Professional Practice Tutorial - Group 1",
+      "subject": "IT4570",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y4S2.1"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-192",
+      "name": "Professional Practice Tutorial - Group 2",
+      "subject": "IT4570",
+      "teacher_ids": [
+        "FA0000001"
+      ],
+      "subgroup_ids": [
+        "Y4S2.2"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-193",
+      "name": "Professional Practice Tutorial - Group 3",
+      "subject": "IT4570",
+      "teacher_ids": [
+        "FA0000004"
+      ],
+      "subgroup_ids": [
+        "Y4S2.3"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-194",
+      "name": "Professional Practice Tutorial - Group 4",
+      "subject": "IT4570",
+      "teacher_ids": [
+        "FA0000005"
+      ],
+      "subgroup_ids": [
+        "Y4S2.4"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    },
+    {
+      "code": "AC-195",
+      "name": "Professional Practice Tutorial - Group 5",
+      "subject": "IT4570",
+      "teacher_ids": [
+        "FA0000008"
+      ],
+      "subgroup_ids": [
+        "Y4S2.5"
+      ],
+      "duration": 1,
+      "type": "Tutorial",
+      "space_requirements": [
+        "Tutorial Room",
+        "Lecture Hall"
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "name": "No Teacher Overlap",
+      "description": "A teacher cannot be scheduled for multiple activities at the same time",
+      "type": "hard",
+      "weight": 10
+    },
+    {
+      "name": "No Student Group Overlap",
+      "description": "A student group cannot be scheduled for multiple activities at the same time",
+      "type": "hard",
+      "weight": 10
+    },
+    {
+      "name": "No Room Overlap",
+      "description": "A room cannot be scheduled for multiple activities at the same time",
+      "type": "hard",
+      "weight": 10
+    },
+    {
+      "name": "Room Type Match",
+      "description": "Activities must be scheduled in rooms that match their requirements",
+      "type": "hard",
+      "weight": 10
+    },
+    {
+      "name": "Room Capacity",
+      "description": "Room capacity must be sufficient for the student group size",
+      "type": "hard",
+      "weight": 10
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from collections import defaultdict
-from generator.data_collector import *
+from app.generator.data_collector import *
 
 NUM_ANTS = 50
 NUM_ITERATIONS = 60
