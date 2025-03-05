@@ -64,15 +64,46 @@ def get_data():
     logging.info("-" * 50)
 
 def print_first():
-    print(days[0])
-    print(facilities[0])
-    print(modules[0])
-    print(periods[0])
-    print(students[0])
-    print(teachers[0])
-    print(years[0])
-    print(activities[0])
-
+    logging.info("Printing first items of each dataset (if available):")
+    if days and len(days) > 0:
+        logging.info(f"First day: {days[0]}")
+    else:
+        logging.warning("No days data available")
+        
+    if facilities and len(facilities) > 0:
+        logging.info(f"First facility: {facilities[0]}")
+    else:
+        logging.warning("No facilities data available")
+        
+    if modules and len(modules) > 0:
+        logging.info(f"First module: {modules[0]}")
+    else:
+        logging.warning("No modules data available")
+        
+    if periods and len(periods) > 0:
+        logging.info(f"First period: {periods[0]}")
+    else:
+        logging.warning("No periods data available")
+        
+    if students and len(students) > 0:
+        logging.info(f"First student: {students[0]}")
+    else:
+        logging.warning("No students data available")
+        
+    if teachers and len(teachers) > 0:
+        logging.info(f"First teacher: {teachers[0]}")
+    else:
+        logging.warning("No teachers data available")
+        
+    if years and len(years) > 0:
+        logging.info(f"First year: {years[0]}")
+    else:
+        logging.warning("No years data available")
+        
+    if activities and len(activities) > 0:
+        logging.info(f"First activity: {activities[0]}")
+    else:
+        logging.warning("No activities data available")
 
 #-1 is equaling a hard
 creator.create("FitnessMulti", base.Fitness, weights=(-1.0, -1.0, -1.0, -1.0))
@@ -208,6 +239,16 @@ def generate_ga():
     get_data()
     print_first()
     
+    # Check if we have enough data to proceed
+    if (len(days) == 0 or len(facilities) == 0 or len(modules) == 0 or 
+        len(periods) == 0 or len(teachers) == 0 or len(activities) == 0):
+        logging.error("Insufficient data to generate timetable. Missing required collections.")
+        empty_population = []
+        empty_logbook = tools.Logbook()
+        empty_hof = tools.HallOfFame(1)
+        empty_lastpopulation = []
+        return empty_population, empty_logbook, empty_hof, empty_lastpopulation
+    
     pop_size = 100
     generations = 50
     logging.info(f"GA Parameters: Population={pop_size}, Generations={generations}")
@@ -241,5 +282,43 @@ def generate_ga():
     logging.info(f"Best solution fitness: {best_solution.fitness.values}")
     logging.info(f"Detailed logs available at: {log_filepath}")
     
-    li = [x for x in best_solution]
-    return pop, log, hof, li
+    # Format the solution in a way that matches the frontend expectations
+    formatted_solution = []
+    for activity in best_solution:
+        if not activity:
+            continue
+            
+        day_obj = activity.get("day", {})
+        period_objs = activity.get("period", [])
+        room_obj = activity.get("room", {})
+        
+        formatted_solution.append({
+            "activity": activity.get("activity_id", "") or activity.get("activity", ""),
+            "day": {
+                "name": day_obj.get("name", ""),
+                "code": day_obj.get("code", ""),
+                "order": day_obj.get("order", 0),
+                "long_name": day_obj.get("long_name", "")
+            },
+            "period": [{
+                "name": p.get("name", ""),
+                "start_time": p.get("start_time", ""),
+                "end_time": p.get("end_time", ""),
+                "order": p.get("order", 0),
+                "long_name": p.get("long_name", ""),
+                "is_interval": p.get("is_interval", False)
+            } for p in period_objs] if period_objs else [],
+            "room": {
+                "name": room_obj.get("name", ""),
+                "code": room_obj.get("code", ""),
+                "capacity": room_obj.get("capacity", 0),
+                "type": room_obj.get("type", "classroom")
+            },
+            "teacher": activity.get("teacher", ""),
+            "subgroup": activity.get("subgroup", ""),
+            "subject": activity.get("subject", ""),
+            "duration": activity.get("duration", 1),
+            "algorithm": "GA"  # Add algorithm to be consistent
+        })
+    
+    return pop, log, hof, formatted_solution

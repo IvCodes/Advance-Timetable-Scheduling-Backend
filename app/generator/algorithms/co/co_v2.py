@@ -50,44 +50,55 @@ def construct_solution():
     used_periods = set()
     
     for activity in activities:
-        num_students = get_num_students_per_activity(activity["code"])
+        num_students = get_num_students_per_activity(activity.get("code", ""))
         
-        valid_rooms = [room for room in facilities if room["capacity"] >= num_students]
+        valid_rooms = [room for room in facilities if room.get("capacity", 0) >= num_students]
         if not valid_rooms:
             continue
         room = random.choice(valid_rooms)
         
-        day = random.choice(days)
+        day = random.choice(days) if days else {}
         
-        teacher = random.choice(activity["teacher_ids"])
+        teacher_ids = activity.get("teacher_ids", [])
+        teacher = random.choice(teacher_ids) if teacher_ids else ""
         
-        period_indices = {period["name"]: idx for idx, period in enumerate(periods)}
+        period_indices = {period.get("name", ""): idx for idx, period in enumerate(periods)}
 
-        valid_periods = [
-            period for period in periods[:len(periods) - activity["duration"] - 1]
-            if all(p not in used_periods for p in range(period_indices[period["name"]], period_indices[period["name"]] + activity["duration"]))
-        ]
-
+        valid_periods = []
+        duration = activity.get("duration", 1)
+        
+        if len(periods) > duration:
+            valid_periods = [
+                period for period in periods[:len(periods) - duration - 1]
+                if all(p not in used_periods for p in 
+                       range(period_indices.get(period.get("name", ""), 0), 
+                            period_indices.get(period.get("name", ""), 0) + duration))
+            ]
+        
         if not valid_periods:
             continue
         start_period = random.choice(valid_periods)
         
         assigned_periods = [start_period]
-        for i in range(1, activity["duration"]):
-            assigned_periods.append(periods[periods.index(start_period) + i])
+        start_idx = periods.index(start_period) if start_period in periods else 0
         
+        for i in range(1, duration):
+            if start_idx + i < len(periods):
+                assigned_periods.append(periods[start_idx + i])
+        
+        subgroup_ids = activity.get("subgroup_ids", [])
         solution.append({
-            "subgroup": activity["subgroup_ids"][0],
-            "activity_id": activity["code"],
+            "subgroup": subgroup_ids[0] if subgroup_ids else "",
+            "activity_id": activity.get("code", ""),
             "day": day,
             "period": assigned_periods,
             "room": room,
             "teacher": teacher,
-            "duration": activity["duration"],
-            "subject": activity["subject"]
+            "duration": duration,
+            "subject": activity.get("subject", "")
         })
         
-        used_periods.update([p["_id"] for p in assigned_periods])
+        used_periods.update([p.get("_id", "") for p in assigned_periods])
     
     return solution
 
@@ -156,5 +167,42 @@ def generate_co():
         update_pheromone([sol[0] for sol in all_solutions], best_solution)
         print(f"Iteration {iteration + 1}: Best Score = {best_score}")
 
-    return best_solution
+    formatted_solution = []
+    for activity in best_solution:
+        if not activity:
+            continue
+            
+        day_obj = activity.get("day", {})
+        period_objs = activity.get("period", [])
+        room_obj = activity.get("room", {})
+        
+        formatted_solution.append({
+            "activity": activity.get("activity_id", ""),
+            "day": {
+                "name": day_obj.get("name", ""),
+                "code": day_obj.get("code", ""),
+                "order": day_obj.get("order", 0),
+                "long_name": day_obj.get("long_name", "")
+            },
+            "period": [{
+                "name": p.get("name", ""),
+                "start_time": p.get("start_time", ""),
+                "end_time": p.get("end_time", ""),
+                "order": p.get("order", 0),
+                "long_name": p.get("long_name", ""),
+                "is_interval": p.get("is_interval", False)
+            } for p in period_objs] if period_objs else [],
+            "room": {
+                "name": room_obj.get("name", ""),
+                "code": room_obj.get("code", ""),
+                "capacity": room_obj.get("capacity", 0),
+                "type": room_obj.get("type", "classroom")
+            },
+            "teacher": activity.get("teacher", ""),
+            "subgroup": activity.get("subgroup", ""),
+            "subject": activity.get("subject", ""),
+            "duration": activity.get("duration", 1),
+            "algorithm": "CO"  
+        })
 
+    return formatted_solution
