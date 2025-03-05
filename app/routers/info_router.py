@@ -56,7 +56,8 @@ async def add_days_of_operation(days: List[DayOfOperation], current_user: dict =
 
 
 @router.get("/days", response_model=List[DayOfOperation])
-async def get_days_of_operation(current_user: dict = Depends(get_admin_role)):
+async def get_days_of_operation():
+    # Removed the authentication dependency to allow all users to access this endpoint
     days = list(db["days_of_operation"].find())
     return days
 
