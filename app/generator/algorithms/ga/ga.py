@@ -4,24 +4,20 @@ import random
 import logging
 import os
 from datetime import datetime
-
-# Configure logging
+import logging # Configure logging
 def setup_logging():
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_filename = f"ga_execution_{timestamp}.log"
-    log_filepath = os.path.join(os.getcwd(), log_filename)
-    
+    # Remove file logging completely - only use console
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s [%(levelname)s] %(message)s',
         handlers=[
-            logging.FileHandler(log_filepath),
             logging.StreamHandler()
         ]
     )
     logging.info("Genetic Algorithm Execution Started")
     logging.info("-" * 50)
-    return log_filepath
+    # Return None instead of a log file path
+    return None
 
 days = []
 facilities = []

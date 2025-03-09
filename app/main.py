@@ -1,13 +1,30 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Response 
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 import uvicorn
 import logging
 import os
 import sys
+import asyncio
+import threading
+import queue
+import json 
+
+
 from logging.handlers import RotatingFileHandler
 from app.utils.database import test_connection
-from app.routers import space_routes
+from app.routers import space_routes 
 from app.routers import year_routes, info_router, module_routes, user_router, faculty_routes, timetable_routes, activity_routes
+
+log_queue = queue.Queue()
+
+class QueueHandler(logging.Handler):
+    def emit(self, record):
+        log_entry = self.format(record)
+        log_queue.put(log_entry)
+
+
 
 # Get the directory of the application
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -16,18 +33,17 @@ LOG_DIR = os.path.join(BASE_DIR, "logs")
 # Create logs directory if it doesn't exist 
 os.makedirs(LOG_DIR, exist_ok=True)
 
+
 # Configure logging
+queue_handler = QueueHandler()
+queue_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
     handlers=[
         logging.StreamHandler(),  # Log to console
-        RotatingFileHandler(
-            os.path.join(LOG_DIR, "app.log"), 
-            maxBytes=10*1024*1024,  # 10MB
-            backupCount=5,  # Keep 5 backup files
-            encoding='utf-8'
-        )
+        queue_handler,  # Add queue handler for SSE
     ]
 )
 
@@ -95,6 +111,14 @@ async def startup_event():
     else:
         logger.error("Database connection failed. Application may not function correctly!")
 
+@app.get("/test-logs")
+async def test_logs():
+    logger = logging.getLogger(__name__)
+    logger.info("Test log 1")
+    logger.info("Test log 2")
+    logger.info("Test log 3")
+    return {"message": "Logs generated"}
+
 app.include_router(user_router.router, prefix="/api/v1/users", tags=["Users"])
 app.include_router(info_router.router, prefix="/api/v1/info", tags=["Info"])
 app.include_router(faculty_routes.router, prefix="/api/v1/faculty", tags=["Faculty"])
@@ -107,6 +131,25 @@ app.include_router(activity_routes.router, prefix="/api/v1/activity", tags=["Act
 @app.get("/")
 async def root():
     return {"message": "Welcome to the TimeTableWhiz"} 
+
+# SSE generator function
+async def event_generator():
+    while True:
+        if not log_queue.empty():
+            log_entry = log_queue.get()
+            yield f"data: {json.dumps({'message': log_entry})}\n\n"
+        await asyncio.sleep(0.1)
+
+@app.get("/api/v1/timetable/progress-stream")
+async def stream_progress(response: Response):
+    response.headers["Content-Type"] = "text/event-stream"
+    response.headers["Cache-Control"] = "no-cache"
+    response.headers["Connection"] = "keep-alive"
+    
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream"
+    )
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
