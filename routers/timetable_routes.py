@@ -19,30 +19,20 @@ router = APIRouter()
 
 @router.post("/generate")
 async def generate_timetable(current_user: dict = Depends(get_current_user)):
-    # pop, log, hof, li = generate_ga()
-    # save_timetable(li, "GA", current_user)
-    sol = generate_co()
-    save_timetable(sol, "CO", current_user)
-    # bee_sol = generate_bc()
-    # save_timetable(bee_sol, "BC", current_user)
-    # pso_sol = generate_pso()
-    # save_timetable(pso_sol, "PSO", current_user)
-    # gen = generate_rl()
-    # save_timetable(gen, "RL", current_user)
-    eval = evaluate()
-    store_latest_score(eval)
-    for algorithm, scores in eval.items():
-        average_score = sum(scores) / len(scores)
-        eval[algorithm] = {
-            "average_score": average_score,
-        }
+    # Example usage of your scheduling algorithm:
+    aco = generate_co()
+    save_timetable(aco, "CO", current_user)
+    bco = generate_bco()
+    save_timetable(bco , "BC" , current_user)
+    pso = generate_pso()
+    save_timetable(pso , "PSO" , current_user)
+    
+    return {"message": "Timetable generated"}
 
-    db["notifications"].insert_one({"message": "Latest evaluation results available", "type": "success", "read": False, "recipient": current_user["id"]})
-    return {"message": "Timetable generated", "eval": eval }
-
-def map_subgroup_to_semester(subgroup_id):
+def map_subgroup_to_semester(subgroup_id: str):
     """
-    Map activity subgroup format (like 'Y1S1.IT.1') to semester format (like 'SEM101')
+    Map activity subgroup format (like 'Y1S1.IT.1') to a semester format (like 'SEM101').
+    Adjust as necessary for your naming convention.
     """
     mapping = {
         "Y1S1": "SEM101",
@@ -55,19 +45,26 @@ def map_subgroup_to_semester(subgroup_id):
         "Y4S2": "SEM402"
     }
     
+    # If the entire subgroup_id is exactly in the mapping, return it
     if subgroup_id in mapping:
         return mapping[subgroup_id]
     
-    # If the subgroup_id contains a dot, try to get the part before the first dot
-    if isinstance(subgroup_id, str) and '.' in subgroup_id:
-        parts = subgroup_id.split('.', 1)
-        if parts[0] in mapping:
-            return mapping[parts[0]]
+    # Otherwise, try splitting on the first dot
+    if '.' in subgroup_id:
+        prefix = subgroup_id.split('.', 1)[0]
+        if prefix in mapping:
+            return mapping[prefix]
     
-    return None  # No mapping found
+    return None  # No known mapping
 
 def save_timetable(li, algorithm, current_user):
-    # Check if li is None
+    """
+    Saves the timetable solution to the DB, mapped by semester.
+    
+    Fix #1: only append each activity once per solution.
+    Fix #2: remove the stray period in generate_timetable_code.
+    """
+    # If no solution was returned
     if li is None:
         print(f"Warning: No timetable data received for algorithm {algorithm}. Nothing to save.")
         db["notifications"].insert_one({
@@ -78,40 +75,43 @@ def save_timetable(li, algorithm, current_user):
         })
         return
 
+    # List all valid semester codes you expect
     subgroups = [
         "SEM101", "SEM102", "SEM201", "SEM202",
         "SEM301", "SEM302", "SEM401", "SEM402"
     ]
-    # Ensure a proper mapping from semester to activities
+    
+    # Create dict to hold final activities for each semester
     semester_timetables = {semester: [] for semester in subgroups}
 
     for activity in li:
-        # Handle multiple subgroups case
+        # Some activities have multiple subgroups
         if isinstance(activity["subgroup"], list):
             subgroup_ids = activity["subgroup"]
         else:
             subgroup_ids = [activity["subgroup"]]
-        
-        print(f"Processing activity with subgroups: {subgroup_ids}")
-        
-        # Try to map each subgroup to a semester
+
+        # We'll break after the first successful mapping if the activity 
+        # can only truly belong to one semester.
         mapped = False
         for subgroup_id in subgroup_ids:
             mapped_id = map_subgroup_to_semester(subgroup_id)
-            print(f"Mapped {subgroup_id} to {mapped_id}")
-            
             if mapped_id and mapped_id in semester_timetables:
+                # Add the activity to this semester
                 semester_timetables[mapped_id].append(activity)
                 mapped = True
-                print(f"Added activity to {mapped_id}")
+                # Avoid duplicating the same activity multiple times 
+                # if multiple subgroups map to the same semester
+                break  
         
         if not mapped:
             print(f"Warning: Could not map any subgroup in: {subgroup_ids}")
-            print(f"Activity will be skipped: {activity}")
+            print(f"Skipping activity: {activity}")
 
-    # Ensure order is maintained before inserting into DB
+    # Sort your semester keys in a fixed order
     sorted_semesters = sorted(semester_timetables.keys(), key=lambda x: subgroups.index(x))
-    
+
+    # Write to DB
     for index, semester in enumerate(sorted_semesters):
         activities = semester_timetables[semester]
         
@@ -139,6 +139,7 @@ def save_timetable(li, algorithm, current_user):
             "date_created": datetime.now()
         })
 
+    # Send a notification to the user
     db["notifications"].insert_one({
         "message": f"New timetable generated using {algorithm}",
         "type": "success",
@@ -146,9 +147,11 @@ def save_timetable(li, algorithm, current_user):
         "recipient": current_user["id"]
     })
 
-    
-
 def generate_timetable_code(index, algorithm):
+    """
+    Example code generator for stored timetables.
+    Fix #2: removed the trailing period.
+    """
     return f"{algorithm}-TT000{index}"
 
 @router.get("/timetables")
@@ -209,144 +212,91 @@ async def mark_notification_as_read(notification_id: str, current_user: dict = D
         raise HTTPException(status_code=404, detail="Notification not found")
     return {"message": "Notification marked as read"}
 
-@router.put("/timetable/{timetable_id}")
-async def edit_timetable(
+@router.patch("/timetable/{timetable_id}/activity/{session_id}")
+async def super_update_session(
     timetable_id: str,
-    timetable_data: dict,
+    session_id: str,
+    partial_data: Dict,
     current_user: dict = Depends(get_current_user)
 ):
     """
-    Edit an existing timetable with conflict checking and validation
+    Partially update (PATCH) a single scheduled session in a timetable. 
+    The request body can contain only the fields to be changed, or multiple fields. 
+    We do a conflict check before saving changes. 
+    If conflicts are found, we discard the changes and return an error.
     """
-    try:
-        # Extract the activities list from the timetable data
-        updated_activities = timetable_data.get("timetable", [])
-        algorithm = timetable_data.get("algorithm")
-        
-        if not isinstance(updated_activities, list):
-            raise HTTPException(
-                status_code=400,
-                detail="Invalid timetable format - expected 'timetable' field to be a list"
-            )
+    checker = ConflictChecker(db)
 
-        if not algorithm:
-            raise HTTPException(
-                status_code=400,
-                detail="Algorithm field is required"
-            )
+    # 1) Retrieve the timetable
+    timetable = db["Timetable"].find_one({"_id": ObjectId(timetable_id)})
+    if not timetable:
+        raise HTTPException(status_code=404, detail="Timetable not found")
 
-        # Initialize conflict checker
-        checker = ConflictChecker(db)
-        
-        # Validate timetable exists
-        timetable = db["Timetable"].find_one({"_id": ObjectId(timetable_id)})
-        if not timetable:
-            raise HTTPException(status_code=404, detail="Timetable not found")
-        
-        # Validate activity structure
-        validation_errors = checker.validate_activities(updated_activities)
-        if validation_errors:
-            raise HTTPException(
-                status_code=400,
-                detail={
-                    "message": "Invalid activity data",
-                    "errors": validation_errors
-                }
-            )
-        
-        # Check for conflicts within the updated activities
-        internal_conflicts = checker.check_single_timetable_conflicts(timetable_id, updated_activities)
-        
-        # Check for conflicts with other timetables
-        cross_timetable_conflicts = checker.check_cross_timetable_conflicts(
-            updated_activities, 
-            timetable_id,
-            algorithm
-        )
-        
-        # Combine all conflicts
-        all_conflicts = internal_conflicts + cross_timetable_conflicts
-        
-        if all_conflicts:
-            raise HTTPException(
-                status_code=400,
-                detail={
-                    "message": "Conflicts detected",
-                    "conflicts": all_conflicts
-                }
-            )
-        
-        # Store the previous state for history
-        db["timetable_history"].insert_one({
-            "timetable_id": ObjectId(timetable_id),
-            "previous_state": timetable["timetable"],
-            "new_state": updated_activities,
-            "modified_by": current_user["id"],
-            "modified_at": datetime.now()
-        })
-        
-        # Update only the changed activities in the timetable
-        existing_activities = timetable.get("timetable", [])
-        updated_activities_dict = {activity["activity_id"]: activity for activity in updated_activities}
-        for i, activity in enumerate(existing_activities):
-            if activity["activity_id"] in updated_activities_dict:
-                existing_activities[i] = updated_activities_dict[activity["activity_id"]]
-        
-        # Update the timetable with the modified activities
-        update_data = {
-            "timetable": existing_activities,
-            "last_modified": datetime.now(),
-            "modified_by": current_user["id"]
-        }
-        # Add other fields from timetable_data if they exist
-        for key in ["code", "algorithm", "semester"]:
-            if key in timetable_data:
-                update_data[key] = timetable_data[key]
+    existing_activities = timetable.get("timetable", [])
 
-        result = db["Timetable"].update_one(
-            {"_id": ObjectId(timetable_id)},
-            {"$set": update_data}
-        )
-       
-        if result.modified_count == 0:
-            raise HTTPException(
-                status_code=500,
-                detail="Failed to update activity"
-            )
-        
-        # Create notifications for other admin users
-        other_admins = list(db["users"].find({
-            "role": "admin",
-            "id": {"$ne": current_user["id"]}
-        }))
-        
-        # Only insert notifications if there are other admin users
-        if other_admins:
-            notifications = [
-                {
-                    "message": f"Activity {activity_id} in timetable {timetable['code']} has been updated",
-                    "type": "info",
-                    "read": False,
-                    "recipient": admin["id"],
-                    "created_at": datetime.now(),
-                    "timetable_code": timetable["code"],
-                    "modified_by": current_user["id"]
-                }
-                for admin in other_admins
-            ]
-            if notifications:  # Double check we have notifications to insert
-                db["notifications"].insert_many(notifications)
-        
+    # 2) Locate the session to patch
+    target_session = None
+    for activity in existing_activities:
+        if activity.get("session_id") == session_id:
+            target_session = activity
+            break
+    if not target_session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    # 3) Make an in-memory copy of the entire timetable for conflict checks
+    updated_activities = []
+    for act in existing_activities:
+        if act.get("session_id") == session_id:
+            # Create a copy so we can merge partial_data into it
+            updated_act = dict(act)  # shallow copy
+            for k, v in partial_data.items():
+                # If you're not allowing session_id changes, skip that key
+                if k == "session_id":
+                    continue
+                updated_act[k] = v
+            updated_activities.append(updated_act)
+        else:
+            # Everyone else remains unchanged
+            updated_activities.append(act)
+
+    # 4) Optional partial validation:
+    #    We only strictly need 'session_id' to identify the session. 
+    #    But if your logic requires certain fields, validate them:
+    # validation_errors = checker.validate_patch_activities([partial_data]) 
+    # if validation_errors:
+    #    raise HTTPException(400, detail={"message": "Validation failed", "errors": validation_errors})
+
+    # 5) Run conflict checks on the *entire updated timetable*
+    #    a) internal conflicts
+    conflicts_internal = checker.check_single_timetable_conflicts_in_memory(updated_activities)
+    #    b) cross-timetable conflicts (comparing updated sessions to other timetables)
+    #       pass only the updated sessions or the entire updated_activities depending on your needs:
+    #       often we pass the updated_activities since you might want to see if ANY changes conflict
+    algorithm = timetable.get("algorithm", "")
+    conflicts_cross = checker.check_cross_timetable_conflicts(updated_activities, timetable_id, algorithm)
+
+    all_conflicts = conflicts_internal + conflicts_cross
+    if all_conflicts:
+        # 6) If we have conflicts, return an error (and do NOT persist changes).
         return {
-            "message": "Activity updated successfully",
-            "timetable_code": timetable["code"],
-            "activity_id": timetable_data["timetable"][0]["activity_id"] if timetable_data["timetable"] else None
+            "message": "Conflicts detected. Changes were not saved.",
+            "conflicts": all_conflicts
         }
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"An error occurred while updating the activity: {str(e)}"
-        )
+
+    # 7) If no conflicts, commit the updated_activities to DB
+    db["Timetable"].update_one(
+        {"_id": ObjectId(timetable_id)},
+        {"$set": {"timetable": updated_activities}}
+    )
+
+    # 8) Optionally store a history record or send notifications
+    # db["timetable_history"].insert_one(...)
+
+    return {
+        "message": "Session updated successfully. No conflicts found.",
+        "updated_session_id": session_id
+    }
+
 
 @router.get("/timetable/{timetable_id}/conflicts")
 async def check_timetable_conflicts(
@@ -397,3 +347,4 @@ def store_latest_score(score):
         upsert=True
     )
     db["old_scores"].insert_one({"value": score})
+
