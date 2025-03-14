@@ -121,19 +121,24 @@ async def register_user(user: UserCreate):
 @router.post("/login", response_model=dict)
 async def login_user(credentials: LoginModel):
     try:
-        print(f"Login attempt for username: {credentials.username}")
+        identifier = credentials.username  # This could be either username or ID
+        print(f"Login attempt with identifier: {identifier}")
+        
         # Try to find by username first
-        user = db["Users"].find_one({"username": credentials.username})
+        user = db["Users"].find_one({"username": identifier})
         
         # If not found, try to find by ID
         if not user:
-            print(f"User not found by username, trying ID: {credentials.username}")
-            user = db["Users"].find_one({"id": credentials.username})
+            print(f"User not found by username, trying ID: {identifier}")
+            user = db["Users"].find_one({"id": identifier})
             
         if not user:
-            print(f"Login failed: User not found by username or ID: {credentials.username}")
+            print(f"Login failed: User not found by username or ID: {identifier}")
             raise HTTPException(status_code=401, detail="Invalid username or password")
-            
+        
+        # For debugging
+        print(f"Found user: {user['username']} with ID: {user['id']}")
+        
         if not verify_password(credentials.password, user["hashed_password"]):
             print(f"Login failed: Invalid password for user: {user['username']}")
             raise HTTPException(status_code=401, detail="Invalid username or password")
@@ -355,3 +360,5 @@ async def check_id_exists(user_id: str):
     """
     existing_user = db["Users"].find_one({"id": user_id})
     return {"exists": existing_user is not None}
+
+
