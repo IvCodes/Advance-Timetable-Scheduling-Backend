@@ -16,12 +16,14 @@ class User(BaseModel):
     target_hours: Optional[int] = 0
     year: Optional[int] = None
     subgroup: Optional[str] = None
+    year_group: Optional[str] = None
+    specialization : Optional[str] = None
+    attend_days: Optional[str] = None  # Changed field name
 
-
-    @field_validator("id")
+    @validator("id")
     def validate_id(cls, v, values):
-        if values.get("role") == "student" and not re.match(r"^ST\d{7}$", v):
-            raise ValueError("Student ID must follow the format ST0000001")
+        if values.get("role") == "student" and not re.match(r"^IT\d{7}$", v):
+            raise ValueError("Student ID must follow the format IT0000001")
         if values.get("role") == "faculty" and not re.match(r"^FA\d{7}$", v):
             raise ValueError("Faculty ID must follow the format FA0000001")
         if values.get("role") == "admin" and not re.match(r"^AD\d{7}$", v):
@@ -35,11 +37,11 @@ class User(BaseModel):
         return v
     
 
-    model_config = {
-        "populate_by_name": True,
-        "json_schema_extra": {
+    class Config:
+        allow_population_by_field_name = True
+        schema_extra = {
             "example": {
-                "id": "ST0000001",
+                "id": "IT0000001",
                 "first_name": "Jane",
                 "last_name": "Doe",
                 "username": "janedoe",
@@ -49,9 +51,11 @@ class User(BaseModel):
                 "role": "student",
                 "year": 1,
                 "subgroup": "Jan intake",
+                "year_group" "Y2S2.1"
+                "specialization" : "SE",
+                "attend_days": "weekday"  # Example value
             }
         }
-    }
 
 
 class UserCreate(BaseModel):
@@ -65,13 +69,15 @@ class UserCreate(BaseModel):
     role: str
     year: Optional[int] = None  
     subgroup: Optional[str] = None
+    year_group: Optional[str] = None
     faculty: Optional[str] = None
-
+    specialization : Optional[str] = None
+    attend_days: Optional[str] = None  # Changed field name
 
     @validator("id")
     def validate_id(cls, v, values):
-        if values.get("role") == "student" and not re.match(r"^ST\d{7}$", v):
-            raise ValueError("Student ID must follow the format ST0000001")
+        if values.get("role") == "student" and not re.match(r"^IT\d{7}$", v):
+            raise ValueError("Student ID must follow the format IT0000001")
         if values.get("role") == "faculty" and not re.match(r"^FA\d{7}$", v):
             raise ValueError("Faculty ID must follow the format FA0000001")
         if values.get("role") == "admin" and not re.match(r"^AD\d{7}$", v):
@@ -82,3 +88,5 @@ class UserCreate(BaseModel):
 class LoginModel(BaseModel):
     id: str
     password: str
+
+
