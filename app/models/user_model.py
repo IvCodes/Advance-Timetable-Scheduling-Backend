@@ -23,18 +23,10 @@ class User(MongoBaseModel):
     specialization : Optional[str] = None
     attend_days: Optional[str] = None  # Changed field name
 
-<<<<<<< HEAD:models/user_model.py
     @validator("id")
     def validate_id(cls, v, values):
         if values.get("role") == "student" and not re.match(r"^IT\d{7}$", v):
             raise ValueError("Student ID must follow the format IT0000001")
-=======
-    @field_validator("id")
-    def validate_id(cls, v, info):
-        values = info.data
-        if values.get("role") == "student" and not re.match(r"^ST\d{7}$", v):
-            raise ValueError("Student ID must follow the format ST0000001")
->>>>>>> origin/main:app/models/user_model.py
         if values.get("role") == "faculty" and not re.match(r"^FA\d{7}$", v):
             raise ValueError("Faculty ID must follow the format FA0000001")
         if values.get("role") == "admin" and not re.match(r"^AD\d{7}$", v):
@@ -86,18 +78,10 @@ class UserCreate(BaseModel):
     specialization : Optional[str] = None
     attend_days: Optional[str] = None  # Changed field name
 
-<<<<<<< HEAD:models/user_model.py
     @validator("id")
     def validate_id(cls, v, values):
         if values.get("role") == "student" and not re.match(r"^IT\d{7}$", v):
             raise ValueError("Student ID must follow the format IT0000001")
-=======
-    @field_validator("id")
-    def validate_id(cls, v, info):
-        values = info.data
-        if values.get("role") == "student" and not re.match(r"^ST\d{7}$", v):
-            raise ValueError("Student ID must follow the format ST0000001")
->>>>>>> origin/main:app/models/user_model.py
         if values.get("role") == "faculty" and not re.match(r"^FA\d{7}$", v):
             raise ValueError("Faculty ID must follow the format FA0000001")
         if values.get("role") == "admin" and not re.match(r"^AD\d{7}$", v):
@@ -124,12 +108,6 @@ class UserCreate(BaseModel):
     
 
 class LoginModel(BaseModel):
-<<<<<<< HEAD:models/user_model.py
-    id: str
-    password: str
-
-
-=======
     username: str
     password: str
     
@@ -140,4 +118,3 @@ class LoginModel(BaseModel):
                 "password": "password123"
             }
         }
->>>>>>> origin/main:app/models/user_model.py
