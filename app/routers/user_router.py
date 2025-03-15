@@ -224,8 +224,7 @@ async def get_all_users(current_user: dict = Depends(get_current_user)):
 
 @router.get("/faculty", response_model=List[User])
 async def get_all_faculty(current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Permission denied")
+    # This endpoint is protected by get_current_user, which ensures only authenticated users can access the faculty list
     faculty_members = list(db["Users"].find({"role": "faculty"}))
     return faculty_members
 
@@ -360,5 +359,3 @@ async def check_id_exists(user_id: str):
     """
     existing_user = db["Users"].find_one({"id": user_id})
     return {"exists": existing_user is not None}
-
-

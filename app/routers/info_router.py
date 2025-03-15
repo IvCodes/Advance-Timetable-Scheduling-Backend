@@ -31,7 +31,6 @@ async def update_university_info(university_info: UniversityInfo, current_user: 
     )
     if result.matched_count == 0:
         db["university_info"].insert_one(university_info.model_dump())
-        # raise HTTPException(status_code=404, detail="University information not found.")
     return university_info
 
 
@@ -76,7 +75,7 @@ async def add_periods_of_operation(periods: List[PeriodOfOperation], current_use
 
 
 @router.get("/periods", response_model=List[PeriodOfOperation])
-async def get_periods_of_operation(current_user: dict = Depends(get_admin_role)):
+async def get_periods_of_operation(current_user: dict = Depends(get_current_user)):
     periods = list(db["periods_of_operation"].find())
     return periods
 

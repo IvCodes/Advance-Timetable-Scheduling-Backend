@@ -20,17 +20,11 @@ async def add_space(space: Space, current_user: dict = Depends(get_current_user)
 
 @router.get("/spaces", response_model=List[Space])
 async def get_all_spaces(current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Permission denied")
-
     spaces = list(db["Spaces"].find())
     return spaces
 
 @router.get("/spaces/{space_code}", response_model=Space)
 async def get_space(space_code: str, current_user: dict = Depends(get_current_user)):
-    if current_user["role"] != "admin":
-        raise HTTPException(status_code=403, detail="Permission denied")
-
     space = db["Spaces"].find_one({"code": space_code})
     if not space:
         raise HTTPException(status_code=404, detail="Space not found")

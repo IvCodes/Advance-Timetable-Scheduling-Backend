@@ -24,7 +24,7 @@ async def add_module(module: Module, current_user: dict = Depends(get_admin_role
 
 
 @router.get("/modules", response_model=List[Module])
-async def get_modules(current_user: dict = Depends(get_admin_role)):
+async def get_modules(current_user: dict = Depends(get_current_user)):
     modules = list(db["modules"].find())
     return modules
 
