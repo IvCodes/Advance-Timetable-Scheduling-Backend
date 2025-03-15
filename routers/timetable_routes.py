@@ -243,37 +243,22 @@ async def super_update_session(
     if not target_session:
         raise HTTPException(status_code=404, detail="Session not found")
 
-    # 3) Make an in-memory copy of the entire timetable for conflict checks
-    updated_activities = []
-    for act in existing_activities:
-        if act.get("session_id") == session_id:
-            # Create a copy so we can merge partial_data into it
-            updated_act = dict(act)  # shallow copy
-            for k, v in partial_data.items():
-                # If you're not allowing session_id changes, skip that key
-                if k == "session_id":
-                    continue
-                updated_act[k] = v
-            updated_activities.append(updated_act)
-        else:
-            # Everyone else remains unchanged
-            updated_activities.append(act)
+    # 3) Make an in-memory copy of the target session for conflict checks
+    updated_session = dict(target_session)  # shallow copy
+    for k, v in partial_data.items():
+        # If you're not allowing session_id changes, skip that key
+        if k == "session_id":
+            continue
+        updated_session[k] = v
 
-    # 4) Optional partial validation:
-    #    We only strictly need 'session_id' to identify the session. 
-    #    But if your logic requires certain fields, validate them:
-    # validation_errors = checker.validate_patch_activities([partial_data]) 
-    # if validation_errors:
-    #    raise HTTPException(400, detail={"message": "Validation failed", "errors": validation_errors})
+    
 
-    # 5) Run conflict checks on the *entire updated timetable*
+    # 5) Run conflict checks on the updated session
     #    a) internal conflicts
-    conflicts_internal = checker.check_single_timetable_conflicts_in_memory(updated_activities)
-    #    b) cross-timetable conflicts (comparing updated sessions to other timetables)
-    #       pass only the updated sessions or the entire updated_activities depending on your needs:
-    #       often we pass the updated_activities since you might want to see if ANY changes conflict
+    conflicts_internal = checker.check_single_timetable_conflicts(timetable_id, [updated_session], session_id)
+    #    b) cross-timetable conflicts (comparing updated session to other timetables)
     algorithm = timetable.get("algorithm", "")
-    conflicts_cross = checker.check_cross_timetable_conflicts(updated_activities, timetable_id, algorithm)
+    conflicts_cross = checker.check_cross_timetable_conflicts([updated_session], timetable_id, algorithm)
 
     all_conflicts = conflicts_internal + conflicts_cross
     if all_conflicts:
@@ -283,19 +268,24 @@ async def super_update_session(
             "conflicts": all_conflicts
         }
 
-    # 7) If no conflicts, commit the updated_activities to DB
+    # 7) If no conflicts, commit the updated session to DB
+    updated_activities = []
+    for act in existing_activities:
+        if act.get("session_id") == session_id:
+            updated_activities.append(updated_session)
+        else:
+            updated_activities.append(act)
+
     db["Timetable"].update_one(
         {"_id": ObjectId(timetable_id)},
         {"$set": {"timetable": updated_activities}}
     )
 
-    # 8) Optionally store a history record or send notifications
-    # db["timetable_history"].insert_one(...)
-
     return {
         "message": "Session updated successfully. No conflicts found.",
         "updated_session_id": session_id
     }
+
 
 
 @router.get("/timetable/{timetable_id}/conflicts")
