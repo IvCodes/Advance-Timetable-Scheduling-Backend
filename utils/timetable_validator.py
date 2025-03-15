@@ -5,15 +5,14 @@ class ConflictChecker:
     def __init__(self, db):
         self.db = db
 
-    def check_single_timetable_conflicts(self, timetable_id: str, updated_activities: List[Dict]) -> List[Dict]:
+    def check_single_timetable_conflicts(self, timetable_id: str, updated_activities: List[Dict], session_id: str) -> List[Dict]:
         """
-        Check for conflicts within a single timetable’s activities.
-        This function builds a new schedule by replacing any existing activities 
-        (matched by 'activity_id') with the updated ones and then checking each day 
-        for overlapping bookings in the same room, by the same teacher, or for the same subject.
+        Check for conflicts within the same timetable for the updated activities on their specific day(s).
+        Only checks the day(s) of the updated activities.
+        Uses session_id to avoid comparing an activity with itself.
         """
         conflicts = []
-        
+
         # Retrieve the current timetable from the database
         timetable = self.db["Timetable"].find_one({"_id": ObjectId(timetable_id)})
         if not timetable:
@@ -21,127 +20,155 @@ class ConflictChecker:
 
         # Get all existing activities from the timetable
         existing_activities = timetable.get("timetable", [])
-        
-        # Collect IDs of activities being updated
-        updated_ids = {activity.get("activity_id") for activity in updated_activities if activity.get("activity_id")}
-        
-        # Exclude activities that are being updated from the existing schedule
-        remaining_activities = [act for act in existing_activities if act.get("activity_id") not in updated_ids]
 
-        # Combine the remaining activities with the updated activities to simulate the new timetable
-        combined_activities = remaining_activities + updated_activities
-
-        # Group activities by day (using day name)
-        activities_by_day = {}
-        for activity in combined_activities:
+        # Group updated activities by day
+        updated_activities_by_day = {}
+        for activity in updated_activities:
             day = activity.get("day", {}).get("name", "")
-            if not day:
-                continue  # Skip if no day is provided
-            activities_by_day.setdefault(day, []).append(activity)
+            if day:  # Skip activities without a valid day
+                updated_activities_by_day.setdefault(day, []).append(activity)
 
         # Check each day for conflicts
-        for day, activities in activities_by_day.items():
-            # Dictionaries to track usage for each resource on that day
-            seen_rooms = {}
-            seen_teachers = {}
-            seen_subjects = {}
+        for day, updated_activities_on_day in updated_activities_by_day.items():
+            # Filter existing activities for the same day
+            existing_activities_on_day = [
+                act for act in existing_activities
+                if act.get("day", {}).get("name", "") == day
+                and act.get("session_id") != session_id  # Exclude activities from the current session
+            ]
 
-            for activity in activities:
-                periods = {p.get("name", "") for p in activity.get("period", [])}
-                room = activity.get("room", {}).get("code", "")
-                teacher = activity.get("teacher", "")
-                subject = activity.get("subject", "")
+            # Check updated activities against existing activities on the same day
+            for updated_activity in updated_activities_on_day:
+                updated_periods = {p.get("name", "") for p in updated_activity.get("period", [])}
+                updated_room = updated_activity.get("room", {}).get("code", "")
+                updated_teacher = updated_activity.get("teacher", "")
+
+                print(updated_teacher)
 
                 # --- Room conflict ---
-                if room:
-                    if room in seen_rooms:
-                        for prev in seen_rooms[room]:
-                            prev_periods = prev["periods"]
-                            # If the periods overlap, record a room conflict
-                            if periods.intersection(prev_periods):
-                                conflicts.append(self._create_conflict("room_conflict", room, prev["activity"], activity))
-                        seen_rooms[room].append({"activity": activity, "periods": periods})
-                    else:
-                        seen_rooms[room] = [{"activity": activity, "periods": periods}]
+                if updated_room:
+                    for existing_activity in existing_activities_on_day:
+                        existing_periods = {p.get("name", "") for p in existing_activity.get("period", [])}
+                        existing_room = existing_activity.get("room", {}).get("code", "")
+
+                        if updated_room == existing_room and updated_periods & existing_periods:
+                            conflicts.append(self._create_conflict(
+                                "room_conflict",
+                                updated_room,
+                                existing_activity,
+                                updated_activity
+                            ))
 
                 # --- Teacher conflict ---
-                if teacher:
-                    if teacher in seen_teachers:
-                        for prev in seen_teachers[teacher]:
-                            prev_periods = prev["periods"]
-                            if periods.intersection(prev_periods):
-                                conflicts.append(self._create_conflict("lecturer_conflict", teacher, prev["activity"], activity))
-                        seen_teachers[teacher].append({"activity": activity, "periods": periods})
-                    else:
-                        seen_teachers[teacher] = [{"activity": activity, "periods": periods}]
+                if updated_teacher:
+                    for existing_activity in existing_activities_on_day:
+                        existing_periods = {p.get("name", "") for p in existing_activity.get("period", [])}
+                        existing_teacher = existing_activity.get("teacher", "")
 
-                # --- Subject conflict ---
-                if subject:
-                    if subject in seen_subjects:
-                        for prev in seen_subjects[subject]:
-                            prev_periods = prev["periods"]
-                            if periods.intersection(prev_periods):
-                                conflicts.append(self._create_conflict("subject_conflict", subject, prev["activity"], activity))
-                        seen_subjects[subject].append({"activity": activity, "periods": periods})
-                    else:
-                        seen_subjects[subject] = [{"activity": activity, "periods": periods}]
+                        print(existing_teacher)
+
+                        if updated_teacher == existing_teacher and updated_periods & existing_periods:
+                            conflicts.append(self._create_conflict(
+                                "lecturer_conflict",
+                                updated_teacher,
+                                existing_activity,
+                                updated_activity
+                            ))
+
+            # Also check for conflicts between the updated activities themselves
+            for i, activity1 in enumerate(updated_activities_on_day):
+                for activity2 in updated_activities_on_day[i+1:]:  # Compare with activities not yet compared
+                    activity1_periods = {p.get("name", "") for p in activity1.get("period", [])}
+                    activity2_periods = {p.get("name", "") for p in activity2.get("period", [])}
+                    
+                    # Check for period overlap
+                    if activity1_periods & activity2_periods:
+                        # Room conflict between updated activities
+                        room1 = activity1.get("room", {}).get("code", "")
+                        room2 = activity2.get("room", {}).get("code", "")
+                        if room1 and room2 and room1 == room2:
+                            conflicts.append(self._create_conflict(
+                                "room_conflict",
+                                room1,
+                                activity1,
+                                activity2
+                            ))
+                        
+                        # Teacher conflict between updated activities
+                        teacher1 = activity1.get("teacher", "")
+                        teacher2 = activity2.get("teacher", "")
+                        if teacher1 and teacher2 and teacher1 == teacher2:
+                            conflicts.append(self._create_conflict(
+                                "lecturer_conflict",
+                                teacher1,
+                                activity1,
+                                activity2
+                            ))
 
         return conflicts
 
-    def check_cross_timetable_conflicts(self, activities: List[Dict], timetable_id: str, algorithm: str) -> List[Dict]:
+    def check_cross_timetable_conflicts(self, updated_activities: List[Dict], timetable_id: str, algorithm: str) -> List[Dict]:
         """
-        Check for conflicts between the provided activities and those in other timetables 
-        (of the same algorithm). Only room, teacher, and subject conflicts are checked.
+        Check for conflicts between the updated activities and activities in other timetables with the same algorithm.
+        Only checks for conflicts on the specific day(s) of the updated activities.
         """
         conflicts = []
-        days = {activity["day"]["name"] for activity in activities if activity.get("day", {}).get("name")}
-        
-        # Retrieve other timetables (exclude the current one) that have activities on these days
-        other_timetables = list(self.db["Timetable"].find({
+
+        # Get the days of the updated activities
+        updated_days = {activity.get("day", {}).get("name", "") for activity in updated_activities}
+
+        # Retrieve other timetables with the same algorithm and overlapping days
+        other_timetables = self.db["Timetable"].find({
             "_id": {"$ne": ObjectId(timetable_id)},
             "algorithm": algorithm,
-            "timetable.day.name": {"$in": list(days)}
-        }))
-        
-        all_other_activities = []
+            "timetable.day.name": {"$in": list(updated_days)}
+        })
+
+        # Collect all activities from other timetables on the same days as the updated activities
+        other_activities = []
         for tt in other_timetables:
             for act in tt.get("timetable", []):
-                if act.get("day", {}).get("name", "") in days:
-                    all_other_activities.append(act)
-        
-        for new_activity in activities:
-            new_day = new_activity["day"]["name"]
-            new_periods = {p["name"] for p in new_activity.get("period", [])}
-            new_room = new_activity.get("room", {}).get("code", "")
-            new_teacher = new_activity.get("teacher", "")
-            new_subject = new_activity.get("subject", "")
-            
-            for existing_activity in all_other_activities:
-                if new_day != existing_activity.get("day", {}).get("name", ""):
-                    continue
-                
-                existing_periods = {p["name"] for p in existing_activity.get("period", [])}
-                if not new_periods.intersection(existing_periods):
-                    continue
-                
+                if act.get("day", {}).get("name", "") in updated_days:
+                    other_activities.append(act)
+
+        # Check each updated activity against other activities on the same day
+        for updated_activity in updated_activities:
+            updated_day = updated_activity.get("day", {}).get("name", "")
+            updated_periods = {p.get("name", "") for p in updated_activity.get("period", [])}
+            updated_room = updated_activity.get("room", {}).get("code", "")
+            updated_teacher = updated_activity.get("teacher", "")
+
+            for other_activity in other_activities:
+                if other_activity.get("day", {}).get("name", "") != updated_day:
+                    continue  # Skip if not on the same day
+
+                other_periods = {p.get("name", "") for p in other_activity.get("period", [])}
+                other_room = other_activity.get("room", {}).get("code", "")
+                other_teacher = other_activity.get("teacher", "")
+
                 # --- Cross-timetable room conflict ---
-                if new_room and (new_room == existing_activity.get("room", {}).get("code", "")):
-                    conflicts.append(self._create_conflict("cross_timetable_room_conflict", new_room, new_activity, existing_activity))
-                
+                if updated_room and updated_room == other_room and updated_periods & other_periods:
+                    conflicts.append(self._create_conflict(
+                        "cross_timetable_room_conflict",
+                        updated_room,
+                        other_activity,
+                        updated_activity
+                    ))
+
                 # --- Cross-timetable teacher conflict ---
-                if new_teacher and (new_teacher == existing_activity.get("teacher", "")):
-                    conflicts.append(self._create_conflict("cross_timetable_lecturer_conflict", new_teacher, new_activity, existing_activity))
-                
-                # --- Cross-timetable subject conflict ---
-                if new_subject and (new_subject == existing_activity.get("subject", "")):
-                    conflicts.append(self._create_conflict("cross_timetable_subject_conflict", new_subject, new_activity, existing_activity))
-        
+                if updated_teacher and updated_teacher == other_teacher and updated_periods & other_periods:
+                    conflicts.append(self._create_conflict(
+                        "cross_timetable_lecturer_conflict",
+                        updated_teacher,
+                        other_activity,
+                        updated_activity
+                    ))
+
         return conflicts
 
     def validate_activities(self, activities: List[Dict]) -> List[str]:
         """
         Validate the structure and data of activities.
-        (Subgroup is omitted since it is not used for conflict checking.)
         """
         errors = []
         required_fields = {
@@ -153,80 +180,55 @@ class ConflictChecker:
             "duration": int,
             "subject": str
         }
-        
+
         for activity in activities:
             for field, field_type in required_fields.items():
                 if field not in activity:
                     errors.append(f"Missing required field: {field}")
                 elif not isinstance(activity[field], field_type):
                     errors.append(f"Invalid type for field {field}: expected {field_type.__name__}")
-            
+
             if "day" in activity and "name" not in activity["day"]:
                 errors.append("Missing day name in day field")
-            
+
             if "room" in activity and "code" not in activity["room"]:
                 errors.append("Missing room code in room field")
-            
+
             if "period" in activity:
                 if not activity["period"]:
                     errors.append("Period list cannot be empty")
                 for period in activity["period"]:
                     if "name" not in period:
                         errors.append("Missing period name in period field")
-        
+
         return errors
 
     def _create_conflict(self, conflict_type: str, entity: str, activity1: Dict, activity2: Dict) -> Dict:
         """
-        Helper function to create a detailed conflict entry with user‐friendly messages.
+        Helper function to create a detailed conflict entry with user-friendly messages.
         """
         conflict_descriptions = {
-            "room_conflict": (
-                f"Room '{entity}' is double-booked. It is scheduled for more than one activity at the same time."
-            ),
-            "lecturer_conflict": (
-                f"Lecturer '{entity}' is assigned overlapping classes. Please check the schedule to resolve this clash."
-            ),
-            "subject_conflict": (
-                f"Subject '{entity}' has concurrent sessions. Multiple sessions of the same subject should not overlap."
-            ),
-            "cross_timetable_room_conflict": (
-                f"Room '{entity}' is already booked in another timetable. This room is scheduled for different activities at the same time."
-            ),
-            "cross_timetable_lecturer_conflict": (
-                f"Lecturer '{entity}' is teaching in another timetable. They cannot be in two places at once."
-            ),
-            "cross_timetable_subject_conflict": (
-                f"Subject '{entity}' is already scheduled in another timetable at the same time."
-            )
+            "room_conflict": f"Room '{entity}' is double-booked.",
+            "lecturer_conflict": f"Lecturer '{entity}' has overlapping classes.",
+            "cross_timetable_room_conflict": f"Room '{entity}' is already booked in another timetable.",
+            "cross_timetable_lecturer_conflict": f"Lecturer '{entity}' is teaching in another timetable."
         }
 
-        # Determine the overlapping periods between the two activities
         overlapping_periods = list(
             {p.get("name", "") for p in activity1.get("period", [])}.intersection(
                 {p.get("name", "") for p in activity2.get("period", [])}
             )
         )
-    
-        day = activity1.get("day", {}).get("name", "Unknown day")
-        period_str = ", ".join(overlapping_periods) if overlapping_periods else "Unknown period(s)"
-        
-        base_description = conflict_descriptions.get(conflict_type, "Conflict detected")
-        
-        detailed_description = (
-            f"{base_description}"
-            # f"Day: {day}\n"
-            # f"Overlapping Period(s): {period_str}\n"
-            # "Conflicting activities:\n"
-            # f" - {activity1.get('subject', 'Unknown subject')} (Activity ID: {activity1.get('activity_id', 'N/A')})\n"
-            # f" - {activity2.get('subject', 'Unknown subject')} (Activity ID: {activity2.get('activity_id', 'N/A')})"
-        )
 
         return {
             "type": conflict_type,
-            "description": detailed_description,
-            # "activities": [activity1, activity2],
-            # "day": day,
-            # "periods": overlapping_periods,
-            # "entity": entity
+            "description": conflict_descriptions.get(conflict_type, "Conflict detected"),
+            "details": {
+                "day": activity1.get("day", {}).get("name", "Unknown day"),
+                "periods": overlapping_periods,
+                "activities": [
+                    {"subject": activity1.get("subject"), "activity_id": activity1.get("activity_id")},
+                    {"subject": activity2.get("subject"), "activity_id": activity2.get("activity_id")}
+                ]
+            }
         }
