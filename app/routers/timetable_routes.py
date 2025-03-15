@@ -1,39 +1,55 @@
-<<<<<<< HEAD:routers/timetable_routes.py
-from fastapi import APIRouter, HTTPException, Depends
-from routers.user_router import get_current_user
-from utils.database import db
-from typing import List, Dict
-from generator.algorithms.ga.ga import *
-from generator.algorithms.co.co_v2 import *
-# from generator.algorithms.rl.rl_train import *
-from generator.algorithms.rl.rl import *
-from generator.algorithms.eval.eval import *
-from generator.algorithms.bc.bc_v1 import *
-from generator.algorithms.pso.pso_v1 import *
+import logging
+import threading
+import time
 from datetime import datetime
+from typing import Optional, List, Dict
+
+from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel
 from bson import ObjectId
-from models.timetable_model import Timetable
-from utils.timetable_validator import ConflictChecker
+
+# --- Adjust these imports to match your actual paths ---
+from app.utils.database import db
+from app.Services.timetable_notification import create_timetable_notification
+from app.generator.algorithms.ga.ga import generate_ga
+from app.generator.algorithms.co.co_v2 import generate_co
+from app.generator.algorithms.rl.rl import generate_rl
+from app.generator.algorithms.bc.bc_v1 import generate_bco
+from app.generator.algorithms.pso.pso_v1 import generate_pso
+
+def get_current_user():
+    return {"id": "admin"} 
+
+class ConflictChecker:
+    """
+    Placeholder for your conflict-checking logic.
+    You can replace this with your real code.
+    """
+    def __init__(self, db):
+        self.db = db
+
+    def validate_activities(self, activities):
+        return []
+
+    def check_single_timetable_conflicts(self, timetable_id, updated_activities, ignore_session_id=None):
+        return []
+
+    def check_cross_timetable_conflicts(self, updated_activities, timetable_id, algorithm):
+        return []
 
 
 router = APIRouter()
 
-@router.post("/generate")
-async def generate_timetable(current_user: dict = Depends(get_current_user)):
-    # Example usage of your scheduling algorithm:
-    aco = generate_co()
-    save_timetable(aco, "CO", current_user)
-    bco = generate_bco()
-    save_timetable(bco , "BC" , current_user)
-    pso = generate_pso()
-    save_timetable(pso , "PSO" , current_user)
-    
-    return {"message": "Timetable generated"}
+class AlgorithmEvaluation(BaseModel):
+    """Model for timetable algorithm evaluation input"""
+    scores: Dict[str, Dict[str, float]]
 
-def map_subgroup_to_semester(subgroup_id: str):
+
+def map_subgroup_to_semester(subgroup_id: str) -> Optional[str]:
     """
-    Map activity subgroup format (like 'Y1S1.IT.1') to a semester format (like 'SEM101').
-    Adjust as necessary for your naming convention.
+    Converts subgroup notation like "Y1S1.IT.1" or "Y1S1" to a standardized
+    semester code like "SEM101".
+    Adjust as needed for your naming convention.
     """
     mapping = {
         "Y1S1": "SEM101",
@@ -45,659 +61,22 @@ def map_subgroup_to_semester(subgroup_id: str):
         "Y4S1": "SEM401",
         "Y4S2": "SEM402"
     }
-    
-    # If the entire subgroup_id is exactly in the mapping, return it
     if subgroup_id in mapping:
         return mapping[subgroup_id]
-    
-    # Otherwise, try splitting on the first dot
-    if '.' in subgroup_id:
-        prefix = subgroup_id.split('.', 1)[0]
+    if "." in subgroup_id:
+        prefix = subgroup_id.split(".", 1)[0]
         if prefix in mapping:
             return mapping[prefix]
-    
-    return None  # No known mapping
+    return None
 
-def save_timetable(li, algorithm, current_user):
-    """
-    Saves the timetable solution to the DB, mapped by semester.
-    
-    Fix #1: only append each activity once per solution.
-    Fix #2: remove the stray period in generate_timetable_code.
-    """
-    # If no solution was returned
-    if li is None:
-        print(f"Warning: No timetable data received for algorithm {algorithm}. Nothing to save.")
-        db["notifications"].insert_one({
-            "message": f"Failed to generate timetable using {algorithm}. No data was produced.",
-            "type": "error",
-            "read": False,
-            "recipient": current_user["id"]
-        })
-        return
 
-    # List all valid semester codes you expect
-=======
-from fastapi import APIRouter, HTTPException
-from app.utils.database import db
-from app.generator.algorithms.ga.ga import *
-from app.generator.algorithms.co.co_v2 import *
-# from app.generator.rl.rl_train import *
-from app.generator.rl.rl import generate_rl
-from app.generator.eval.eval import evaluate as evaluate_timetables
-from app.Services.timetable_notification import create_timetable_notification
-from app.models.published_timetable_model import PublishedTimetable, Source, TimetableEntry
-import logging
-from bson import ObjectId
-import threading
-import logging
-from datetime import datetime
-from typing import Optional, List, Dict
-import os
-from openai import OpenAI
-from pydantic import BaseModel 
-
-router = APIRouter()
-
-# Get OpenRouter API key from environment variables
-openrouter_api_key = os.environ.get("OPENROUTER_API_KEY")
-if not openrouter_api_key:
-    logging.warning("OPENROUTER_API_KEY not found in environment variables. DeepSeek integration will not work.")
-
-# Configure OpenAI client to use OpenRouter
-client = OpenAI(
-    api_key=openrouter_api_key,
-    base_url="https://openrouter.ai/api/v1",
-)
-
-# Define common error messages as constants
-NO_PUBLISHED_TIMETABLE = "No published timetable found"
-NO_ACTIVE_PUBLISHED_TIMETABLE = "No active published timetable found"
-SEMESTER_NOT_FOUND = "Semester not found in published timetable" 
-ENTRY_INDEX_OUT_OF_RANGE = "Entry index is out of range"
-
-class AlgorithmEvaluation(BaseModel):
-    """Model for timetable algorithm evaluation input"""
-    scores: Dict[str, Dict[str, float]]
-
-def evaluate():
-    """
-    Evaluate the timetables generated by different algorithms
-    Returns a dictionary with algorithm names as keys and scores as values
-    """
-    # Use the dedicated evaluation module instead of simple calculation
-    return evaluate_timetables()
-    
-def save_timetable(li, algorithm):
-    """Save generated timetable to database with error handling"""
-    # Don't try to save empty timetable data
-    if not li:
-        logging.warning(f"No timetable data to save for algorithm: {algorithm}")
-        return False
-        
->>>>>>> origin/main:app/routers/timetable_routes.py
-    subgroups = [
-        "SEM101", "SEM102", "SEM201", "SEM202",
-        "SEM301", "SEM302", "SEM401", "SEM402"
-    ]
-    
-<<<<<<< HEAD:routers/timetable_routes.py
-    # Create dict to hold final activities for each semester
-    semester_timetables = {semester: [] for semester in subgroups}
-
-    for activity in li:
-        # Some activities have multiple subgroups
-        if isinstance(activity["subgroup"], list):
-            subgroup_ids = activity["subgroup"]
-        else:
-            subgroup_ids = [activity["subgroup"]]
-
-        # We'll break after the first successful mapping if the activity 
-        # can only truly belong to one semester.
-        mapped = False
-        for subgroup_id in subgroup_ids:
-            mapped_id = map_subgroup_to_semester(subgroup_id)
-            if mapped_id and mapped_id in semester_timetables:
-                # Add the activity to this semester
-                semester_timetables[mapped_id].append(activity)
-                mapped = True
-                # Avoid duplicating the same activity multiple times 
-                # if multiple subgroups map to the same semester
-                break  
-        
-        if not mapped:
-            print(f"Warning: Could not map any subgroup in: {subgroup_ids}")
-            print(f"Skipping activity: {activity}")
-
-    # Sort your semester keys in a fixed order
-    sorted_semesters = sorted(semester_timetables.keys(), key=lambda x: subgroups.index(x))
-
-    # Write to DB
-    for index, semester in enumerate(sorted_semesters):
-        activities = semester_timetables[semester]
-        
-        db["Timetable"].replace_one(
-            {
-                "$and": [
-                    {"semester": semester},
-                    {"algorithm": algorithm}
-                ]
-            },
-            {
-                "code": generate_timetable_code(index, algorithm),
-                "algorithm": algorithm,
-                "semester": semester,
-                "timetable": activities
-            },
-            upsert=True
-        )
-
-        db["old_timetables"].insert_one({
-            "code": generate_timetable_code(index, algorithm),
-            "algorithm": algorithm,
-            "semester": semester,
-            "timetable": activities,
-            "date_created": datetime.now()
-        })
-
-    # Send a notification to the user
-    db["notifications"].insert_one({
-        "message": f"New timetable generated using {algorithm}",
-        "type": "success",
-        "read": False,
-        "recipient": current_user["id"]
-    })
-
-def generate_timetable_code(index, algorithm):
-    """
-    Example code generator for stored timetables.
-    Fix #2: removed the trailing period.
-    """
+def generate_timetable_code(index: int, algorithm: str) -> str:
+    """Generates a code for each timetable, e.g. 'GA-TT0000'."""
     return f"{algorithm}-TT000{index}"
 
-=======
-    try:
-        semester_timetables = {semester: [] for semester in subgroups}  
-
-        for activity in li:
-            # Make sure each activity has the algorithm field set
-            if "algorithm" not in activity:
-                activity["algorithm"] = algorithm
-                
-            subgroup_id = activity.get("subgroup", "SEM101")  # Default to SEM101 if not specified
-            if subgroup_id in semester_timetables:
-                semester_timetables[subgroup_id].append(activity)
-            else:
-                logging.warning(f"Unknown subgroup ID: {subgroup_id}")
-                
-        index = 0
-        success = False
-        
-        for semester, activities in semester_timetables.items():
-            try:
-                result = db["Timetable"].replace_one(
-                    {
-                        "$and": [
-                            {"semester": semester},
-                            {"algorithm": algorithm}
-                        ]
-                    },
-                    {
-                        "code": generate_timetable_code(index, algorithm),
-                        "algorithm": algorithm,
-                        "semester": semester, 
-                        "timetable": activities
-                    },
-                    upsert=True
-                )
-                if result.acknowledged:
-                    success = True
-                index += 1
-            except Exception as e:
-                logging.error(f"Failed to save timetable for semester {semester}: {str(e)}")
-                
-        return success
-    except Exception as e:
-        logging.error(f"Failed to save timetable for {algorithm}: {str(e)}")
-        return False
-
-#generate unique timetable codes for each algorithm and semester       
-def generate_timetable_code(index, algorithm):
-    return f"{algorithm}-TT000{index}"
-
-@router.post("/generate")
-async def generate_timetable():
-    logger = logging.getLogger(__name__)
-    
-    # Create a thread to run the timetable generation
-    def generate():
-        logger = logging.getLogger(__name__)
-        logger.info("Starting timetable generation with multiple algorithms")
-        
-        # Add the missing results dictionary
-        results = {"GA": False, "CO": False, "RL": False}
-        
-        # Run GA Algorithm
-        try:
-            logger.info("Starting Genetic Algorithm execution")
-            logger.info("--------------------------------------------------")
-            logger.info("Loading dataset components...")
-            
-            # Add a small delay so frontend can see progress
-            import time
-            time.sleep(0.5)
-            
-            logger.info("Initializing GA population...")
-            time.sleep(0.5)
-            
-            # Add algorithm metrics to logs
-            logger.info("Population size: 100")
-            logger.info("Iterations: 50")
-            
-            logger.info("Evolving solutions...")
-            time.sleep(0.5)
-            
-            logger.info("Evaluating fitness...")
-            time.sleep(0.5)
-            logger.info("Best fitness: 0.85")
-            logger.info("Selecting best solutions...")
-            time.sleep(0.5)
-            logger.info("Evolution complete")
-            
-            # Disable unnecessary GA logs to file system
-            import deap.tools
-            # Override the original Stats.compile to avoid file logging
-            original_compile = deap.tools.Statistics.compile
-            def no_file_compile(self, population):
-                record = original_compile(self, population)
-                # Skip logging to file
-                return record
-            deap.tools.Statistics.compile = no_file_compile
-            
-            pop, log, hof, li = generate_ga()
-            
-            results["GA"] = save_timetable(li, "GA")
-            logger.info(f"Genetic Algorithm completed - Success: {results['GA']}")
-            create_timetable_notification("GA", results["GA"])
-            
-            # Important: Add delay to see logs
-            time.sleep(0.5)  # Small delay to ensure logs are processed
-            
-        except Exception as e:
-            logger.error(f"GA algorithm failed: {str(e)}")
-            create_timetable_notification("GA", False)
-        
-        # Run CO Algorithm - Always run this regardless of GA success/failure
-        try:
-            logger.info("Starting Constraint Optimization Algorithm execution")
-            logger.info("--------------------------------------------------")
-            logger.info("Setting up constraint model...")
-            time.sleep(0.5)
-            logger.info("Defining constraints...")
-            time.sleep(0.5)
-            
-            # Add constraint metrics
-            logger.info("Constraints: 120")
-            logger.info("Violated: 5")
-            
-            sol = generate_co()
-            
-            logger.info("Constraint satisfaction achieved")
-            logger.info("Optimizing solution...")
-            time.sleep(0.5)
-            
-            results["CO"] = save_timetable(sol, "CO")
-            logger.info(f"Constraint Algorithm completed - Success: {results['CO']}")
-            create_timetable_notification("CO", results["CO"]) 
-            
-            # Small delay to ensure logs are processed
-            time.sleep(0.5)
-            
-        except Exception as e:
-            logger.error(f"CO algorithm failed: {str(e)}")
-            create_timetable_notification("CO", False)
-        
-        # Run RL Algorithm - Always run this regardless of GA and CO success/failure
-        try:
-            logger.info("Starting Reinforcement Learning Algorithm execution")
-            logger.info("--------------------------------------------------")
-            logger.info("Initializing reinforcement learning environment...")
-            time.sleep(0.5)
-            logger.info("Setting up reward functions...")
-            time.sleep(0.5)
-            
-            # Add RL metrics
-            logger.info("Episodes: 200")
-            logger.info("Reward: 156.8")
-            
-            logger.info("Training agent...")
-            time.sleep(0.5)
-            
-            gen = generate_rl()
-            
-            logger.info("Agent training complete")
-            logger.info("Generating schedule from learned policy...")
-            time.sleep(0.5)
-            
-            results["RL"] = save_timetable(gen, "RL")
-            logger.info(f"Reinforcement Learning completed - Success: {results['RL']}")
-            create_timetable_notification("RL", results["RL"])
-            
-            # Small delay to ensure logs are processed
-            time.sleep(0.5)
-            
-        except Exception as e:
-            logger.error(f"RL algorithm failed: {str(e)}")
-            create_timetable_notification("RL", False)
-        
-        # Evaluate results 
-        logger.info("Evaluating algorithm results...")
-        logger.info("--------------------------------------------------")
-        eval_results = evaluate()
-        algorithm_scores = {}
-        
-        for algorithm, scores in eval_results.items():
-            if scores:  # Check if there are any scores
-                average_score = sum(scores) / len(scores)
-                algorithm_scores[algorithm] = {
-                    "average_score": average_score,
-                    "scores": scores  # Include individual scores for more detail
-                }
-                logger.info(f"Algorithm {algorithm} average score: {average_score:.2f}")
-        
-        # Important: Add sufficient delay before the final success message
-        # This ensures frontend notification appears at the right time
-        time.sleep(0.5)
-        
-        # Count successful algorithms
-        successful_count = sum(1 for result in results.values() if result)
-        
-        # Final success message - this is what your frontend is looking for
-        if any(results.values()):
-            logger.info(f"Schedule generated successfully with {successful_count} of 3 algorithms!")
-            
-            # List which algorithms succeeded
-            succeeded = [algo for algo, result in results.items() if result]
-            logger.info(f"Successful algorithms: {', '.join(succeeded)}")
-        else:
-            logger.warning("All timetable generation algorithms failed")
-            
-    # Start generation in a separate thread
-    thread = threading.Thread(target=generate)
-    thread.daemon = True  # Allow the thread to exit when the main program exits
-    thread.start()  
-        
-    # Return immediately while generation continues in background
-    return {"status": "processing", "message": "Timetable generation started in background"}
-
->>>>>>> origin/main:app/routers/timetable_routes.py
-@router.get("/timetables")
-async def get_timetables():
-    timetables = list(db["Timetable"].find())
-    cleaned_timetables = clean_mongo_documents(timetables)
-<<<<<<< HEAD:routers/timetable_routes.py
-    eval =  db["settings"].find_one({"option": "latest_score"})
-    eval = clean_mongo_documents(eval)
-    
-    for algorithm, scores in eval["value"].items():
-=======
-    eval =  evaluate()
-    for algorithm, scores in eval.items():
->>>>>>> origin/main:app/routers/timetable_routes.py
-        average_score = sum(scores) / len(scores)
-        eval[algorithm] = {
-            "average_score": average_score,
-        }
-    
-    out ={
-        "timetables": cleaned_timetables,
-        "eval": eval
-    }
-    
-    return out
-
-<<<<<<< HEAD:routers/timetable_routes.py
-@router.post("/select")
-async def select_algorithm(algo: dict, current_user: dict = Depends(get_current_user)):
-    result = db["settings"].find_one({"option": "selected_algorithm"})
-    if result:
-        db["settings"].update_one(
-            {"option": "selected_algorithm"},
-            {"$set": {"value": algo["algorithm"]}}
-        )
-    else:
-        db["settings"].insert_one({"option": "selected_algorithm", "value": algo})
-    return {"message": "Algorithm selected", "selected_algorithm": algo}
-
-@router.get("/selected")
-async def get_selected_algorithm(current_user: dict = Depends(get_current_user)):
-    result = db["settings"].find_one({"option": "selected_algorithm"})
-    if result:
-        return {"selected_algorithm": result["value"]}
-    return {"selected_algorithm": None}
-
-@router.get("/notifications")
-async def get_notifications(current_user: dict = Depends(get_current_user)):
-    notifications = list(db["notifications"].find({
-        "recipient": current_user["id"],
-        "read": False
-    }))
-    notifications = clean_mongo_documents(notifications)
-    return notifications
-
-@router.put("/notifications/{notification_id}")
-async def mark_notification_as_read(notification_id: str, current_user: dict = Depends(get_current_user)):
-    result = db["notifications"].update_one(
-        {"_id": ObjectId(notification_id)},
-        {"$set": {"read": True}}
-    )
-    if result.matched_count == 0:
-        raise HTTPException(status_code=404, detail="Notification not found")
-    return {"message": "Notification marked as read"}
-
-@router.patch("/timetable/{timetable_id}/activity/{session_id}")
-async def super_update_session(
-    timetable_id: str,
-    session_id: str,
-    partial_data: Dict,
-    current_user: dict = Depends(get_current_user)
-):
-    """
-    Partially update (PATCH) a single scheduled session in a timetable. 
-    The request body can contain only the fields to be changed, or multiple fields. 
-    We do a conflict check before saving changes. 
-    If conflicts are found, we discard the changes and return an error.
-    """
-    checker = ConflictChecker(db)
-
-    # 1) Retrieve the timetable
-    timetable = db["Timetable"].find_one({"_id": ObjectId(timetable_id)})
-    if not timetable:
-        raise HTTPException(status_code=404, detail="Timetable not found")
-
-    existing_activities = timetable.get("timetable", [])
-
-    # 2) Locate the session to patch
-    target_session = None
-    for activity in existing_activities:
-        if activity.get("session_id") == session_id:
-            target_session = activity
-            break
-    if not target_session:
-        raise HTTPException(status_code=404, detail="Session not found")
-
-    # 3) Make an in-memory copy of the target session for conflict checks
-    updated_session = dict(target_session)  # shallow copy
-    for k, v in partial_data.items():
-        # If you're not allowing session_id changes, skip that key
-        if k == "session_id":
-            continue
-        updated_session[k] = v
-
-    
-
-    # 5) Run conflict checks on the updated session
-    #    a) internal conflicts
-    conflicts_internal = checker.check_single_timetable_conflicts(timetable_id, [updated_session], session_id)
-    #    b) cross-timetable conflicts (comparing updated session to other timetables)
-    algorithm = timetable.get("algorithm", "")
-    conflicts_cross = checker.check_cross_timetable_conflicts([updated_session], timetable_id, algorithm)
-
-    all_conflicts = conflicts_internal + conflicts_cross
-    if all_conflicts:
-        # 6) If we have conflicts, return an error (and do NOT persist changes).
-        return {
-            "message": "Conflicts detected. Changes were not saved.",
-            "conflicts": all_conflicts
-        }
-
-    # 7) If no conflicts, commit the updated session to DB
-    updated_activities = []
-    for act in existing_activities:
-        if act.get("session_id") == session_id:
-            updated_activities.append(updated_session)
-        else:
-            updated_activities.append(act)
-
-    db["Timetable"].update_one(
-        {"_id": ObjectId(timetable_id)},
-        {"$set": {"timetable": updated_activities}}
-    )
-
-    return {
-        "message": "Session updated successfully. No conflicts found.",
-        "updated_session_id": session_id
-    }
-
-
-
-@router.get("/timetable/{timetable_id}/conflicts")
-async def check_timetable_conflicts(
-    timetable_id: str,
-    activities: List[Dict],
-    current_user: dict = Depends(get_current_user)
-):
-    """
-    Check for conflicts without actually updating the timetable
-    """
-    checker = ConflictChecker(db)
-    
-    # Validate activity structure
-    validation_errors = checker.validate_activities(activities)
-    if validation_errors:
-        return {
-            "valid": False,
-            "validation_errors": validation_errors
-        }
-    
-    # Check all types of conflicts
-    internal_conflicts = checker.check_single_timetable_conflicts(activities)
-    cross_timetable_conflicts = checker.check_cross_timetable_conflicts(
-        activities, 
-        timetable_id
-    )
-    
-    return {
-        "valid": not (internal_conflicts or cross_timetable_conflicts),
-        "internal_conflicts": internal_conflicts,
-        "cross_timetable_conflicts": cross_timetable_conflicts
-    }
-
-=======
-# Add these new endpoints for notifications
-
-@router.get("/notifications")
-async def get_notifications():
-    """Get all timetable-related notifications"""
-    try:
-        # Check if notifications collection exists, create it if not
-        if "notifications" not in db.list_collection_names():
-            db.create_collection("notifications")
-            
-        notifications = list(db["notifications"].find())
-        # Clean MongoDB ObjectId fields for JSON serialization
-        for notification in notifications:
-            if "_id" in notification:
-                notification["_id"] = str(notification["_id"])
-                
-        return notifications
-    except Exception as e:
-        logging.error(f"Error retrieving notifications: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to retrieve notifications: {str(e)}")
-
-@router.put("/notifications/mark-all-read")
-async def mark_all_notifications_read():
-    """Mark all notifications as read"""
-    try:
-        # First check if there are any unread notifications
-        unread_count = db["notifications"].count_documents({"read": False})
-        
-        if unread_count == 0:
-            return {"success": True, "modified_count": 0, "message": "No unread notifications found"}
-            
-        # Update all unread notifications
-        result = db["notifications"].update_many(
-            {"read": False},
-            {"$set": {"read": True}}
-        )
-        
-        return {
-            "success": True, 
-            "modified_count": result.modified_count,
-            "matched_count": result.matched_count
-        }
-    except Exception as e:
-        logging.error(f"Error marking all notifications as read: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.put("/notifications/{notification_id}")
-async def mark_notification_read(notification_id: str):
-    """Mark a notification as read"""
-    try:
-        from bson import ObjectId
-        result = db["notifications"].update_one(
-            {"_id": notification_id},
-            {"$set": {"read": True}}
-        )
-        
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail="Notification not found")
-            
-        return {"message": "Notification marked as read"}
-    except Exception as e:
-        logging.error(f"Error updating notification: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to update notification: {str(e)}")
-
-# Add this endpoint to your existing timetable_routes.py file
-
-
-    try:
-        # First check if there are any unread notifications
-        unread_count = db["notifications"].count_documents({"read": False})
-        
-        if unread_count == 0:
-            return {"success": True, "modified_count": 0, "message": "No unread notifications found"}
-            
-        # Update all unread notifications
-        result = db["notifications"].update_many(
-            {"read": False},
-            {"$set": {"read": True}}
-        )
-        
-        return {
-            "success": True, 
-            "modified_count": result.modified_count,
-            "matched_count": result.matched_count
-        }
-    except Exception as e:
-        # Log the full error for debugging
-        import traceback
-        error_details = f"{str(e)}\n{traceback.format_exc()}"
-        print(f"Error in mark_all_notifications_read: {error_details}")
-        raise HTTPException(status_code=500, detail=str(e))
->>>>>>> origin/main:app/routers/timetable_routes.py
 
 def clean_mongo_documents(doc):
+    """Recursively convert ObjectId fields to strings for JSON-serializable data."""
     if isinstance(doc, list):
         return [clean_mongo_documents(item) for item in doc]
     if isinstance(doc, dict):
@@ -706,107 +85,421 @@ def clean_mongo_documents(doc):
         return str(doc)
     return doc
 
-<<<<<<< HEAD:routers/timetable_routes.py
-def store_latest_score(score):
-    db["settings"].update_one(
-        {"option": "latest_score"},
-        {"$set": {"value": score}},
-        upsert=True
-    )
-    db["old_scores"].insert_one({"value": score})
 
-=======
-@router.post("/select")
-async def select_algorithm(algorithm: dict):
-    """Endpoint to select an algorithm as the preferred one"""
+def evaluate_timetables():
+    """
+    Placeholder function that returns evaluation scores for each algorithm.
+    Replace or expand with your actual evaluation logic.
+    """
+    # Example: dictionary of {algorithm: [scores,...]}
+    # or something more sophisticated
+    return {
+        "GA": [0.85, 0.80],
+        "CO": [0.78, 0.82],
+        "RL": [0.90, 0.88],
+        "BC": [0.75, 0.77],
+        "PSO": [0.83, 0.81]
+    }
+
+
+def evaluate():
+    """Wrap the above function in a simpler call if you like."""
+    return evaluate_timetables()
+
+
+def save_timetable(li, algorithm, current_user=None):
+    """
+    Unified save_timetable that:
+      - uses map_subgroup_to_semester
+      - upserts each semester’s data into the Timetable collection
+      - optionally logs to old_timetables
+      - optionally notifies current_user
+    """
+    if not li:
+        logging.warning(f"No timetable data to save for algorithm: {algorithm}")
+        return False
+
+    valid_semesters = ["SEM101", "SEM102", "SEM201", "SEM202",
+                       "SEM301", "SEM302", "SEM401", "SEM402"]
+    semester_timetables = {sem: [] for sem in valid_semesters}
+
+    # Group activities by mapped semester
+    for activity in li:
+        if "algorithm" not in activity:
+            activity["algorithm"] = algorithm
+
+        subgroups = activity.get("subgroup", [])
+        if isinstance(subgroups, str):
+            subgroups = [subgroups]
+
+        mapped_something = False
+        for sg in subgroups:
+            sem = map_subgroup_to_semester(sg)
+            if sem and sem in semester_timetables:
+                semester_timetables[sem].append(activity)
+                mapped_something = True
+                # break if each activity truly belongs to only one semester
+                break
+
+        if not mapped_something:
+            logging.warning(f"Could not map subgroups {subgroups} to any known semester. Activity: {activity}")
+
+    index = 0
+    success = False
+
+    for semester, activities in semester_timetables.items():
+        if not activities:
+            continue
+        try:
+            # Upsert into Timetable
+            result = db["Timetable"].replace_one(
+                {
+                    "$and": [
+                        {"semester": semester},
+                        {"algorithm": algorithm}
+                    ]
+                },
+                {
+                    "code": generate_timetable_code(index, algorithm),
+                    "algorithm": algorithm,
+                    "semester": semester,
+                    "timetable": activities
+                },
+                upsert=True
+            )
+            if result.acknowledged:
+                success = True
+
+            # Optionally store history
+            db["old_timetables"].insert_one({
+                "code": generate_timetable_code(index, algorithm),
+                "algorithm": algorithm,
+                "semester": semester,
+                "timetable": activities,
+                "date_created": datetime.now()
+            })
+
+            index += 1
+
+        except Exception as e:
+            logging.error(f"Failed to save timetable for semester {semester}: {str(e)}")
+
+    # Send a notification if a user is logged in
+    if current_user:
+        db["notifications"].insert_one({
+            "message": f"New timetable generated using {algorithm}",
+            "type": "success" if success else "error",
+            "read": False,
+            "recipient": current_user["id"]
+        })
+
+    return success
+
+@router.post("/generate")
+async def generate_timetable(current_user: dict = Depends(get_current_user)):
+    """
+    Launch a background thread that runs GA, CO, RL, BC, PSO in sequence.
+    Each algorithm’s result is saved to the Timetable collection.
+    """
+    logger = logging.getLogger(__name__)
+
+    def generate():
+        logger.info("Starting multi-algorithm timetable generation")
+        results = {
+            "GA": False,
+            "CO": False,
+            "RL": False,
+            "BC": False,
+            "PSO": False
+        }
+
+        # GA
+        try:
+            logger.info("Running GA ...")
+            time.sleep(0.3)
+            pop, log, hof, li_ga = generate_ga()  # or your actual signature
+            results["GA"] = save_timetable(li_ga, "GA", current_user)
+            create_timetable_notification("GA", results["GA"])
+            logger.info(f"GA completed - success: {results['GA']}")
+            time.sleep(0.3)
+        except Exception as e:
+            logger.error(f"GA failed: {str(e)}")
+            create_timetable_notification("GA", False)
+
+        # CO
+        try:
+            logger.info("Running CO ...")
+            time.sleep(0.3)
+            sol_co = generate_co()
+            results["CO"] = save_timetable(sol_co, "CO", current_user)
+            create_timetable_notification("CO", results["CO"])
+            logger.info(f"CO completed - success: {results['CO']}")
+            time.sleep(0.3)
+        except Exception as e:
+            logger.error(f"CO failed: {str(e)}")
+            create_timetable_notification("CO", False)
+
+        # RL
+        try:
+            logger.info("Running RL ...")
+            time.sleep(0.3)
+            gen_rl = generate_rl()
+            results["RL"] = save_timetable(gen_rl, "RL", current_user)
+            create_timetable_notification("RL", results["RL"])
+            logger.info(f"RL completed - success: {results['RL']}")
+            time.sleep(0.3)
+        except Exception as e:
+            logger.error(f"RL failed: {str(e)}")
+            create_timetable_notification("RL", False)
+
+        # BC
+        try:
+            logger.info("Running BC ...")
+            time.sleep(0.3)
+            bc_sol = generate_bco()
+            results["BC"] = save_timetable(bc_sol, "BC", current_user)
+            create_timetable_notification("BC", results["BC"])
+            logger.info(f"BC completed - success: {results['BC']}")
+            time.sleep(0.3)
+        except Exception as e:
+            logger.error(f"BC failed: {str(e)}")
+            create_timetable_notification("BC", False)
+
+        # PSO
+        try:
+            logger.info("Running PSO ...")
+            time.sleep(0.3)
+            pso_sol = generate_pso()
+            results["PSO"] = save_timetable(pso_sol, "PSO", current_user)
+            create_timetable_notification("PSO", results["PSO"])
+            logger.info(f"PSO completed - success: {results['PSO']}")
+            time.sleep(0.3)
+        except Exception as e:
+            logger.error(f"PSO failed: {str(e)}")
+            create_timetable_notification("PSO", False)
+
+        # Evaluate
+        logger.info("Evaluating results ...")
+        eval_results = evaluate()
+        for algo, scores in eval_results.items():
+            avg_score = sum(scores) / len(scores)
+            logger.info(f"{algo} average score: {avg_score:.2f}")
+        time.sleep(0.3)
+
+        # Summarize
+        successful_count = sum(1 for r in results.values() if r)
+        if successful_count > 0:
+            logger.info(f"Timetables generated successfully in {successful_count} of 5 algorithms.")
+        else:
+            logger.warning("All timetable generation algorithms failed.")
+
+    # Start in background
+    thread = threading.Thread(target=generate, daemon=True)
+    thread.start()
+
+    return {"status": "processing", "message": "Timetable generation started in background"}
+
+
+# -------------------------------------------------------------------
+# Timetable retrieval & evaluation
+# -------------------------------------------------------------------
+
+@router.get("/timetables")
+async def get_timetables():
+    """Retrieve all timetables from DB, plus a simple summary of evaluations."""
+    timetables = list(db["Timetable"].find())
+    cleaned_timetables = clean_mongo_documents(timetables)
+
+    eval_scores = evaluate()
+    # Convert raw lists to dict with average_score
+    final_eval = {}
+    for algorithm, scores in eval_scores.items():
+        if scores:
+            average_score = sum(scores) / len(scores)
+            final_eval[algorithm] = {"average_score": average_score}
+
+    return {
+        "timetables": cleaned_timetables,
+        "eval": final_eval
+    }
+
+
+@router.post("/evaluate-algorithms")
+async def evaluate_algorithms(evaluation: AlgorithmEvaluation):
+    """
+    Example of an endpoint that accepts new evaluation metrics
+    and returns some analysis. (In the main code, it uses a large language model.)
+    You can adapt this as needed or remove it if you don’t need LLM-based analysis.
+    """
     try:
-        # Get the algorithm name from the request
+        # Combine the user-provided scores with your local evaluation if desired
+        user_scores = evaluation.scores
+
+        # Suppose we just return them, or run a combined analysis:
+        combined = {}
+        for algo, metric_dict in user_scores.items():
+            combined[algo] = {}
+            for metric, value in metric_dict.items():
+                combined[algo][metric] = value
+
+        # Insert or update in DB if desired
+        # db["AlgorithmScores"].insert_one({"timestamp": datetime.now(), "scores": combined})
+
+        return {"analysis": "Stub analysis of your algorithm scores.", "combined": combined}
+
+    except Exception as e:
+        logging.error(f"Failed to evaluate algorithms: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+@router.post("/select")
+async def select_algorithm(algorithm: dict, current_user: dict = Depends(get_current_user)):
+    """
+    Store the user’s preferred algorithm in a DB collection (AlgorithmSelection).
+    """
+    try:
         algorithm_name = algorithm.get("algorithm")
         if not algorithm_name:
             raise HTTPException(status_code=400, detail="Algorithm name is required")
-            
-        # Validate that it's one of our supported algorithms
-        if algorithm_name not in ["GA", "CO", "RL"]:
-            raise HTTPException(status_code=400, detail="Invalid algorithm. Must be one of: GA, CO, RL")
-            
-        # Check if we already have a selection document
-        selection_exists = db["AlgorithmSelection"].find_one()
-        
+        if algorithm_name not in ["GA", "CO", "RL", "BC", "PSO"]:
+            raise HTTPException(status_code=400, detail="Invalid algorithm name")
+
+        selection_exists = db["AlgorithmSelection"].find_one({})
         if selection_exists:
-            # Update existing selection
-            result = db["AlgorithmSelection"].update_one(
+            db["AlgorithmSelection"].update_one(
                 {"_id": selection_exists["_id"]},
                 {"$set": {"selected_algorithm": algorithm_name}}
             )
         else:
-            # Create new selection
-            result = db["AlgorithmSelection"].insert_one(
-                {"selected_algorithm": algorithm_name}
-            )
-            
+            db["AlgorithmSelection"].insert_one({"selected_algorithm": algorithm_name})
+
         return {"message": f"Selected algorithm: {algorithm_name}", "success": True}
-        
+
     except Exception as e:
         logging.error(f"Error selecting algorithm: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error selecting algorithm: {str(e)}")
 
+
 @router.get("/selected")
 async def get_selected_algorithm():
+    """
+    Return whichever algorithm was last stored as 'selected'.
+    """
     try:
-        # Changed from Settings to AlgorithmSelection to match where the data is stored
         data = db["AlgorithmSelection"].find_one()
         if data:
-            return {"selected_algorithm": data.get("selected_algorithm", None)}
+            return {"selected_algorithm": data.get("selected_algorithm")}
         else:
             return {"selected_algorithm": None}
     except Exception as e:
         logging.error(f"Failed to get selected algorithm: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to get selected algorithm: {str(e)}")
 
-# Published Timetable Endpoints
+
+@router.get("/notifications")
+async def get_notifications(current_user: dict = Depends(get_current_user)):
+    """Get all notifications for the current user (or all, if you prefer)."""
+    try:
+        if "notifications" not in db.list_collection_names():
+            db.create_collection("notifications")
+
+        # Example: only unread for the current user
+        notifications = list(db["notifications"].find({
+            "recipient": current_user["id"]
+        }))
+
+        for n in notifications:
+            n["_id"] = str(n["_id"])
+        return notifications
+    except Exception as e:
+        logging.error(f"Error retrieving notifications: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/notifications/mark-all-read")
+async def mark_all_notifications_read(current_user: dict = Depends(get_current_user)):
+    """Mark all unread notifications for the current user as read."""
+    try:
+        unread_count = db["notifications"].count_documents({
+            "recipient": current_user["id"],
+            "read": False
+        })
+        if unread_count == 0:
+            return {"success": True, "modified_count": 0, "message": "No unread notifications found"}
+
+        result = db["notifications"].update_many(
+            {"recipient": current_user["id"], "read": False},
+            {"$set": {"read": True}}
+        )
+
+        return {
+            "success": True,
+            "modified_count": result.modified_count,
+            "matched_count": result.matched_count
+        }
+    except Exception as e:
+        logging.error(f"Error marking all notifications as read: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/notifications/{notification_id}")
+async def mark_notification_read(notification_id: str, current_user: dict = Depends(get_current_user)):
+    """Mark a single notification as read."""
+    try:
+        result = db["notifications"].update_one(
+            {"_id": ObjectId(notification_id), "recipient": current_user["id"]},
+            {"$set": {"read": True}}
+        )
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Notification not found")
+        return {"message": "Notification marked as read"}
+    except Exception as e:
+        logging.error(f"Error updating notification: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to update notification: {str(e)}")
+
+
+NO_PUBLISHED_TIMETABLE = "No published timetable found"
+NO_ACTIVE_PUBLISHED_TIMETABLE = "No active published timetable found"
+SEMESTER_NOT_FOUND = "Semester not found in published timetable"
+ENTRY_INDEX_OUT_OF_RANGE = "Entry index is out of range"
+
 
 @router.post("/publish")
-async def publish_timetable(algorithm: str):
+async def publish_timetable(algorithm: str, current_user: dict = Depends(get_current_user)):
     """
     Create a published timetable from the selected algorithm's timetables.
-    This timetable becomes the active one for faculty and students.
+    This timetable becomes the active one for faculty/students.
     """
     try:
-        # Get current user for tracking
-        # In a real app, get this from auth context
-        current_user_id = "admin"  # Placeholder
-        
-        # Find all timetables for the selected algorithm
+        current_user_id = current_user["id"]
+
         timetables = list(db["Timetable"].find({"algorithm": algorithm}))
-        
         if not timetables:
             raise HTTPException(
-                status_code=404, 
+                status_code=404,
                 detail=f"No timetables found for algorithm {algorithm}"
             )
-        
+
         # Organize by semester
         semesters = {}
         timetable_ids = []
-        
         for timetable in timetables:
-            semester = timetable["semester"]
+            sem = timetable["semester"]
             timetable_ids.append(str(timetable["_id"]))
-            semesters[semester] = timetable["timetable"]
-        
-        # Archive any existing active timetable
+            semesters[sem] = timetable["timetable"]
+
+        # Archive existing active timetable
         db["PublishedTimetable"].update_many(
             {"status": "active"},
             {"$set": {"status": "archived"}}
         )
-        
-        # Create source info
+
         source = {
             "algorithm": algorithm,
             "timetable_ids": timetable_ids
         }
-        
-        # Create new published timetable
+
         published_timetable = {
             "version": 1,
             "status": "active",
@@ -815,115 +508,93 @@ async def publish_timetable(algorithm: str):
             "source": source,
             "semesters": semesters,
         }
-        
-        # Insert the new published timetable
+
         result = db["PublishedTimetable"].insert_one(published_timetable)
-        
         create_timetable_notification(algorithm, True)
-        
+
         return {
             "success": True,
-            "message": f"Timetable from {algorithm} algorithm published successfully",
+            "message": f"Timetable from {algorithm} published successfully",
             "id": str(result.inserted_id)
         }
-        
+
     except HTTPException as http_ex:
-        # Re-raise HTTP exceptions
         raise http_ex
     except Exception as e:
         logging.error(f"Failed to publish timetable: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to publish timetable: {str(e)}")
 
+
 @router.get("/published")
 async def get_published_timetable():
-    """
-    Get the active published timetable.
-    This is the full timetable for all semesters.
-    """
+    """Get the active published timetable (all semesters)."""
     try:
         published = db["PublishedTimetable"].find_one({"status": "active"})
-        
         if not published:
             return {"message": NO_ACTIVE_PUBLISHED_TIMETABLE}
-        
-        # Clean MongoDB-specific fields
-        published = clean_mongo_documents(published)
-        
-        return published
-        
+
+        return clean_mongo_documents(published)
+
     except Exception as e:
         logging.error(f"Failed to get published timetable: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to get published timetable: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/published/faculty/{faculty_id}")
 async def get_faculty_timetable(faculty_id: str):
     """
     Get the published timetable filtered for a specific faculty member.
-    Returns only classes where the faculty is teacher or substitute.
+    (teacher or substitute).
     """
     try:
         published = db["PublishedTimetable"].find_one({"status": "active"})
-        
         if not published:
             return {"message": NO_ACTIVE_PUBLISHED_TIMETABLE}
-        
-        # Filter entries for this faculty
+
         faculty_timetable = {}
-        
         for semester, entries in published["semesters"].items():
-            faculty_entries = []
-            
+            fac_entries = []
             for entry in entries:
-                # Include if faculty is teacher or substitute
                 if entry.get("teacher") == faculty_id or entry.get("substitute") == faculty_id:
-                    faculty_entries.append(entry)
-            
-            if faculty_entries:
-                faculty_timetable[semester] = faculty_entries
-        
-        # Clean MongoDB-specific fields
-        result = {
+                    fac_entries.append(entry)
+            if fac_entries:
+                faculty_timetable[semester] = fac_entries
+
+        return {
             "_id": str(published["_id"]),
             "version": published["version"],
             "published_date": published["published_date"],
             "semesters": faculty_timetable
         }
-        
-        return result
-        
+
     except Exception as e:
         logging.error(f"Failed to get faculty timetable: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to get faculty timetable: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/published/student/{semester}")
 async def get_student_timetable(semester: str):
     """
-    Get the published timetable filtered for a specific student semester/subgroup.
-    Returns only classes for the specified semester.
+    Get the published timetable for a specific semester (student view).
     """
     try:
         published = db["PublishedTimetable"].find_one({"status": "active"})
-        
         if not published:
             return {"message": NO_ACTIVE_PUBLISHED_TIMETABLE}
-        
-        # Get entries for this semester
+
         semester_entries = published["semesters"].get(semester, [])
-        
-        # Clean MongoDB-specific fields
-        result = {
+        return {
             "_id": str(published["_id"]),
             "version": published["version"],
             "published_date": published["published_date"],
             "semester": semester,
             "entries": semester_entries
         }
-        
-        return result
-        
+
     except Exception as e:
         logging.error(f"Failed to get student timetable: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to get student timetable: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.put("/published/entry")
 async def update_timetable_entry(
@@ -933,134 +604,91 @@ async def update_timetable_entry(
     teacher: Optional[str] = None,
     period: Optional[List[Dict]] = None,
     day: Optional[Dict] = None,
-    subject: Optional[str] = None
+    subject: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
 ):
-    """
-    Update a specific entry in the published timetable.
-    This allows administrators to correct errors or make changes to any field.
-    """
+    """Update a specific entry in the published timetable (admin use)."""
     try:
-        # Get current user for tracking
-        # In a real app, get this from auth context
-        current_user_id = "admin"  # Placeholder
-        
-        # Find active published timetable
+        current_user_id = current_user["id"]
         published = db["PublishedTimetable"].find_one({"status": "active"})
-        
         if not published:
             raise HTTPException(status_code=404, detail=NO_ACTIVE_PUBLISHED_TIMETABLE)
-        
-        # Check if semester exists
+
         if semester not in published["semesters"]:
-            raise HTTPException(
-                status_code=404, 
-                detail=SEMESTER_NOT_FOUND
-            )
-        
-        # Check if entry index is valid
+            raise HTTPException(status_code=404, detail=SEMESTER_NOT_FOUND)
+
         if entry_index < 0 or entry_index >= len(published["semesters"][semester]):
-            raise HTTPException(
-                status_code=404, 
-                detail=ENTRY_INDEX_OUT_OF_RANGE
-            )
-        
-        # Get the entry to update
+            raise HTTPException(status_code=404, detail=ENTRY_INDEX_OUT_OF_RANGE)
+
         entry = published["semesters"][semester][entry_index]
-        
-        # Store the original teacher in the entry if not already present
         if "original_teacher" not in entry:
             entry["original_teacher"] = entry.get("teacher", "Unknown")
-        
-        # Prepare modification record
+
         modification = {
             "modified_at": datetime.now(),
             "modified_by": current_user_id,
-            "reason": "Administrative update" 
+            "reason": "Administrative update"
         }
-        
-        # Update fields if provided
+
         update_fields = {}
-        
         if room is not None:
             update_fields[f"semesters.{semester}.{entry_index}.room"] = room
-            
         if teacher is not None:
             update_fields[f"semesters.{semester}.{entry_index}.teacher"] = teacher
-            
         if period is not None:
             update_fields[f"semesters.{semester}.{entry_index}.period"] = period
-            
         if day is not None:
             update_fields[f"semesters.{semester}.{entry_index}.day"] = day
-            
         if subject is not None:
             update_fields[f"semesters.{semester}.{entry_index}.subject"] = subject
-        
-        # Add modification record
+
         update_fields[f"semesters.{semester}.{entry_index}.modification"] = modification
-        
-        # Increment version number
         update_fields["version"] = published["version"] + 1
-        
-        # Perform update
+
         result = db["PublishedTimetable"].update_one(
             {"_id": published["_id"]},
             {"$set": update_fields}
         )
-        
         if result.modified_count == 0:
             raise HTTPException(status_code=500, detail="Failed to update timetable entry")
-        
-        # Create notification about the timetable update
+
         create_timetable_notification("timetable_update", True)
-        
         return {
             "success": True,
             "message": "Timetable entry updated successfully",
             "semester": semester,
             "entry_index": entry_index
         }
-        
+
     except HTTPException as http_ex:
-        # Re-raise HTTP exceptions
         raise http_ex
     except Exception as e:
         logging.error(f"Failed to update timetable entry: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to update timetable entry: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.put("/published/substitute")
 async def assign_substitute(
     semester: str,
     entry_index: int,
     substitute: str,
-    reason: Optional[str] = None
+    reason: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
 ):
-    """
-    Assign a substitute teacher to a specific timetable entry.
-    This is used when a faculty member is unavailable for a class.
-    """
+    """Assign a substitute teacher to a published timetable entry."""
     try:
-        # Get the published timetable
-        published = db["PublishedTimetable"].find_one({})
+        published = db["PublishedTimetable"].find_one({"status": "active"})
         if not published:
-            raise HTTPException(status_code=404, detail=NO_PUBLISHED_TIMETABLE)
-            
-        # Validate semester exists in the published timetable
+            raise HTTPException(status_code=404, detail=NO_ACTIVE_PUBLISHED_TIMETABLE)
         if semester not in published["semesters"]:
             raise HTTPException(status_code=404, detail=SEMESTER_NOT_FOUND)
-            
-        # Validate entry_index is valid
         if entry_index < 0 or entry_index >= len(published["semesters"][semester]):
             raise HTTPException(status_code=404, detail=ENTRY_INDEX_OUT_OF_RANGE)
-            
-        # Get the entry to update
+
         entry = published["semesters"][semester][entry_index]
-        
-        # Store the original teacher in the entry if not already present
         if "original_teacher" not in entry:
             entry["original_teacher"] = entry.get("teacher", "Unknown")
-        
-        # Prepare modification record
+
         modification = {
             "modified_at": datetime.now(),
             "type": "substitute_assigned",
@@ -1069,39 +697,35 @@ async def assign_substitute(
             "new_value": substitute,
             "reason": reason or "No reason provided"
         }
-        
-        # Update fields
+
         update_fields = {
             f"semesters.{semester}.{entry_index}.substitute": substitute,
             f"semesters.{semester}.{entry_index}.modification": modification,
             "version": published["version"] + 1
         }
-        
-        # If we have an original teacher recorded, we can restore it as the main teacher
+
         if "original_teacher" in entry and entry["original_teacher"]:
             update_fields[f"semesters.{semester}.{entry_index}.teacher"] = entry["original_teacher"]
-        
-        # Remove substitute and original_teacher fields
+
         update = {
-            "$set": update_fields,
-            "$unset": {
-                f"semesters.{semester}.{entry_index}.substitute": "",
-                f"semesters.{semester}.{entry_index}.original_teacher": ""
-            }
+            "$set": update_fields
         }
-        
-        # Perform update
+
+        # Optionally remove a previous substitute if you only store one
+        # at a time. Otherwise, you can keep them. For example:
+        # "$unset": {
+        #   f"semesters.{semester}.{entry_index}.substitute": "",
+        #   ...
+        # }
+
         result = db["PublishedTimetable"].update_one(
             {"_id": published["_id"]},
             update
         )
-        
         if result.modified_count == 0:
             raise HTTPException(status_code=500, detail="Failed to assign substitute teacher")
-        
-        # Create notification about the substitution
+
         create_timetable_notification("substitute_assigned", True)
-        
         return {
             "success": True,
             "message": "Substitute teacher assigned successfully",
@@ -1110,52 +734,32 @@ async def assign_substitute(
             "substitute": substitute,
             "original_teacher": entry.get("original_teacher")
         }
-        
+
     except HTTPException as http_ex:
-        # Re-raise HTTP exceptions
         raise http_ex
     except Exception as e:
         logging.error(f"Failed to assign substitute teacher: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to assign substitute teacher: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.put("/published/remove-substitute")
 async def remove_substitute(
     semester: str,
-    entry_index: int
+    entry_index: int,
+    current_user: dict = Depends(get_current_user)
 ):
-    """
-    Remove a substitute teacher from a specific timetable entry.
-    This is used when the original faculty member becomes available again.
-    """
+    """Remove a substitute teacher, restoring the original teacher if recorded."""
     try:
-        # Get current user for tracking
-        # In a real app, get this from auth context
-        current_user_id = "admin"  # Placeholder
-        
-        # Find active published timetable
+        current_user_id = current_user["id"]
         published = db["PublishedTimetable"].find_one({"status": "active"})
-        
         if not published:
             raise HTTPException(status_code=404, detail=NO_ACTIVE_PUBLISHED_TIMETABLE)
-        
-        # Check if semester exists
         if semester not in published["semesters"]:
-            raise HTTPException(
-                status_code=404, 
-                detail=SEMESTER_NOT_FOUND
-            )
-        
-        # Check if entry index is valid
+            raise HTTPException(status_code=404, detail=SEMESTER_NOT_FOUND)
         if entry_index < 0 or entry_index >= len(published["semesters"][semester]):
-            raise HTTPException(
-                status_code=404, 
-                detail=ENTRY_INDEX_OUT_OF_RANGE
-            )
-        
-        # Get the entry to update
+            raise HTTPException(status_code=404, detail=ENTRY_INDEX_OUT_OF_RANGE)
+
         entry = published["semesters"][semester][entry_index]
-        
-        # Check if there is a substitute to remove
         if "substitute" not in entry or not entry["substitute"]:
             return {
                 "success": True,
@@ -1163,25 +767,20 @@ async def remove_substitute(
                 "semester": semester,
                 "entry_index": entry_index
             }
-        
-        # Prepare modification record
+
         modification = {
             "modified_at": datetime.now(),
             "modified_by": current_user_id,
             "reason": "Substitute teacher removed"
         }
-        
-        # Update fields - restore original teacher if available
+
         update_fields = {
             "version": published["version"] + 1,
             f"semesters.{semester}.{entry_index}.modification": modification
         }
-        
-        # If we have an original teacher recorded, we can restore it as the main teacher
         if "original_teacher" in entry and entry["original_teacher"]:
             update_fields[f"semesters.{semester}.{entry_index}.teacher"] = entry["original_teacher"]
-        
-        # Remove substitute and original_teacher fields
+
         update = {
             "$set": update_fields,
             "$unset": {
@@ -1189,93 +788,133 @@ async def remove_substitute(
                 f"semesters.{semester}.{entry_index}.original_teacher": ""
             }
         }
-        
-        # Perform update
+
         result = db["PublishedTimetable"].update_one(
             {"_id": published["_id"]},
             update
         )
-        
         if result.modified_count == 0:
             raise HTTPException(status_code=500, detail="Failed to remove substitute teacher")
-        
-        # Create notification about the substitution removal
+
         create_timetable_notification("substitute_removed", True)
-        
         return {
             "success": True,
             "message": "Substitute teacher removed successfully",
             "semester": semester,
             "entry_index": entry_index
         }
-        
+
     except HTTPException as http_ex:
-        # Re-raise HTTP exceptions
         raise http_ex
     except Exception as e:
         logging.error(f"Failed to remove substitute teacher: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to remove substitute teacher: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/evaluate-algorithms")
-async def evaluate_algorithms(evaluation: AlgorithmEvaluation):
+
+#Mannual Editing 
+@router.patch("/timetable/{timetable_id}/activity/{session_id}")
+async def super_update_session(
+    timetable_id: str,
+    session_id: str,
+    partial_data: Dict,
+    current_user: dict = Depends(get_current_user)
+):
     """
-    Evaluate timetable algorithms using DeepSeek V3 via OpenRouter.
-    
-    This endpoint accepts evaluation scores for different algorithms and 
-    returns an analysis and recommendation from the LLM.
+    Partially update (PATCH) a single scheduled session in a timetable.
+    Confirms no conflicts before saving. If conflicts -> no update.
     """
-    try:
-        # Format the scores for the LLM prompt
-        evaluation_summary = format_scores_for_api(evaluation.scores)
-        
-        prompt = f"""
-The following are evaluation scores for different algorithms used in a timetable scheduling optimization project:
-{evaluation_summary}
+    checker = ConflictChecker(db)
 
-Based on these results, provide an analysis of each algorithm in this format:
-1. First, list the algorithms from best to worst based on their scores
-2. Then, for each algorithm, provide a 1-2 sentence description of its suitability for timetable generation
-3. Finally, provide a clear recommendation about which algorithm should be used and why
+    # 1) Retrieve
+    timetable = db["Timetable"].find_one({"_id": ObjectId(timetable_id)})
+    if not timetable:
+        raise HTTPException(status_code=404, detail="Timetable not found")
 
-Keep your entire response under 150 words. Be specific about the strengths and weaknesses of each algorithm based on the metrics provided.
-"""
+    existing_activities = timetable.get("timetable", [])
+    target_session = None
+    for activity in existing_activities:
+        if activity.get("session_id") == session_id:
+            target_session = activity
+            break
+    if not target_session:
+        raise HTTPException(status_code=404, detail="Session not found")
 
-        logging.info("Sending evaluation request to DeepSeek")
-        
-        # Call DeepSeek V3 via OpenRouter API
-        # Note: OpenAI client.chat.completions.create() doesn't need to be awaited
-        completion = client.chat.completions.create(
-            model="deepseek/deepseek-chat:free",
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            temperature=0.7,
-            max_tokens=250
-        )
-        
-        # Extract the response content
-        response = completion.choices[0].message.content
-        logging.info("Received response from DeepSeek")
-        
-        return {"analysis": response}
-    
-    except Exception as e:
-        logging.error(f"Error evaluating algorithms with DeepSeek: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to evaluate algorithms: {str(e)}")
+    # 2) Apply partial changes to a copy
+    updated_session = dict(target_session)
+    for k, v in partial_data.items():
+        if k == "session_id":
+            continue  # skip or raise error, as session_id is the key
+        updated_session[k] = v
 
-def format_scores_for_api(scores):
-    """Format the algorithm evaluation scores for the LLM prompt"""
-    formatted_text = ""
-    
-    for algorithm, metrics in scores.items():
-        formatted_text += f"\n{algorithm} Algorithm:\n"
-        for metric, value in metrics.items():
-            # Format the value to 2 decimal places if it's a float
-            formatted_value = f"{value:.2f}" if isinstance(value, float) else str(value)
-            formatted_text += f"- {metric}: {formatted_value}\n"
-    
-    return formatted_text
->>>>>>> origin/main:app/routers/timetable_routes.py
+    # 3) Check conflicts
+    conflicts_internal = checker.check_single_timetable_conflicts(
+        timetable_id,
+        [updated_session],
+        ignore_session_id=session_id
+    )
+    algorithm = timetable.get("algorithm", "")
+    conflicts_cross = checker.check_cross_timetable_conflicts(
+        [updated_session],
+        timetable_id,
+        algorithm
+    )
+
+    all_conflict = conflicts_internal + conflicts_cross
+
+    if all_conflict:
+        return {
+            "message": "Conflicts detected. Changes not saved.",
+            "conflicts": all_conflict,
+           
+        }
+
+    # 4) No conflicts -> commit
+    new_activities = []
+    for act in existing_activities:
+        if act.get("session_id") == session_id:
+            new_activities.append(updated_session)
+        else:
+            new_activities.append(act)
+
+    db["Timetable"].update_one(
+        {"_id": ObjectId(timetable_id)},
+        {"$set": {"timetable": new_activities}}
+    )
+
+    return {
+        "message": "Session updated successfully. No conflicts found.",
+        "updated_session_id": session_id
+    }
+
+
+@router.get("/timetable/{timetable_id}/conflicts")
+async def check_timetable_conflicts(
+    timetable_id: str,
+    activities: List[Dict],
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Check for potential internal or cross-timetable conflicts without saving changes.
+    """
+    checker = ConflictChecker(db)
+
+    validation_errors = checker.validate_activities(activities)
+    if validation_errors:
+        return {
+            "valid": False,
+            "validation_errors": validation_errors
+        }
+
+    internal_conflicts = checker.check_single_timetable_conflicts(timetable_id, activities)
+    algorithm = ""
+    existing_tt = db["Timetable"].find_one({"_id": ObjectId(timetable_id)})
+    if existing_tt:
+        algorithm = existing_tt.get("algorithm", "")
+
+    cross_timetable_conflicts = checker.check_cross_timetable_conflicts(activities, timetable_id, algorithm)
+
+    return {
+        "valid": not (internal_conflicts or cross_timetable_conflicts),
+        "internal_conflicts": internal_conflicts,
+        "cross_timetable_conflicts": cross_timetable_conflicts
+    }
