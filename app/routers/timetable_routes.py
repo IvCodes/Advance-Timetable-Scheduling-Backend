@@ -6,12 +6,13 @@ from app.generator.algorithms.co.co_v2 import *
 from app.generator.rl.rl import generate_rl
 from app.generator.eval.eval import evaluate as evaluate_timetables
 from app.Services.timetable_notification import create_timetable_notification
+from app.models.published_timetable_model import PublishedTimetable, Source, TimetableEntry
 import logging
 from bson import ObjectId
 import threading
 import logging
-
-
+from datetime import datetime
+from typing import Optional, List, Dict
 
 router = APIRouter()
 
@@ -404,17 +405,470 @@ async def select_algorithm(algorithm: dict):
 
 @router.get("/selected")
 async def get_selected_algorithm():
-    """Endpoint to get the currently selected algorithm"""
     try:
-        # Get the current selection
-        selection = db["AlgorithmSelection"].find_one()
-        
-        if selection:
-            return clean_mongo_documents(selection)
+        # Changed from Settings to AlgorithmSelection to match where the data is stored
+        data = db["AlgorithmSelection"].find_one()
+        if data:
+            return {"selected_algorithm": data.get("selected_algorithm", None)}
         else:
-            # Default to GA if no selection exists
-            return {"selected_algorithm": "GA"}
-            
+            return {"selected_algorithm": None}
     except Exception as e:
-        logging.error(f"Error getting selected algorithm: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error getting selected algorithm: {str(e)}")
+        logging.error(f"Failed to get selected algorithm: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get selected algorithm: {str(e)}")
+
+# Published Timetable Endpoints
+
+@router.post("/publish")
+async def publish_timetable(algorithm: str):
+    """
+    Create a published timetable from the selected algorithm's timetables.
+    This timetable becomes the active one for faculty and students.
+    """
+    try:
+        # Get current user for tracking
+        # In a real app, get this from auth context
+        current_user_id = "admin"  # Placeholder
+        
+        # Find all timetables for the selected algorithm
+        timetables = list(db["Timetable"].find({"algorithm": algorithm}))
+        
+        if not timetables:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"No timetables found for algorithm {algorithm}"
+            )
+        
+        # Organize by semester
+        semesters = {}
+        timetable_ids = []
+        
+        for timetable in timetables:
+            semester = timetable["semester"]
+            timetable_ids.append(str(timetable["_id"]))
+            semesters[semester] = timetable["timetable"]
+        
+        # Archive any existing active timetable
+        db["PublishedTimetable"].update_many(
+            {"status": "active"},
+            {"$set": {"status": "archived"}}
+        )
+        
+        # Create source info
+        source = {
+            "algorithm": algorithm,
+            "timetable_ids": timetable_ids
+        }
+        
+        # Create new published timetable
+        published_timetable = {
+            "version": 1,
+            "status": "active",
+            "published_date": datetime.now(),
+            "published_by": current_user_id,
+            "source": source,
+            "semesters": semesters,
+        }
+        
+        # Insert the new published timetable
+        result = db["PublishedTimetable"].insert_one(published_timetable)
+        
+        create_timetable_notification(algorithm, True)
+        
+        return {
+            "success": True,
+            "message": f"Timetable from {algorithm} algorithm published successfully",
+            "id": str(result.inserted_id)
+        }
+        
+    except HTTPException as http_ex:
+        # Re-raise HTTP exceptions
+        raise http_ex
+    except Exception as e:
+        logging.error(f"Failed to publish timetable: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to publish timetable: {str(e)}")
+
+@router.get("/published")
+async def get_published_timetable():
+    """
+    Get the active published timetable.
+    This is the full timetable for all semesters.
+    """
+    try:
+        published = db["PublishedTimetable"].find_one({"status": "active"})
+        
+        if not published:
+            return {"message": "No active published timetable found"}
+        
+        # Clean MongoDB-specific fields
+        published = clean_mongo_documents(published)
+        
+        return published
+        
+    except Exception as e:
+        logging.error(f"Failed to get published timetable: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get published timetable: {str(e)}")
+
+@router.get("/published/faculty/{faculty_id}")
+async def get_faculty_timetable(faculty_id: str):
+    """
+    Get the published timetable filtered for a specific faculty member.
+    Returns only classes where the faculty is teacher or substitute.
+    """
+    try:
+        published = db["PublishedTimetable"].find_one({"status": "active"})
+        
+        if not published:
+            return {"message": "No active published timetable found"}
+        
+        # Filter entries for this faculty
+        faculty_timetable = {}
+        
+        for semester, entries in published["semesters"].items():
+            faculty_entries = []
+            
+            for entry in entries:
+                # Include if faculty is teacher or substitute
+                if entry.get("teacher") == faculty_id or entry.get("substitute") == faculty_id:
+                    faculty_entries.append(entry)
+            
+            if faculty_entries:
+                faculty_timetable[semester] = faculty_entries
+        
+        # Clean MongoDB-specific fields
+        result = {
+            "_id": str(published["_id"]),
+            "version": published["version"],
+            "published_date": published["published_date"],
+            "semesters": faculty_timetable
+        }
+        
+        return result
+        
+    except Exception as e:
+        logging.error(f"Failed to get faculty timetable: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get faculty timetable: {str(e)}")
+
+@router.get("/published/student/{semester}")
+async def get_student_timetable(semester: str):
+    """
+    Get the published timetable filtered for a specific student semester/subgroup.
+    Returns only classes for the specified semester.
+    """
+    try:
+        published = db["PublishedTimetable"].find_one({"status": "active"})
+        
+        if not published:
+            return {"message": "No active published timetable found"}
+        
+        # Get entries for this semester
+        semester_entries = published["semesters"].get(semester, [])
+        
+        # Clean MongoDB-specific fields
+        result = {
+            "_id": str(published["_id"]),
+            "version": published["version"],
+            "published_date": published["published_date"],
+            "semester": semester,
+            "entries": semester_entries
+        }
+        
+        return result
+        
+    except Exception as e:
+        logging.error(f"Failed to get student timetable: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get student timetable: {str(e)}")
+
+@router.put("/published/entry")
+async def update_timetable_entry(
+    semester: str,
+    entry_index: int,
+    room: Optional[Dict] = None,
+    teacher: Optional[str] = None,
+    period: Optional[List[Dict]] = None,
+    day: Optional[Dict] = None,
+    subject: Optional[str] = None
+):
+    """
+    Update a specific entry in the published timetable.
+    This allows administrators to correct errors or make changes to any field.
+    """
+    try:
+        # Get current user for tracking
+        # In a real app, get this from auth context
+        current_user_id = "admin"  # Placeholder
+        
+        # Find active published timetable
+        published = db["PublishedTimetable"].find_one({"status": "active"})
+        
+        if not published:
+            raise HTTPException(status_code=404, detail="No active published timetable found")
+        
+        # Check if semester exists
+        if semester not in published["semesters"]:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Semester {semester} not found in the published timetable"
+            )
+        
+        # Check if entry index is valid
+        if entry_index < 0 or entry_index >= len(published["semesters"][semester]):
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Entry index {entry_index} is out of range for semester {semester}"
+            )
+        
+        # Get the entry to update
+        entry = published["semesters"][semester][entry_index]
+        
+        # Prepare modification record
+        modification = {
+            "modified_at": datetime.now(),
+            "modified_by": current_user_id,
+            "reason": "Administrative update" 
+        }
+        
+        # Update fields if provided
+        update_fields = {}
+        
+        if room is not None:
+            update_fields[f"semesters.{semester}.{entry_index}.room"] = room
+            
+        if teacher is not None:
+            update_fields[f"semesters.{semester}.{entry_index}.teacher"] = teacher
+            
+        if period is not None:
+            update_fields[f"semesters.{semester}.{entry_index}.period"] = period
+            
+        if day is not None:
+            update_fields[f"semesters.{semester}.{entry_index}.day"] = day
+            
+        if subject is not None:
+            update_fields[f"semesters.{semester}.{entry_index}.subject"] = subject
+        
+        # Add modification record
+        update_fields[f"semesters.{semester}.{entry_index}.modification"] = modification
+        
+        # Increment version number
+        update_fields["version"] = published["version"] + 1
+        
+        # Perform update
+        result = db["PublishedTimetable"].update_one(
+            {"_id": published["_id"]},
+            {"$set": update_fields}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=500, detail="Failed to update timetable entry")
+        
+        # Create notification about the timetable update
+        create_timetable_notification("timetable_update", True)
+        
+        return {
+            "success": True,
+            "message": "Timetable entry updated successfully",
+            "semester": semester,
+            "entry_index": entry_index
+        }
+        
+    except HTTPException as http_ex:
+        # Re-raise HTTP exceptions
+        raise http_ex
+    except Exception as e:
+        logging.error(f"Failed to update timetable entry: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to update timetable entry: {str(e)}")
+
+@router.put("/published/substitute")
+async def assign_substitute(
+    semester: str,
+    entry_index: int,
+    substitute: str,
+    reason: Optional[str] = None
+):
+    """
+    Assign a substitute teacher to a specific timetable entry.
+    This is used when a faculty member is unavailable for a class.
+    """
+    try:
+        # Get current user for tracking
+        # In a real app, get this from auth context
+        current_user_id = "admin"  # Placeholder
+        
+        # Find active published timetable
+        published = db["PublishedTimetable"].find_one({"status": "active"})
+        
+        if not published:
+            raise HTTPException(status_code=404, detail="No active published timetable found")
+        
+        # Check if semester exists
+        if semester not in published["semesters"]:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Semester {semester} not found in the published timetable"
+            )
+        
+        # Check if entry index is valid
+        if entry_index < 0 or entry_index >= len(published["semesters"][semester]):
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Entry index {entry_index} is out of range for semester {semester}"
+            )
+        
+        # Get the entry to update
+        entry = published["semesters"][semester][entry_index]
+        
+        # Save the original teacher if this is the first substitution
+        original_teacher = entry.get("original_teacher", entry.get("teacher"))
+        
+        # Prepare modification record
+        modification = {
+            "modified_at": datetime.now(),
+            "modified_by": current_user_id,
+            "reason": reason or "Faculty substitution" 
+        }
+        
+        # Update fields
+        update_fields = {
+            f"semesters.{semester}.{entry_index}.substitute": substitute,
+            f"semesters.{semester}.{entry_index}.original_teacher": original_teacher,
+            f"semesters.{semester}.{entry_index}.modification": modification,
+            "version": published["version"] + 1
+        }
+        
+        # If we have an original teacher recorded, we can restore it as the main teacher
+        if "original_teacher" in entry and entry["original_teacher"]:
+            update_fields[f"semesters.{semester}.{entry_index}.teacher"] = entry["original_teacher"]
+        
+        # Remove substitute and original_teacher fields
+        update = {
+            "$set": update_fields,
+            "$unset": {
+                f"semesters.{semester}.{entry_index}.substitute": "",
+                f"semesters.{semester}.{entry_index}.original_teacher": ""
+            }
+        }
+        
+        # Perform update
+        result = db["PublishedTimetable"].update_one(
+            {"_id": published["_id"]},
+            update
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=500, detail="Failed to assign substitute teacher")
+        
+        # Create notification about the substitution
+        create_timetable_notification("substitute_assigned", True)
+        
+        return {
+            "success": True,
+            "message": "Substitute teacher assigned successfully",
+            "semester": semester,
+            "entry_index": entry_index,
+            "substitute": substitute,
+            "original_teacher": original_teacher
+        }
+        
+    except HTTPException as http_ex:
+        # Re-raise HTTP exceptions
+        raise http_ex
+    except Exception as e:
+        logging.error(f"Failed to assign substitute teacher: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to assign substitute teacher: {str(e)}")
+
+@router.put("/published/remove-substitute")
+async def remove_substitute(
+    semester: str,
+    entry_index: int
+):
+    """
+    Remove a substitute teacher from a specific timetable entry.
+    This is used when the original faculty member becomes available again.
+    """
+    try:
+        # Get current user for tracking
+        # In a real app, get this from auth context
+        current_user_id = "admin"  # Placeholder
+        
+        # Find active published timetable
+        published = db["PublishedTimetable"].find_one({"status": "active"})
+        
+        if not published:
+            raise HTTPException(status_code=404, detail="No active published timetable found")
+        
+        # Check if semester exists
+        if semester not in published["semesters"]:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Semester {semester} not found in the published timetable"
+            )
+        
+        # Check if entry index is valid
+        if entry_index < 0 or entry_index >= len(published["semesters"][semester]):
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Entry index {entry_index} is out of range for semester {semester}"
+            )
+        
+        # Get the entry to update
+        entry = published["semesters"][semester][entry_index]
+        
+        # Check if there is a substitute to remove
+        if "substitute" not in entry or not entry["substitute"]:
+            return {
+                "success": True,
+                "message": "No substitute teacher to remove",
+                "semester": semester,
+                "entry_index": entry_index
+            }
+        
+        # Prepare modification record
+        modification = {
+            "modified_at": datetime.now(),
+            "modified_by": current_user_id,
+            "reason": "Substitute teacher removed"
+        }
+        
+        # Update fields - restore original teacher if available
+        update_fields = {
+            "version": published["version"] + 1,
+            f"semesters.{semester}.{entry_index}.modification": modification
+        }
+        
+        # If we have an original teacher recorded, we can restore it as the main teacher
+        if "original_teacher" in entry and entry["original_teacher"]:
+            update_fields[f"semesters.{semester}.{entry_index}.teacher"] = entry["original_teacher"]
+        
+        # Remove substitute and original_teacher fields
+        update = {
+            "$set": update_fields,
+            "$unset": {
+                f"semesters.{semester}.{entry_index}.substitute": "",
+                f"semesters.{semester}.{entry_index}.original_teacher": ""
+            }
+        }
+        
+        # Perform update
+        result = db["PublishedTimetable"].update_one(
+            {"_id": published["_id"]},
+            update
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=500, detail="Failed to remove substitute teacher")
+        
+        # Create notification about the substitution removal
+        create_timetable_notification("substitute_removed", True)
+        
+        return {
+            "success": True,
+            "message": "Substitute teacher removed successfully",
+            "semester": semester,
+            "entry_index": entry_index
+        }
+        
+    except HTTPException as http_ex:
+        # Re-raise HTTP exceptions
+        raise http_ex
+    except Exception as e:
+        logging.error(f"Failed to remove substitute teacher: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to remove substitute teacher: {str(e)}")
