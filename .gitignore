@@ -36,3 +36,7 @@ build/
 .DS_Store
 Thumbs.db
 "@ | Out-File -FilePath .gitignore -Encoding UTF8
+
+.qodo 
+.idea 
+*.zip
