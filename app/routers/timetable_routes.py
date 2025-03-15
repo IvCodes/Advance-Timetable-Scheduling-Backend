@@ -13,8 +13,32 @@ import threading
 import logging
 from datetime import datetime
 from typing import Optional, List, Dict
+import os
+from openai import OpenAI
+from pydantic import BaseModel
 
 router = APIRouter()
+
+# Get OpenRouter API key from environment variables
+openrouter_api_key = os.environ.get("OPENROUTER_API_KEY")
+if not openrouter_api_key:
+    logging.warning("OPENROUTER_API_KEY not found in environment variables. DeepSeek integration will not work.")
+
+# Configure OpenAI client to use OpenRouter
+client = OpenAI(
+    api_key=openrouter_api_key,
+    base_url="https://openrouter.ai/api/v1",
+)
+
+# Define common error messages as constants
+NO_PUBLISHED_TIMETABLE = "No published timetable found"
+NO_ACTIVE_PUBLISHED_TIMETABLE = "No active published timetable found"
+SEMESTER_NOT_FOUND = "Semester not found in published timetable" 
+ENTRY_INDEX_OUT_OF_RANGE = "Entry index is out of range"
+
+class AlgorithmEvaluation(BaseModel):
+    """Model for timetable algorithm evaluation input"""
+    scores: Dict[str, Dict[str, float]]
 
 def evaluate():
     """
@@ -497,7 +521,7 @@ async def get_published_timetable():
         published = db["PublishedTimetable"].find_one({"status": "active"})
         
         if not published:
-            return {"message": "No active published timetable found"}
+            return {"message": NO_ACTIVE_PUBLISHED_TIMETABLE}
         
         # Clean MongoDB-specific fields
         published = clean_mongo_documents(published)
@@ -518,7 +542,7 @@ async def get_faculty_timetable(faculty_id: str):
         published = db["PublishedTimetable"].find_one({"status": "active"})
         
         if not published:
-            return {"message": "No active published timetable found"}
+            return {"message": NO_ACTIVE_PUBLISHED_TIMETABLE}
         
         # Filter entries for this faculty
         faculty_timetable = {}
@@ -558,7 +582,7 @@ async def get_student_timetable(semester: str):
         published = db["PublishedTimetable"].find_one({"status": "active"})
         
         if not published:
-            return {"message": "No active published timetable found"}
+            return {"message": NO_ACTIVE_PUBLISHED_TIMETABLE}
         
         # Get entries for this semester
         semester_entries = published["semesters"].get(semester, [])
@@ -601,24 +625,28 @@ async def update_timetable_entry(
         published = db["PublishedTimetable"].find_one({"status": "active"})
         
         if not published:
-            raise HTTPException(status_code=404, detail="No active published timetable found")
+            raise HTTPException(status_code=404, detail=NO_ACTIVE_PUBLISHED_TIMETABLE)
         
         # Check if semester exists
         if semester not in published["semesters"]:
             raise HTTPException(
                 status_code=404, 
-                detail=f"Semester {semester} not found in the published timetable"
+                detail=SEMESTER_NOT_FOUND
             )
         
         # Check if entry index is valid
         if entry_index < 0 or entry_index >= len(published["semesters"][semester]):
             raise HTTPException(
                 status_code=404, 
-                detail=f"Entry index {entry_index} is out of range for semester {semester}"
+                detail=ENTRY_INDEX_OUT_OF_RANGE
             )
         
         # Get the entry to update
         entry = published["semesters"][semester][entry_index]
+        
+        # Store the original teacher in the entry if not already present
+        if "original_teacher" not in entry:
+            entry["original_teacher"] = entry.get("teacher", "Unknown")
         
         # Prepare modification record
         modification = {
@@ -689,47 +717,39 @@ async def assign_substitute(
     This is used when a faculty member is unavailable for a class.
     """
     try:
-        # Get current user for tracking
-        # In a real app, get this from auth context
-        current_user_id = "admin"  # Placeholder
-        
-        # Find active published timetable
-        published = db["PublishedTimetable"].find_one({"status": "active"})
-        
+        # Get the published timetable
+        published = db["PublishedTimetable"].find_one({})
         if not published:
-            raise HTTPException(status_code=404, detail="No active published timetable found")
-        
-        # Check if semester exists
+            raise HTTPException(status_code=404, detail=NO_PUBLISHED_TIMETABLE)
+            
+        # Validate semester exists in the published timetable
         if semester not in published["semesters"]:
-            raise HTTPException(
-                status_code=404, 
-                detail=f"Semester {semester} not found in the published timetable"
-            )
-        
-        # Check if entry index is valid
+            raise HTTPException(status_code=404, detail=SEMESTER_NOT_FOUND)
+            
+        # Validate entry_index is valid
         if entry_index < 0 or entry_index >= len(published["semesters"][semester]):
-            raise HTTPException(
-                status_code=404, 
-                detail=f"Entry index {entry_index} is out of range for semester {semester}"
-            )
-        
+            raise HTTPException(status_code=404, detail=ENTRY_INDEX_OUT_OF_RANGE)
+            
         # Get the entry to update
         entry = published["semesters"][semester][entry_index]
         
-        # Save the original teacher if this is the first substitution
-        original_teacher = entry.get("original_teacher", entry.get("teacher"))
+        # Store the original teacher in the entry if not already present
+        if "original_teacher" not in entry:
+            entry["original_teacher"] = entry.get("teacher", "Unknown")
         
         # Prepare modification record
         modification = {
             "modified_at": datetime.now(),
-            "modified_by": current_user_id,
-            "reason": reason or "Faculty substitution" 
+            "type": "substitute_assigned",
+            "field": "teacher",
+            "previous_value": entry.get("teacher"),
+            "new_value": substitute,
+            "reason": reason or "No reason provided"
         }
         
         # Update fields
         update_fields = {
             f"semesters.{semester}.{entry_index}.substitute": substitute,
-            f"semesters.{semester}.{entry_index}.original_teacher": original_teacher,
             f"semesters.{semester}.{entry_index}.modification": modification,
             "version": published["version"] + 1
         }
@@ -765,7 +785,7 @@ async def assign_substitute(
             "semester": semester,
             "entry_index": entry_index,
             "substitute": substitute,
-            "original_teacher": original_teacher
+            "original_teacher": entry.get("original_teacher")
         }
         
     except HTTPException as http_ex:
@@ -793,20 +813,20 @@ async def remove_substitute(
         published = db["PublishedTimetable"].find_one({"status": "active"})
         
         if not published:
-            raise HTTPException(status_code=404, detail="No active published timetable found")
+            raise HTTPException(status_code=404, detail=NO_ACTIVE_PUBLISHED_TIMETABLE)
         
         # Check if semester exists
         if semester not in published["semesters"]:
             raise HTTPException(
                 status_code=404, 
-                detail=f"Semester {semester} not found in the published timetable"
+                detail=SEMESTER_NOT_FOUND
             )
         
         # Check if entry index is valid
         if entry_index < 0 or entry_index >= len(published["semesters"][semester]):
             raise HTTPException(
                 status_code=404, 
-                detail=f"Entry index {entry_index} is out of range for semester {semester}"
+                detail=ENTRY_INDEX_OUT_OF_RANGE
             )
         
         # Get the entry to update
@@ -872,3 +892,66 @@ async def remove_substitute(
     except Exception as e:
         logging.error(f"Failed to remove substitute teacher: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to remove substitute teacher: {str(e)}")
+
+@router.post("/evaluate-algorithms")
+async def evaluate_algorithms(evaluation: AlgorithmEvaluation):
+    """
+    Evaluate timetable algorithms using DeepSeek V3 via OpenRouter.
+    
+    This endpoint accepts evaluation scores for different algorithms and 
+    returns an analysis and recommendation from the LLM.
+    """
+    try:
+        # Format the scores for the LLM prompt
+        evaluation_summary = format_scores_for_api(evaluation.scores)
+        
+        prompt = f"""
+The following are evaluation scores for different algorithms used in a timetable scheduling optimization project:
+{evaluation_summary}
+
+Based on these results, provide an analysis of each algorithm in this format:
+1. First, list the algorithms from best to worst based on their scores
+2. Then, for each algorithm, provide a 1-2 sentence description of its suitability for timetable generation
+3. Finally, provide a clear recommendation about which algorithm should be used and why
+
+Keep your entire response under 150 words. Be specific about the strengths and weaknesses of each algorithm based on the metrics provided.
+"""
+
+        logging.info("Sending evaluation request to DeepSeek")
+        
+        # Call DeepSeek V3 via OpenRouter API
+        # Note: OpenAI client.chat.completions.create() doesn't need to be awaited
+        completion = client.chat.completions.create(
+            model="deepseek/deepseek-chat:free",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0.7,
+            max_tokens=250
+        )
+        
+        # Extract the response content
+        response = completion.choices[0].message.content
+        logging.info("Received response from DeepSeek")
+        
+        return {"analysis": response}
+    
+    except Exception as e:
+        logging.error(f"Error evaluating algorithms with DeepSeek: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to evaluate algorithms: {str(e)}")
+
+def format_scores_for_api(scores):
+    """Format the algorithm evaluation scores for the LLM prompt"""
+    formatted_text = ""
+    
+    for algorithm, metrics in scores.items():
+        formatted_text += f"\n{algorithm} Algorithm:\n"
+        for metric, value in metrics.items():
+            # Format the value to 2 decimal places if it's a float
+            formatted_value = f"{value:.2f}" if isinstance(value, float) else str(value)
+            formatted_text += f"- {metric}: {formatted_value}\n"
+    
+    return formatted_text
