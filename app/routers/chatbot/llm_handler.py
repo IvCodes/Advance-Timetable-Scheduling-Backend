@@ -19,21 +19,33 @@ class LLMHandler:
         self.api_key = os.environ.get("OPENROUTER_API_KEY")
         if not self.api_key:
             logger.warning("OPENROUTER_API_KEY not found in environment variables. LLM integration will not work.")
+        else:
+            logger.info("OPENROUTER_API_KEY found in environment variables.")
             
         # Model configuration
         self.model_name = "deepseek/deepseek-chat:free"
         self.temperature = 0.7
         self.max_tokens = 300
         
-        # Initialize OpenAI client for OpenRouter
-        self.client = OpenAI(
-            api_key=self.api_key,
-            base_url="https://openrouter.ai/api/v1",
-        )
+        # Use localhost for the HTTP referrer in testing environment
+        referer = "http://localhost:8080"
         
-        logger.info(f"LLM Handler initialized with model: {self.model_name}")
-    
-    async def process_query(self, 
+        try:
+            # Initialize OpenAI client for OpenRouter
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url="https://openrouter.ai/api/v1",
+                default_headers={
+                    "HTTP-Referer": referer,
+                    "X-Title": "Timetable Scheduling Assistant"
+                }
+            )
+            logger.info(f"LLM Handler initialized with model: {self.model_name}")
+        except Exception as e:
+            logger.error(f"Error initializing OpenAI client: {str(e)}")
+            self.client = None
+        
+    def process_query(self, 
                      query: str, 
                      user_data: Dict[str, Any],
                      conversation_history: List[Dict[str, Any]]
@@ -52,6 +64,11 @@ class LLMHandler:
             - List of follow-up suggestions
         """
         try:
+            # Check if client is properly initialized
+            if self.client is None:
+                logger.error("LLM client is not initialized. Cannot process query.")
+                return "I'm sorry, I'm having trouble connecting to my AI service. Please try again later or contact support.", ["Try again", "Contact support"]
+                
             # Format conversation history for the LLM
             formatted_history = self._format_conversation_history(conversation_history)
             
@@ -61,31 +78,16 @@ class LLMHandler:
             # Create the system message with instructions
             system_message = {
                 "role": "system",
-                "content": f"""You are a helpful AI assistant for a university timetable scheduling system.
-                
-Your name is TimetableBot. Be friendly, concise, and helpful.
-
-{user_context}
-
-When responding to queries:
-1. If asked about timetables or schedules, provide specific information when available
-2. If asked about rooms, classes, or faculty, be specific based on the user's role and subgroup
-3. Always be respectful and professional
-4. Keep responses brief and to the point
-5. Do not make up information if you don't know the answer
-                """
+                "content": self._create_system_prompt(user_context)
             }
             
             # Combine everything for the final prompt
-            complete_messages = [system_message] + formatted_history + [{
-                "role": "user",
-                "content": query
-            }]
+            complete_messages = [system_message] + formatted_history + [{"role": "user", "content": query}]
             
             logger.info(f"Sending query to LLM: {query[:50]}...")
             
             # Get response from LLM API
-            response = await self._get_llm_response(complete_messages)
+            response = self._get_llm_response(complete_messages)
             
             # Generate suggestions based on the query
             suggestions = self._generate_suggestions(query)
@@ -94,9 +96,9 @@ When responding to queries:
             
         except Exception as e:
             logger.error(f"Error in LLM handler: {str(e)}")
-            return "I'm sorry, I encountered an error processing your request. Please try again.", ["Help", "Show my timetable", "When is my next class?"]
+            return "I'm sorry, I encountered an error processing your request. Please try again.", ["Try again", "Contact support"]
     
-    async def _get_llm_response(self, messages: List[Dict[str, Any]]) -> str:
+    def _get_llm_response(self, messages: List[Dict[str, Any]]) -> str:
         """
         Send a request to the LLM API and return the response.
         
@@ -107,67 +109,71 @@ When responding to queries:
             The text response from the LLM
         """
         try:
-            # Use localhost for the HTTP referrer in testing environment
-            referer = "http://localhost:8080"
+            logger.info("Sending request to OpenRouter API")
             
             # Make the API request to OpenRouter
-            response = await self.client.chat.completions.create(
+            response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
                 temperature=self.temperature,
                 max_tokens=self.max_tokens,
-                headers={
-                    "HTTP-Referer": referer,
-                    "X-Title": "Timetable Scheduling Assistant"
-                }
             )
             
+            logger.info(f"Received response from OpenRouter API: status_code={getattr(response, 'status_code', 'N/A')}")
+            
             # Extract and return the response text
-            return response.choices[0].message.content
+            content = response.choices[0].message.content
+            logger.info(f"Response content: {content[:50]}...")
+            return content
             
         except Exception as e:
-            logger.error(f"Error calling LLM API: {str(e)}")
+            error_type = type(e).__name__
+            logger.error(f"Error calling LLM API: {error_type}: {str(e)}")
+            # Add more verbose logging to help debugging
+            if hasattr(e, 'response') and hasattr(e.response, 'json'):
+                try:
+                    logger.error(f"API error details: {e.response.json()}")
+                except Exception as json_error:
+                    logger.error(f"Failed to parse error response: {str(json_error)}")
             raise
     
-    def _format_conversation_history(self, history: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Format conversation history for the LLM prompt."""
+    def _format_conversation_history(self, conversation_history: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+        """Format conversation history for LLM input."""
         formatted_history = []
-        
-        # Take only the last 5 messages to avoid context length issues
-        recent_history = history[-5:] if len(history) > 5 else history
-        
-        for message in recent_history:
-            role = "assistant" if message["role"] == "bot" else "user"
-            formatted_history.append({
-                "role": role,
-                "content": message["content"]
-            })
-            
+        for msg in conversation_history:
+            if msg.get("role") in ["user", "assistant"] and msg.get("content"):
+                formatted_history.append({
+                    "role": msg["role"],
+                    "content": msg["content"]
+                })
         return formatted_history
     
     def _generate_user_context(self, user_data: Dict[str, Any]) -> str:
-        """Generate context about the user for the LLM prompt."""
-        context = "User Context:\n"
+        """Generate context about the user for personalized responses."""
+        user_id = user_data.get("user_id", "unknown")
+        return f"You are chatting with user {user_id}."
+    
+    def _create_system_prompt(self, user_context: str) -> str:
+        """Create system prompt with instructions."""
+        return f"""You are a helpful Timetable Assistant for an advanced academic scheduling system. {user_context}
         
-        # Add role-specific information
-        if user_data.get("role") == "student":
-            context += f"""
-- Student: {user_data.get('first_name', 'User')}
-- Subgroup: {user_data.get('subgroup', 'Unknown')}
-- Year: {user_data.get('year', 'Unknown')}
-- Subjects: {', '.join(user_data.get('subjects', ['Unknown']))}
+Your role is to help users understand the timetable scheduling system and provide information about:
+
+1. EXPLAINING ALGORITHMS IN SIMPLE TERMS:
+   - Genetic Algorithms: "Think of class schedules as if they're competing in a tournament. We start with many possible schedules, keep the best ones (like the winners of each round), combine their good qualities, and occasionally make small random changes. After many rounds, we end up with an optimal schedule - just like natural selection produces well-adapted organisms."
+   
+   - Constraint Satisfaction: "This is like solving a puzzle where each piece (a class) must fit perfectly with others. We have rules like 'no teacher can be in two places at once' or 'this room can only hold 30 students.' The algorithm finds arrangements where all these rules are satisfied."
+   
+   - Simulated Annealing: "Imagine trying to find the lowest point in a hilly landscape while blindfolded. Sometimes you need to walk uphill temporarily to avoid getting stuck in a small valley, when there's a much deeper valley elsewhere. This algorithm works similarly by sometimes accepting worse solutions temporarily to find better ones later."
+
+2. APPLICATION FEATURES:
+   - How to view personal timetables
+   - How to find free rooms
+   - How to check when classes are scheduled
+   - Other user-specific features
+
+Respond in a friendly, helpful manner. Keep answers concise but thorough. Avoid technical jargon and use everyday analogies when explaining complex concepts.
 """
-        elif user_data.get("role") == "faculty":
-            context += f"""
-- Faculty: {user_data.get('first_name', 'User')} {user_data.get('last_name', '')}
-- Faculty ID: {user_data.get('faculty_id', 'Unknown')}
-- Departments: {', '.join(user_data.get('departments', ['Unknown']))}
-- Subjects: {', '.join(user_data.get('subjects', ['Unknown']))}
-"""
-        else:
-            context += f"- User: {user_data.get('first_name', 'User')}\n"
-            
-        return context
     
     def _generate_suggestions(self, query: str) -> List[str]:
         """Generate follow-up suggestions based on the query."""

@@ -1,30 +1,32 @@
+from typing import Dict, List, Optional
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from typing import List, Dict, Any, Optional
 from pydantic import BaseModel
-from datetime import datetime
-from app.utils.database import db
-from motor.motor_asyncio import AsyncIOMotorDatabase
 import logging
 from bson import ObjectId
+from app.routers.chatbot.llm_handler import LLMHandler
+from app.utils.database import db
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Create router
-router = APIRouter(
-    tags=["chatbot"],
-    responses={404: {"description": "Not found"}},
-)
+# Initialize OAuth2 scheme for token authentication
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
-# Function to get database as dependency
-async def get_database():
-    return db
+# Initialize LLM handler
+llm_handler = LLMHandler()
 
-# Chat message models
+# Constants
+PUSH_OPERATION = "$push"
+
+# Router
+router = APIRouter()
+
+# Models
 class ChatMessage(BaseModel):
-    role: str  # 'user' or 'assistant'
+    role: str
     content: str
     timestamp: Optional[datetime] = None
 
@@ -36,137 +38,206 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     message: str
     conversation_id: str
-    suggestions: Optional[List[str]] = None
-
-# OAuth scheme for token verification
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+    suggestions: List[str] = []
 
 # Routes
 @router.post("/message", response_model=ChatResponse)
-async def process_message(
-    chat_request: ChatRequest,
-    token: str = Depends(oauth2_scheme),
-    db: AsyncIOMotorDatabase = Depends(get_database)
-):
+def process_message(
+    chat_request: ChatRequest
+) -> ChatResponse:
     """
-    Process a user's chat message and return an appropriate response.
-    This endpoint handles the routing between rule-based responses and LLM.
+    Process an incoming chat message and generate a response.
+    
+    Args:
+        chat_request: The chat request containing the user message
+        
+    Returns:
+        ChatResponse containing the assistant's response and conversation ID
     """
     try:
-        # For demo purposes, we're using a simple implementation
-        # In production, you would decode and verify the token
+        # Log the incoming message
+        logger.info(f"Received chat request: message='{chat_request.message}' user_id='{chat_request.user_id}' conversation_id='{chat_request.conversation_id}'")
         
-        # Log the incoming request for debugging
-        logger.info(f"Received chat request: {chat_request}")
+        # Handle conversation history
+        conversation_id, mongo_id = _handle_conversation_history(chat_request)
         
-        # Create or retrieve conversation history
-        conversation_id = chat_request.conversation_id
-        if not conversation_id:
-            # Create a new conversation
-            conversation_id = str(await db.chat_conversations.insert_one({
-                "user_id": chat_request.user_id or "anonymous",
-                "created_at": datetime.now(),
-                "messages": []
-            }).inserted_id)
-            logger.info(f"Created new conversation with ID: {conversation_id}")
-        else:
-            logger.info(f"Using existing conversation with ID: {conversation_id}")
-        
-        # Store the user message
-        new_message = {
-            "role": "user",
-            "content": chat_request.message,
-            "timestamp": datetime.now()
-        }
-        
-        try:
-            # Convert string ID to ObjectId for MongoDB
-            mongo_id = ObjectId(conversation_id)
-            
-            # Update the conversation with the new message
-            update_result = await db.chat_conversations.update_one(
-                {"_id": mongo_id},
-                {"$push": {"messages": new_message}}
-            )
-            
-            if update_result.matched_count == 0:
-                # If no document was matched, the conversation ID might be invalid
-                # Create a new conversation instead
-                logger.warning(f"Conversation ID {conversation_id} not found, creating new conversation")
-                conversation_id = str(await db.chat_conversations.insert_one({
-                    "user_id": chat_request.user_id or "anonymous",
-                    "created_at": datetime.now(),
-                    "messages": [new_message]
-                }).inserted_id)
-                logger.info(f"Created new conversation with ID: {conversation_id}")
-        except Exception as e:
-            logger.error(f"Error updating conversation: {str(e)}")
-            # Create a new conversation as fallback
-            conversation_id = str(await db.chat_conversations.insert_one({
-                "user_id": chat_request.user_id or "anonymous",
-                "created_at": datetime.now(),
-                "messages": [new_message]
-            }).inserted_id)
-            logger.info(f"Created new conversation with ID: {conversation_id} after error")
-        
-        # Process the message (placeholder for now)
-        # In phase 2, we'll implement the actual rule-based and LLM routing
-        response = "This is a placeholder response from the chatbot."
-        
-        # Generate suggestions based on the context
-        suggestions = ["Show my timetable", "When is my next class?", "Find free rooms"]
-        
-        # Store the assistant response
-        assistant_message = {
-            "role": "assistant",
-            "content": response,
-            "timestamp": datetime.now()
-        }
-        
-        try:
-            # Convert string ID to ObjectId for MongoDB
-            mongo_id = ObjectId(conversation_id)
-            
-            # Update the conversation with the assistant's response
-            await db.chat_conversations.update_one(
-                {"_id": mongo_id},
-                {"$push": {"messages": assistant_message}}
-            )
-        except Exception as e:
-            logger.error(f"Error storing assistant response: {str(e)}")
+        # Generate response
+        result = _generate_response(mongo_id, chat_request)
+        response = result[0]
+        suggestions = result[1]
         
         return ChatResponse(
             message=response,
             conversation_id=conversation_id,
             suggestions=suggestions
         )
-        
     except Exception as e:
-        logger.error(f"Error processing chat message: {str(e)}")
+        logger.error("Error processing chat message: " + str(e))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to process message: {str(e)}"
         )
 
+# Helper functions to reduce complexity
+def _handle_conversation_history(chat_request):
+    """Process and store conversation history, return conversation_id and mongo_id."""
+    conversation_id = chat_request.conversation_id
+    if not conversation_id or conversation_id == "string":  # Handle default Swagger UI value
+        # Create a new conversation
+        result = db.chat_conversations.insert_one({
+            "user_id": chat_request.user_id or "anonymous",
+            "created_at": datetime.now(),
+            "messages": []
+        })
+        conversation_id = str(result.inserted_id)
+        logger.info(f"Created new conversation with ID: {conversation_id}")
+    else:
+        logger.info(f"Using existing conversation with ID: {conversation_id}")
+    
+    # Store the user message
+    new_message = {
+        "role": "user",
+        "content": chat_request.message,
+        "timestamp": datetime.now()
+    }
+    
+    try:
+        # Try to convert string ID to ObjectId for MongoDB
+        try:
+            mongo_id = ObjectId(conversation_id)
+        except Exception as e:
+            logger.warning(f"Invalid conversation ID format: {e}, creating new conversation")
+            result = db.chat_conversations.insert_one({
+                "user_id": chat_request.user_id or "anonymous",
+                "created_at": datetime.now(),
+                "messages": [new_message]
+            })
+            conversation_id = str(result.inserted_id)
+            mongo_id = ObjectId(conversation_id)
+            logger.info(f"Created new conversation with ID: {conversation_id}")
+        
+        # Update the conversation with the new message
+        update_result = db.chat_conversations.update_one(
+            {"_id": mongo_id},
+            {PUSH_OPERATION: {"messages": new_message}}
+        )
+        
+        if update_result.matched_count == 0:
+            # If no document was matched, the conversation ID might be invalid
+            # Create a new conversation instead
+            logger.warning(f"Conversation ID {conversation_id} not found, creating new conversation")
+            result = db.chat_conversations.insert_one({
+                "user_id": chat_request.user_id or "anonymous",
+                "created_at": datetime.now(),
+                "messages": [new_message]
+            })
+            conversation_id = str(result.inserted_id)
+            mongo_id = ObjectId(conversation_id)
+            logger.info(f"Created new conversation with ID: {conversation_id}")
+    except Exception as e:
+        logger.error(f"Error updating conversation: {str(e)}")
+        # Create a new conversation as fallback
+        result = db.chat_conversations.insert_one({
+            "user_id": chat_request.user_id or "anonymous",
+            "created_at": datetime.now(),
+            "messages": [new_message]
+        })
+        conversation_id = str(result.inserted_id)
+        mongo_id = ObjectId(conversation_id)
+        logger.info(f"Created new conversation with ID: {conversation_id} after error")
+    
+    return conversation_id, mongo_id
+
+def _generate_response(mongo_id, chat_request):
+    """Generate a response using the LLM handler and store it in the database."""
+    try:
+        # Get user data from the request
+        user_data = {
+            "id": chat_request.user_id,
+            "role": "student"  # Default role
+        }
+        
+        # Format messages for the LLM
+        conversation = db.chat_conversations.find_one({"_id": mongo_id})
+        conversation_history = conversation.get("messages", [])
+        
+        # Process the query using the LLM handler
+        logger.info("Sending request to DeepSeek API")
+        response, suggestions = llm_handler.process_query(
+            chat_request.message,
+            user_data,
+            conversation_history
+        )
+        logger.info("Received response from DeepSeek API")
+        
+        # Add assistant message to conversation history
+        try:
+            assistant_message = {
+                "role": "assistant",
+                "content": response,
+                "timestamp": datetime.now()
+            }
+            
+            db.chat_conversations.update_one(
+                {"_id": mongo_id},
+                {PUSH_OPERATION: {"messages": assistant_message}}
+            )
+        except Exception as e:
+            logger.error(f"Error storing assistant response in database: {str(e)}")
+            # Continue anyway, so the user still gets a response
+        
+        return response, suggestions
+    except Exception as e:
+        logger.error(f"Error generating response: {str(e)}")
+        # Return a fallback response to the user when the LLM fails
+        fallback_response = "I'm experiencing technical difficulties at the moment. Please try again in a few moments or contact support."
+        fallback_suggestions = ["Try again", "Contact support", "Ask a different question"]
+        
+        # Try to store the fallback response in the database
+        try:
+            fallback_message = {
+                "role": "assistant",
+                "content": fallback_response,
+                "timestamp": datetime.now()
+            }
+            
+            db.chat_conversations.update_one(
+                {"_id": mongo_id},
+                {PUSH_OPERATION: {"messages": fallback_message}}
+            )
+        except Exception as db_error:
+            logger.error(f"Error storing fallback response: {str(db_error)}")
+        
+        return fallback_response, fallback_suggestions
+
 @router.get("/history/{conversation_id}", response_model=List[ChatMessage])
-async def get_conversation_history(
-    conversation_id: str,
-    token: str = Depends(oauth2_scheme),
-    db: AsyncIOMotorDatabase = Depends(get_database)
+def get_conversation_history(
+    conversation_id: str
 ):
     """
-    Retrieve the conversation history for a specific conversation ID.
+    Get conversation history for a given conversation ID.
+    
+    Args:
+        conversation_id: The ID of the conversation to retrieve
+        
+    Returns:
+        List of chat messages in the conversation
     """
     try:
-        conversation = await db.chat_conversations.find_one({"_id": ObjectId(conversation_id)})
+        # Convert string ID to ObjectId
+        mongo_id = ObjectId(conversation_id)
+        
+        # Get conversation from database
+        conversation = db.chat_conversations.find_one({"_id": mongo_id})
+        
         if not conversation:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Conversation not found"
+                detail=f"Conversation with ID {conversation_id} not found"
             )
         
+        # Return messages from the conversation
         return conversation.get("messages", [])
-        
     except Exception as e:
         logger.error(f"Error retrieving conversation history: {str(e)}")
         raise HTTPException(

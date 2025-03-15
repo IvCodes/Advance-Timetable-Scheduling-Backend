@@ -15,7 +15,7 @@ from datetime import datetime
 from typing import Optional, List, Dict
 import os
 from openai import OpenAI
-from pydantic import BaseModel
+from pydantic import BaseModel 
 
 router = APIRouter()
 
