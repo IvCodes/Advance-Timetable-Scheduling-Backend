@@ -87,3 +87,7 @@ def get_timetables():
     else:
         timetable = list(db["timetables"].find()) if "timetables" in collections else []
     return timetable
+
+def get_constraints():
+    constraints = list(db["constraints"].find())
+    return constraints
