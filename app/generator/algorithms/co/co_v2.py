@@ -11,7 +11,7 @@ ALPHA = 1
 BETA = 2
 Q = 100
 STUDENTS_PER_SUBGROUP = 40  
-
+ 
 # Global data holders (populated by get_data)
 days = []
 facilities = []
