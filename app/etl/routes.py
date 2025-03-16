@@ -32,9 +32,26 @@ async def upload_file(entity_type: str, file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/templates/{entity_type}")
-async def get_template(entity_type: str):
+async def get_template(entity_type: str, format: str = "xlsx"):
     """
     Generate and return a template file for a specific entity type.
+    Supports both Excel (.xlsx) and CSV (.csv) formats.
+    
+    Args:
+        entity_type: Type of entity (activities, modules, spaces, years)
+        format: File format (xlsx or csv)
     """
-    # Logic to generate and return appropriate template
-    pass
+    from app.etl.template_generators import get_template_generator
+    
+    if entity_type not in ["activities", "modules", "spaces", "years"]:
+        raise HTTPException(status_code=400, detail=f"Unsupported entity type: {entity_type}")
+        
+    if format.lower() not in ["xlsx", "csv"]:
+        raise HTTPException(status_code=400, detail=f"Unsupported format: {format}. Use 'xlsx' or 'csv'.")
+    
+    template = get_template_generator(entity_type, format.lower())
+    
+    if not template:
+        raise HTTPException(status_code=500, detail=f"Failed to generate template for {entity_type}")
+        
+    return template
