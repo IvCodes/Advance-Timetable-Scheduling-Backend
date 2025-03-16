@@ -2,6 +2,7 @@
 import pandas as pd
 from fastapi import UploadFile
 from app.models.module_model import Module
+from app.utils.database import db
 from typing import List, Dict, Any
 
 async def process(file: UploadFile) -> Dict[str, Any]:
@@ -55,10 +56,42 @@ async def process(file: UploadFile) -> Dict[str, Any]:
         }
     
     # Insert valid modules into database
-    # (Implementation would depend on your database access pattern)
-    
-    return {
-        'success': True,
-        'message': f"Successfully processed {len(modules)} modules",
-        'inserted_count': len(modules)
-    }
+    try:
+        # Use the MongoDB collection 'modules' from the database
+        modules_collection = db['modules']
+        
+        # Check for existing modules with the same code
+        inserted_count = 0
+        updated_count = 0
+        
+        for module in modules:
+            # Check if module with this code already exists
+            existing = modules_collection.find_one({"code": module['code']})
+            
+            if existing:
+                # Update existing module
+                result = modules_collection.update_one(
+                    {"code": module['code']},
+                    {"$set": module}
+                )
+                if result.modified_count > 0:
+                    updated_count += 1
+            else:
+                # Insert new module
+                result = modules_collection.insert_one(module)
+                if result.inserted_id:
+                    inserted_count += 1
+        
+        return {
+            'success': True,
+            'message': f"Successfully processed {len(modules)} modules",
+            'inserted_count': inserted_count,
+            'updated_count': updated_count
+        }
+    except Exception as e:
+        return {
+            'success': False,
+            'errors': [{'message': f"Database error: {str(e)}"}],
+            'valid_count': valid_count,
+            'invalid_count': 0
+        }

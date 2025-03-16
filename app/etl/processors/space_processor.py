@@ -3,7 +3,9 @@ import pandas as pd
 import json
 from fastapi import UploadFile
 from app.models.space_model import Space
+from app.utils.database import db
 from typing import List, Dict, Any
+import re
 
 async def process(file: UploadFile) -> Dict[str, Any]:
     """Process space data from uploaded file"""
@@ -60,7 +62,7 @@ async def process(file: UploadFile) -> Dict[str, Any]:
             
         if not space.get('code'):
             row_errors.append({'row': i+2, 'field': 'code', 'message': 'Space code is required'})
-        elif not space['code'].match(r"^[A-Z0-9]{3,10}$"):
+        elif not isinstance(space.get('code'), str) or not re.match(r"^[A-Z0-9]{3,10}$", str(space['code'])):
             row_errors.append({'row': i+2, 'field': 'code', 'message': 'Space code must be 3-10 uppercase letters or numbers'})
         
         if not space.get('capacity') or not isinstance(space['capacity'], (int, float)) or space['capacity'] <= 0:
@@ -81,10 +83,42 @@ async def process(file: UploadFile) -> Dict[str, Any]:
         }
     
     # Insert valid spaces into database
-    # (Implementation would depend on your database access pattern)
-    
-    return {
-        'success': True,
-        'message': f"Successfully processed {len(spaces)} spaces",
-        'inserted_count': len(spaces)
-    }
+    try:
+        # Use the MongoDB collection 'Spaces' from the database
+        spaces_collection = db['Spaces']
+        
+        # Check for existing spaces with the same code
+        inserted_count = 0
+        updated_count = 0
+        
+        for space in spaces:
+            # Check if space with this code already exists
+            existing = spaces_collection.find_one({"code": space['code']})
+            
+            if existing:
+                # Update existing space
+                result = spaces_collection.update_one(
+                    {"code": space['code']},
+                    {"$set": space}
+                )
+                if result.modified_count > 0:
+                    updated_count += 1
+            else:
+                # Insert new space
+                result = spaces_collection.insert_one(space)
+                if result.inserted_id:
+                    inserted_count += 1
+        
+        return {
+            'success': True,
+            'message': f"Successfully processed {len(spaces)} spaces",
+            'inserted_count': inserted_count,
+            'updated_count': updated_count
+        }
+    except Exception as e:
+        return {
+            'success': False,
+            'errors': [{'message': f"Database error: {str(e)}"}],
+            'valid_count': valid_count,
+            'invalid_count': 0
+        }

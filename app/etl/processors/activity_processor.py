@@ -4,6 +4,7 @@ import openpyxl as xl
 from fastapi import UploadFile
 from app.models.activity_model import Activity
 from app.etl.validators.activity_validator import validate_activities
+from app.utils.database import db
 from typing import List, Dict, Any
 
 async def process(file: UploadFile) -> Dict[str, Any]:
@@ -64,10 +65,42 @@ async def process(file: UploadFile) -> Dict[str, Any]:
         }
     
     # Insert valid activities into database
-    # (Implementation would depend on your database access pattern)
-    
-    return {
-        'success': True,
-        'message': f"Successfully processed {len(activities)} activities",
-        'inserted_count': len(activities)
-    }
+    try:
+        # Use the MongoDB collection 'Activities' from the database
+        activities_collection = db['Activities']
+        
+        # Check for existing activities with the same code
+        inserted_count = 0
+        updated_count = 0
+        
+        for activity in activities:
+            # Check if activity with this code already exists
+            existing = activities_collection.find_one({"code": activity['code']})
+            
+            if existing:
+                # Update existing activity
+                result = activities_collection.update_one(
+                    {"code": activity['code']},
+                    {"$set": activity}
+                )
+                if result.modified_count > 0:
+                    updated_count += 1
+            else:
+                # Insert new activity
+                result = activities_collection.insert_one(activity)
+                if result.inserted_id:
+                    inserted_count += 1
+        
+        return {
+            'success': True,
+            'message': f"Successfully processed {len(activities)} activities",
+            'inserted_count': inserted_count,
+            'updated_count': updated_count
+        }
+    except Exception as e:
+        return {
+            'success': False,
+            'errors': [{'message': f"Database error: {str(e)}"}],
+            'valid_count': validation_result['valid_count'],
+            'invalid_count': 0
+        }
