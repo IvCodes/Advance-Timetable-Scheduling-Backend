@@ -20,6 +20,7 @@ from app.utils.database import test_connection
 from app.routers import space_routes 
 from app.routers import year_routes, info_router, module_routes, user_router, faculty_routes, timetable_routes, activity_routes
 from app.routers.chatbot.router import router as chatbot_router
+from app.etl import etl_router
 
 log_queue = queue.Queue()
 
@@ -133,6 +134,7 @@ app.include_router(space_routes.router, prefix="/api/v1/space", tags=["Space"])
 app.include_router(timetable_routes.router, prefix="/api/v1/timetable", tags=["Timetable"])
 app.include_router(activity_routes.router, prefix="/api/v1/activity", tags=["Activity"])
 app.include_router(chatbot_router, prefix="/api/v1/chatbot", tags=["Chatbot"])
+app.include_router(etl_router, prefix="/api/v1/etl", tags=["etl"])
 
 @app.get("/")
 async def root():
