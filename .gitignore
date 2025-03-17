@@ -40,3 +40,6 @@ Thumbs.db
 .qodo 
 .idea 
 *.zip
+
+git rm --cached app/scripts/reset_passwords.py
+git rm --cached app/scripts/update_period_order.py
