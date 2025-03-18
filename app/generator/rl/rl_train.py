@@ -1,7 +1,7 @@
 import numpy as np
 import random
 import pickle
-from data_collector import *
+from .data_collector import *
 from deap import base, creator, tools, algorithms
 import random
 from collections import defaultdict

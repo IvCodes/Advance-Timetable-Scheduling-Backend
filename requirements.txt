@@ -68,3 +68,5 @@ uvicorn==0.32.0
 watchfiles==0.24.0
 websockets==14.1
 zstandard==0.23.0
+numpy>=1.20.0
+matplotlib>=3.5.0

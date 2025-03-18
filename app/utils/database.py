@@ -3,6 +3,7 @@ import logging
 from passlib.context import CryptContext
 
 MONGODB_URI:  str = "mongodb+srv://ivCodes:doNF7RbKedWTtB5S@timetablewiz-cluster.6pnyt.mongodb.net/?retryWrites=true&w=majority&appName=TimeTableWiz-Cluster"
+# MONGODB_URI:  str = "mongodb+srv://easaragtech:TUpUMeBKMUC9GjkG@timetablewiz.mfha3.mongodb.net/?retryWrites=true&w=majority&appName=TimetableWiz"
 
 client = MongoClient(MONGODB_URI)
 db = client["time_table_whiz"]

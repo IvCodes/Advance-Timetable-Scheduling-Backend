@@ -1,4 +1,4 @@
-from database import db
+from .database import db
 
 def get_faculties():
     faculties = list(db["faculties"].find())

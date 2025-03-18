@@ -90,7 +90,8 @@ def save_timetable(li, algorithm):
                         "code": generate_timetable_code(index, algorithm),
                         "algorithm": algorithm,
                         "semester": semester, 
-                        "timetable": activities
+                        "timetable": activities,
+                        "published": False
                     },
                     upsert=True
                 )
@@ -276,23 +277,20 @@ async def generate_timetable():
 
 @router.get("/timetables")
 async def get_timetables():
-    timetables = list(db["Timetable"].find())
-    cleaned_timetables = clean_mongo_documents(timetables)
-    eval =  evaluate()
-    for algorithm, scores in eval.items():
-        average_score = sum(scores) / len(scores)
-        eval[algorithm] = {
-            "average_score": average_score,
-        }
-    
-    out ={
-        "timetables": cleaned_timetables,
-        "eval": eval
-    }
-    
-    return out
-
-# Add these new endpoints for notifications
+    try:
+        timetable_documents = list(db["Timetable"].find())
+        
+        # Filter out fields that can't be serialized to JSON
+        clean_timetables = [clean_mongo_documents(doc) for doc in timetable_documents]
+        
+        # also get the latest evaluations from the eval collection
+        evaluations_doc = db["Evaluations"].find_one(sort=[("_id", -1)])
+        evaluations = clean_mongo_documents(evaluations_doc) if evaluations_doc else None
+        
+        return {"timetables": clean_timetables, "eval": evaluations}
+    except Exception as e:
+        logging.error(f"Failed to get timetables: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to get timetables: {str(e)}")
 
 @router.get("/notifications")
 async def get_notifications():
@@ -324,15 +322,15 @@ async def mark_all_notifications_read():
             return {"success": True, "modified_count": 0, "message": "No unread notifications found"}
             
         # Update all unread notifications
-        result = db["notifications"].update_many(
+        db["notifications"].update_many(
             {"read": False},
             {"$set": {"read": True}}
         )
         
         return {
             "success": True, 
-            "modified_count": result.modified_count,
-            "matched_count": result.matched_count
+            "modified_count": unread_count,
+            "matched_count": unread_count
         }
     except Exception as e:
         logging.error(f"Error marking all notifications as read: {str(e)}")
@@ -343,55 +341,15 @@ async def mark_notification_read(notification_id: str):
     """Mark a notification as read"""
     try:
         from bson import ObjectId
-        result = db["notifications"].update_one(
+        db["notifications"].update_one(
             {"_id": notification_id},
             {"$set": {"read": True}}
         )
         
-        if result.matched_count == 0:
-            raise HTTPException(status_code=404, detail="Notification not found")
-            
         return {"message": "Notification marked as read"}
     except Exception as e:
         logging.error(f"Error updating notification: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to update notification: {str(e)}")
-
-# Add this endpoint to your existing timetable_routes.py file
-
-
-    try:
-        # First check if there are any unread notifications
-        unread_count = db["notifications"].count_documents({"read": False})
-        
-        if unread_count == 0:
-            return {"success": True, "modified_count": 0, "message": "No unread notifications found"}
-            
-        # Update all unread notifications
-        result = db["notifications"].update_many(
-            {"read": False},
-            {"$set": {"read": True}}
-        )
-        
-        return {
-            "success": True, 
-            "modified_count": result.modified_count,
-            "matched_count": result.matched_count
-        }
-    except Exception as e:
-        # Log the full error for debugging
-        import traceback
-        error_details = f"{str(e)}\n{traceback.format_exc()}"
-        print(f"Error in mark_all_notifications_read: {error_details}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-def clean_mongo_documents(doc):
-    if isinstance(doc, list):
-        return [clean_mongo_documents(item) for item in doc]
-    if isinstance(doc, dict):
-        return {key: clean_mongo_documents(value) for key, value in doc.items()}
-    if isinstance(doc, ObjectId):
-        return str(doc)
-    return doc
 
 @router.post("/select")
 async def select_algorithm(algorithm: dict):
@@ -411,13 +369,13 @@ async def select_algorithm(algorithm: dict):
         
         if selection_exists:
             # Update existing selection
-            result = db["AlgorithmSelection"].update_one(
+            db["AlgorithmSelection"].update_one(
                 {"_id": selection_exists["_id"]},
                 {"$set": {"selected_algorithm": algorithm_name}}
             )
         else:
             # Create new selection
-            result = db["AlgorithmSelection"].insert_one(
+            db["AlgorithmSelection"].insert_one(
                 {"selected_algorithm": algorithm_name}
             )
             
@@ -477,6 +435,12 @@ async def publish_timetable(algorithm: str):
             {"$set": {"status": "archived"}}
         )
         
+        # Reset published flag on all timetables
+        db["Timetable"].update_many(
+            {},
+            {"$set": {"published": False}}
+        )
+        
         # Create source info
         source = {
             "algorithm": algorithm,
@@ -494,14 +458,20 @@ async def publish_timetable(algorithm: str):
         }
         
         # Insert the new published timetable
-        result = db["PublishedTimetable"].insert_one(published_timetable)
+        db["PublishedTimetable"].insert_one(published_timetable)
+        
+        # Update the published flag in the Timetable collection
+        db["Timetable"].update_many(
+            {"algorithm": algorithm},
+            {"$set": {"published": True}}
+        )
         
         create_timetable_notification(algorithm, True)
         
         return {
             "success": True,
             "message": f"Timetable from {algorithm} algorithm published successfully",
-            "id": str(result.inserted_id)
+            "id": str(published_timetable["_id"])
         }
         
     except HTTPException as http_ex:
@@ -680,13 +650,10 @@ async def update_timetable_entry(
         update_fields["version"] = published["version"] + 1
         
         # Perform update
-        result = db["PublishedTimetable"].update_one(
+        db["PublishedTimetable"].update_one(
             {"_id": published["_id"]},
             {"$set": update_fields}
         )
-        
-        if result.modified_count == 0:
-            raise HTTPException(status_code=500, detail="Failed to update timetable entry")
         
         # Create notification about the timetable update
         create_timetable_notification("timetable_update", True)
@@ -768,13 +735,10 @@ async def assign_substitute(
         }
         
         # Perform update
-        result = db["PublishedTimetable"].update_one(
+        db["PublishedTimetable"].update_one(
             {"_id": published["_id"]},
             update
         )
-        
-        if result.modified_count == 0:
-            raise HTTPException(status_code=500, detail="Failed to assign substitute teacher")
         
         # Create notification about the substitution
         create_timetable_notification("substitute_assigned", True)
@@ -868,13 +832,10 @@ async def remove_substitute(
         }
         
         # Perform update
-        result = db["PublishedTimetable"].update_one(
+        db["PublishedTimetable"].update_one(
             {"_id": published["_id"]},
             update
         )
-        
-        if result.modified_count == 0:
-            raise HTTPException(status_code=500, detail="Failed to remove substitute teacher")
         
         # Create notification about the substitution removal
         create_timetable_notification("substitute_removed", True)
@@ -909,10 +870,12 @@ async def evaluate_algorithms(evaluation: AlgorithmEvaluation):
 The following are evaluation scores for different algorithms used in a timetable scheduling optimization project:
 {evaluation_summary}
 
-Based on these results, provide an analysis of each algorithm in this format:
-1. First, list the algorithms from best to worst based on their scores
-2. Then, for each algorithm, provide a 1-2 sentence description of its suitability for timetable generation
-3. Finally, provide a clear recommendation about which algorithm should be used and why
+Based on these results, provide an analysis of ONLY the GA, RL, and CO algorithms in this format:
+1. First, list these three algorithms (GA, RL, CO) from best to worst based on their scores
+2. Then, for each of these three algorithms, provide a 1-2 sentence description of its suitability for timetable generation
+3. Finally, provide a clear recommendation about which of these three algorithms should be used and why
+
+IMPORTANT: Focus ONLY on GA (Genetic Algorithm), RL (Reinforcement Learning), and CO (Ant Colony Optimization) algorithms. Do NOT include or mention PSO or BC algorithms in your analysis.
 
 Keep your entire response under 150 words. Be specific about the strengths and weaknesses of each algorithm based on the metrics provided.
 """
@@ -955,3 +918,12 @@ def format_scores_for_api(scores):
             formatted_text += f"- {metric}: {formatted_value}\n"
     
     return formatted_text
+
+def clean_mongo_documents(doc):
+    if isinstance(doc, list):
+        return [clean_mongo_documents(item) for item in doc]
+    if isinstance(doc, dict):
+        return {key: clean_mongo_documents(value) for key, value in doc.items()}
+    if isinstance(doc, ObjectId):
+        return str(doc)
+    return doc

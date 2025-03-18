@@ -1,0 +1,2879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLIIT Timetable</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #003366;
+        }
+        .institution-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #003366;
+            color: white;
+        }
+        .toc {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .toc h2 {
+            margin-top: 0;
+        }
+        .toc-list {
+            column-count: 3;
+            column-gap: 20px;
+        }
+        .toc-list a {
+            display: block;
+            text-decoration: none;
+            color: #003366;
+            margin-bottom: 5px;
+        }
+        .toc-list a:hover {
+            text-decoration: underline;
+        }
+        .timetable {
+            width: 100%;
+            margin-bottom: 40px;
+            border-collapse: collapse;
+        }
+        .timetable th {
+            background-color: #003366;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .timetable td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+            min-height: 80px;
+        }
+        .timetable .time-slot {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            width: 10%;
+        }
+        .activity {
+            padding: 5px;
+            margin-bottom: 5px;
+            background-color: #e6f3ff;
+            border-radius: 3px;
+        }
+        .activity .course-code {
+            font-weight: bold;
+            color: #003366;
+        }
+        .activity .course-name {
+            font-style: italic;
+        }
+        .activity .lecturer {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .activity .venue {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .empty-slot {
+            text-align: center;
+            color: #999;
+        }
+        .back-to-top {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            text-decoration: none;
+            color: #003366;
+        }
+        .back-to-top:hover {
+            text-decoration: underline;
+        }
+        .group-header {
+            background-color: #e6f3ff;
+            padding: 10px;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .activity.practical {
+            background-color: #e1f5e1;
+        }
+        .activity.lecture {
+            background-color: #e6f3ff;
+        }
+        .activity.tutorial {
+            background-color: #fff1e6;
+        }
+        .debug {
+            background-color: #ffffcc;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="institution-header">
+        <h1>Sri Lanka Institute of Information Technology</h1>
+        <p>Generated Timetable</p>
+    </div>
+<p id="top">Timetable generated on 2025-03-18 05:46:15</p><div class="debug"><h3>Timetable Debugging Information</h3><p>Timetable structure:</p><ul><li>Number of time slots: 40</li><li>Available slots: MON1, MON2, MON3, MON4, MON5, MON6, MON7, MON8, TUE1, TUE2, TUE3, TUE4, TUE5, TUE6, TUE7, TUE8, WED1, WED2, WED3, WED4, WED5, WED6, WED7, WED8, THU1, THU2, THU3, THU4, THU5, THU6, THU7, THU8, FRI1, FRI2, FRI3, FRI4, FRI5, FRI6, FRI7, FRI8</li><li>Sample time slots:</li><ul><li>MON1 (Monday 08:30): 6 rooms</li><ul><li>Room LAB501: IT1010 (Groups: Y1S1.2)</li><li>Room LABB501: IT1010 (Groups: Y1S1.3)</li><li>Room LH401: IT2040 (Groups: Y2S1.1)</li></ul><li>MON2 (Monday 09:30): 6 rooms</li><ul><li>Room LH401: IT2020 (Groups: Y2S1.5)</li><li>Room LABB501: IT2030 (Groups: Y2S1.4)</li><li>Room LAB501: IT3560 (Groups: Y3S2.5)</li></ul><li>MON3 (Monday 10:30): 6 rooms</li><ul><li>Room LH501: IT1010 (Groups: Y1S1.4)</li><li>Room LAB501: IT4560 (Groups: Y4S2.4)</li><li>Room LABB501: IT4560 (Groups: Y4S2.5)</li></ul><li>MON4 (Monday 11:30): 6 rooms</li><ul><li>Room LH501: IT4010 (Groups: Y4S1.1, Y4S1.2, Y4S1.3, Y4S1.4, Y4S1.5)</li><li>Room LABB502: IT1010 (Groups: Y1S1.5)</li><li>Room LABB501: IT2020 (Groups: Y2S1.1)</li></ul><li>MON5 (Monday 13:30): 6 rooms</li><ul><li>Room LH401: IT1560 (Groups: Y1S2.1, Y1S2.2, Y1S2.3, Y1S2.4, Y1S2.5)</li><li>Room LH501: IT2040 (Groups: Y2S1.1, Y2S1.2, Y2S1.3, Y2S1.4, Y2S1.5)</li><li>Room LAB502: IT1020 (Groups: Y1S1.1)</li></ul></ul><li>Groups Information:</li><ul><li>Group ID: Y1S1.1, Size: 40</li><li>Group ID: Y1S1.2, Size: 40</li><li>Group ID: Y1S1.3, Size: 40</li><li>Group ID: Y1S1.4, Size: 40</li><li>Group ID: Y1S1.5, Size: 40</li><li>Group ID: Y1S2.1, Size: 40</li><li>Group ID: Y1S2.2, Size: 40</li><li>Group ID: Y1S2.3, Size: 40</li><li>Group ID: Y1S2.4, Size: 40</li><li>Group ID: Y1S2.5, Size: 40</li><li>Total groups: 40</li></ul></ul></div>
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <div class="toc-list">
+<h3>All Groups</h3><a href="#Group Y1S1.1">Group Y1S1.1</a><a href="#Group Y1S1.2">Group Y1S1.2</a><a href="#Group Y1S1.3">Group Y1S1.3</a><a href="#Group Y1S1.4">Group Y1S1.4</a><a href="#Group Y1S1.5">Group Y1S1.5</a><a href="#Group Y1S2.1">Group Y1S2.1</a><a href="#Group Y1S2.2">Group Y1S2.2</a><a href="#Group Y1S2.3">Group Y1S2.3</a><a href="#Group Y1S2.4">Group Y1S2.4</a><a href="#Group Y1S2.5">Group Y1S2.5</a><a href="#Group Y2S1.1">Group Y2S1.1</a><a href="#Group Y2S1.2">Group Y2S1.2</a><a href="#Group Y2S1.3">Group Y2S1.3</a><a href="#Group Y2S1.4">Group Y2S1.4</a><a href="#Group Y2S1.5">Group Y2S1.5</a><a href="#Group Y2S2.1">Group Y2S2.1</a><a href="#Group Y2S2.2">Group Y2S2.2</a><a href="#Group Y2S2.3">Group Y2S2.3</a><a href="#Group Y2S2.4">Group Y2S2.4</a><a href="#Group Y2S2.5">Group Y2S2.5</a><a href="#Group Y3S1.1">Group Y3S1.1</a><a href="#Group Y3S1.2">Group Y3S1.2</a><a href="#Group Y3S1.3">Group Y3S1.3</a><a href="#Group Y3S1.4">Group Y3S1.4</a><a href="#Group Y3S1.5">Group Y3S1.5</a><a href="#Group Y3S2.1">Group Y3S2.1</a><a href="#Group Y3S2.2">Group Y3S2.2</a><a href="#Group Y3S2.3">Group Y3S2.3</a><a href="#Group Y3S2.4">Group Y3S2.4</a><a href="#Group Y3S2.5">Group Y3S2.5</a><a href="#Group Y4S1.1">Group Y4S1.1</a><a href="#Group Y4S1.2">Group Y4S1.2</a><a href="#Group Y4S1.3">Group Y4S1.3</a><a href="#Group Y4S1.4">Group Y4S1.4</a><a href="#Group Y4S1.5">Group Y4S1.5</a><a href="#Group Y4S2.1">Group Y4S2.1</a><a href="#Group Y4S2.2">Group Y4S2.2</a><a href="#Group Y4S2.3">Group Y4S2.3</a><a href="#Group Y4S2.4">Group Y4S2.4</a><a href="#Group Y4S2.5">Group Y4S2.5</a>
+        </div>
+    </div>
+
+    <div id="Group Y1S1.1" class="group-header">
+        <h2>Group Y1S1.1</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1020</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1</div>
+        <div class="course-code">IT1040</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1010</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1</div>
+        <div class="course-code">IT1020</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1</div>
+        <div class="course-code">IT1030</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1</div>
+        <div class="course-code">IT1010</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1030</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y1S1.2" class="group-header">
+        <h2>Group Y1S1.2</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.2</div>
+        <div class="course-code">IT1010</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.2</div>
+        <div class="course-code">IT1030</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1020</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1010</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.2</div>
+        <div class="course-code">IT1020</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.2</div>
+        <div class="course-code">IT1040</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1030</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y1S1.3" class="group-header">
+        <h2>Group Y1S1.3</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.3</div>
+        <div class="course-code">IT1010</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1020</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.3</div>
+        <div class="course-code">IT1030</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1010</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1030</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.3</div>
+        <div class="course-code">IT1040</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.3</div>
+        <div class="course-code">IT1020</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y1S1.4" class="group-header">
+        <h2>Group Y1S1.4</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.4</div>
+        <div class="course-code">IT1020</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1020</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.4</div>
+        <div class="course-code">IT1010</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1010</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.4</div>
+        <div class="course-code">IT1040</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1030</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.4</div>
+        <div class="course-code">IT1030</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y1S1.5" class="group-header">
+        <h2>Group Y1S1.5</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1020</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.5</div>
+        <div class="course-code">IT1010</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1010</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.5</div>
+        <div class="course-code">IT1030</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.5</div>
+        <div class="course-code">IT1020</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.5</div>
+        <div class="course-code">IT1040</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1030</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S1.1, Group Y1S1.2, Group Y1S1.3, Group Y1S1.4, Group Y1S1.5</div>
+        <div class="course-code">IT1040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y1S2.1" class="group-header">
+        <h2>Group Y1S2.1</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1</div>
+        <div class="course-code">IT1580</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1580</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1550</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1</div>
+        <div class="course-code">IT1570</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1570</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1</div>
+        <div class="course-code">IT1550</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y1S2.2" class="group-header">
+        <h2>Group Y1S2.2</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.2</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1580</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1550</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.2</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.2</div>
+        <div class="course-code">IT1550</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1570</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.2</div>
+        <div class="course-code">IT1580</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.2</div>
+        <div class="course-code">IT1570</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y1S2.3" class="group-header">
+        <h2>Group Y1S2.3</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.3</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.3</div>
+        <div class="course-code">IT1580</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.3</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1580</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.3</div>
+        <div class="course-code">IT1550</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1550</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1570</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.3</div>
+        <div class="course-code">IT1570</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y1S2.4" class="group-header">
+        <h2>Group Y1S2.4</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.4</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.4</div>
+        <div class="course-code">IT1550</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.4</div>
+        <div class="course-code">IT1570</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1580</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1550</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.4</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1570</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.4</div>
+        <div class="course-code">IT1580</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y1S2.5" class="group-header">
+        <h2>Group Y1S2.5</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.5</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1580</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1550</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.5</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1560</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.5</div>
+        <div class="course-code">IT1550</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.1, Group Y1S2.2, Group Y1S2.3, Group Y1S2.4, Group Y1S2.5</div>
+        <div class="course-code">IT1570</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.5</div>
+        <div class="course-code">IT1580</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y1S2.5</div>
+        <div class="course-code">IT1570</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y2S1.1" class="group-header">
+        <h2>Group Y2S1.1</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1</div>
+        <div class="course-code">IT2040</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2020</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1</div>
+        <div class="course-code">IT2020</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2040</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">15:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y2S1.2" class="group-header">
+        <h2>Group Y2S1.2</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2020</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.2</div>
+        <div class="course-code">IT2040</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.2</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2040</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.2</div>
+        <div class="course-code">IT2020</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.2</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.2</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y2S1.3" class="group-header">
+        <h2>Group Y2S1.3</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.3</div>
+        <div class="course-code">IT2020</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2020</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.3</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.3</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2040</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.3</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.3</div>
+        <div class="course-code">IT2040</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y2S1.4" class="group-header">
+        <h2>Group Y2S1.4</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.4</div>
+        <div class="course-code">IT2020</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.4</div>
+        <div class="course-code">IT2040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.4</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2020</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.4</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.4</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.4</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2040</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y2S1.5" class="group-header">
+        <h2>Group Y2S1.5</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.5</div>
+        <div class="course-code">IT2020</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2020</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.5</div>
+        <div class="course-code">IT2040</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2040</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.5</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.1, Group Y2S1.2, Group Y2S1.3, Group Y2S1.4, Group Y2S1.5</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.5</div>
+        <div class="course-code">IT2030</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S1.5</div>
+        <div class="course-code">IT2010</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y2S2.1" class="group-header">
+        <h2>Group Y2S2.1</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1</div>
+        <div class="course-code">IT2550</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2580</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1</div>
+        <div class="course-code">IT2570</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2550</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1</div>
+        <div class="course-code">IT2580</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2570</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y2S2.2" class="group-header">
+        <h2>Group Y2S2.2</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.2</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.2</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.2</div>
+        <div class="course-code">IT2570</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.2</div>
+        <div class="course-code">IT2550</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2580</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2550</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.2</div>
+        <div class="course-code">IT2580</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2570</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y2S2.3" class="group-header">
+        <h2>Group Y2S2.3</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.3</div>
+        <div class="course-code">IT2580</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.3</div>
+        <div class="course-code">IT2550</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2580</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.3</div>
+        <div class="course-code">IT2570</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.3</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2550</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.3</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2570</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y2S2.4" class="group-header">
+        <h2>Group Y2S2.4</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.4</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.4</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.4</div>
+        <div class="course-code">IT2570</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2580</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.4</div>
+        <div class="course-code">IT2550</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.4</div>
+        <div class="course-code">IT2580</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2550</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2570</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y2S2.5" class="group-header">
+        <h2>Group Y2S2.5</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.5</div>
+        <div class="course-code">IT2570</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2580</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.5</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.5</div>
+        <div class="course-code">IT2580</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2550</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.5</div>
+        <div class="course-code">IT2550</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.5</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2570</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y2S2.1, Group Y2S2.2, Group Y2S2.3, Group Y2S2.4, Group Y2S2.5</div>
+        <div class="course-code">IT2560</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y3S1.1" class="group-header">
+        <h2>Group Y3S1.1</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3010</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1</div>
+        <div class="course-code">IT3010</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1</div>
+        <div class="course-code">IT3020</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3030</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3020</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1</div>
+        <div class="course-code">IT3040</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1</div>
+        <div class="course-code">IT3030</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y3S1.2" class="group-header">
+        <h2>Group Y3S1.2</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.2</div>
+        <div class="course-code">IT3010</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3010</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.2</div>
+        <div class="course-code">IT3020</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3030</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.2</div>
+        <div class="course-code">IT3040</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">16:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3020</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.2</div>
+        <div class="course-code">IT3030</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y3S1.3" class="group-header">
+        <h2>Group Y3S1.3</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.3</div>
+        <div class="course-code">IT3030</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3010</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.3</div>
+        <div class="course-code">IT3020</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.3</div>
+        <div class="course-code">IT3010</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.3</div>
+        <div class="course-code">IT3040</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3030</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3020</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y3S1.4" class="group-header">
+        <h2>Group Y3S1.4</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3010</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.4</div>
+        <div class="course-code">IT3020</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.4</div>
+        <div class="course-code">IT3010</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.4</div>
+        <div class="course-code">IT3030</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3030</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3020</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.4</div>
+        <div class="course-code">IT3040</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y3S1.5" class="group-header">
+        <h2>Group Y3S1.5</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.5</div>
+        <div class="course-code">IT3010</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3010</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.5</div>
+        <div class="course-code">IT3020</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.5</div>
+        <div class="course-code">IT3040</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.5</div>
+        <div class="course-code">IT3030</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3040</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3030</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S1.1, Group Y3S1.2, Group Y3S1.3, Group Y3S1.4, Group Y3S1.5</div>
+        <div class="course-code">IT3020</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y3S2.1" class="group-header">
+        <h2>Group Y3S2.1</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3560</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3550</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1</div>
+        <div class="course-code">IT3550</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1</div>
+        <div class="course-code">IT3570</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3580</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3570</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1</div>
+        <div class="course-code">IT3560</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1</div>
+        <div class="course-code">IT3580</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y3S2.2" class="group-header">
+        <h2>Group Y3S2.2</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3560</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3550</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.2</div>
+        <div class="course-code">IT3580</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.2</div>
+        <div class="course-code">IT3570</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3580</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3570</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.2</div>
+        <div class="course-code">IT3560</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.2</div>
+        <div class="course-code">IT3550</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y3S2.3" class="group-header">
+        <h2>Group Y3S2.3</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3560</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3550</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.3</div>
+        <div class="course-code">IT3570</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.3</div>
+        <div class="course-code">IT3580</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3580</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3570</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.3</div>
+        <div class="course-code">IT3560</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.3</div>
+        <div class="course-code">IT3550</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y3S2.4" class="group-header">
+        <h2>Group Y3S2.4</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.4</div>
+        <div class="course-code">IT3550</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3560</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3550</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.4</div>
+        <div class="course-code">IT3560</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.4</div>
+        <div class="course-code">IT3570</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.4</div>
+        <div class="course-code">IT3580</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3580</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3570</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y3S2.5" class="group-header">
+        <h2>Group Y3S2.5</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3560</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3550</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.5</div>
+        <div class="course-code">IT3580</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">09:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.5</div>
+        <div class="course-code">IT3560</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3580</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.1, Group Y3S2.2, Group Y3S2.3, Group Y3S2.4, Group Y3S2.5</div>
+        <div class="course-code">IT3570</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.5</div>
+        <div class="course-code">IT3550</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y3S2.5</div>
+        <div class="course-code">IT3570</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y4S1.1" class="group-header">
+        <h2>Group Y4S1.1</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1</div>
+        <div class="course-code">IT4030</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4030</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4020</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4010</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1</div>
+        <div class="course-code">IT4010</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1</div>
+        <div class="course-code">IT4020</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y4S1.2" class="group-header">
+        <h2>Group Y4S1.2</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.2</div>
+        <div class="course-code">IT4030</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4030</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4020</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4010</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.2</div>
+        <div class="course-code">IT4010</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.2</div>
+        <div class="course-code">IT4020</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y4S1.3" class="group-header">
+        <h2>Group Y4S1.3</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4030</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.3</div>
+        <div class="course-code">IT4020</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4020</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4010</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.3</div>
+        <div class="course-code">IT4010</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.3</div>
+        <div class="course-code">IT4030</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y4S1.4" class="group-header">
+        <h2>Group Y4S1.4</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4030</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.4</div>
+        <div class="course-code">IT4030</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4020</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4010</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.4</div>
+        <div class="course-code">IT4020</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.4</div>
+        <div class="course-code">IT4010</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y4S1.5" class="group-header">
+        <h2>Group Y4S1.5</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4030</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4020</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.5</div>
+        <div class="course-code">IT4010</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.1, Group Y4S1.2, Group Y4S1.3, Group Y4S1.4, Group Y4S1.5</div>
+        <div class="course-code">IT4010</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.5</div>
+        <div class="course-code">IT4030</div>
+        <div class="lecturer">Sasika Kumarasinghe</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S1.5</div>
+        <div class="course-code">IT4020</div>
+        <div class="lecturer">Samadhi Rathnayaka</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y4S2.1" class="group-header">
+        <h2>Group Y4S2.1</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1</div>
+        <div class="course-code">IT4550</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1</div>
+        <div class="course-code">IT4570</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4560</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4570</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4550</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1</div>
+        <div class="course-code">IT4560</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y4S2.2" class="group-header">
+        <h2>Group Y4S2.2</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.2</div>
+        <div class="course-code">IT4550</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4560</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4570</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.2</div>
+        <div class="course-code">IT4570</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB502</div>
+    </div>
+    </td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4550</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.2</div>
+        <div class="course-code">IT4560</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y4S2.3" class="group-header">
+        <h2>Group Y4S2.3</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.3</div>
+        <div class="course-code">IT4550</div>
+        <div class="lecturer">Kushani Perera</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4560</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.3</div>
+        <div class="course-code">IT4570</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4570</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4550</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.3</div>
+        <div class="course-code">IT4560</div>
+        <div class="lecturer">Kavindi Gunawardena</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y4S2.4" class="group-header">
+        <h2>Group Y4S2.4</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.4</div>
+        <div class="course-code">IT4570</div>
+        <div class="lecturer">Uthpala Samarakoon</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.4</div>
+        <div class="course-code">IT4560</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LAB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4560</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4570</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4550</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.4</div>
+        <div class="course-code">IT4550</div>
+        <div class="lecturer">Dhishan Dhammearatchi</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <div id="Group Y4S2.5" class="group-header">
+        <h2>Group Y4S2.5</h2>
+    </div>
+    <table class="timetable">
+        <tr>
+            <th>Time</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </tr>
+    <tr><td class="time-slot">08:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">09:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">10:30</td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.5</div>
+        <div class="course-code">IT4560</div>
+        <div class="lecturer">Dilshan Silva</div>
+        <div class="venue">LABB501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">11:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4560</div>
+        <div class="lecturer">Chandimal Jayawardena</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">13:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.5</div>
+        <div class="course-code">IT4570</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH501</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4570</div>
+        <div class="lecturer">Thilini Fernando</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td></tr><tr><td class="time-slot">14:30</td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.1, Group Y4S2.2, Group Y4S2.3, Group Y4S2.4, Group Y4S2.5</div>
+        <div class="course-code">IT4550</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LH401</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">15:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td></tr><tr><td class="time-slot">16:30</td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td><div class="empty-slot">-x-</div></td><td>
+    <div class="activity lecture">
+        <div>Group Y4S2.5</div>
+        <div class="course-code">IT4550</div>
+        <div class="lecturer">Rajitha Dissanayake</div>
+        <div class="venue">LAB502</div>
+    </div>
+    </td><td><div class="empty-slot">-x-</div></td></tr></table><a href="#top" class="back-to-top">Back to Top</a>
+    <script>
+        // Add any JavaScript functionality here if needed
+    </script>
+</body>
+</html>
