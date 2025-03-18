@@ -139,6 +139,74 @@ def plot_constraint_violations(metrics, save_dir='.'):
     print(f"Constraint violations plot saved to {save_dir}/constraint_violations.png")
 
 
+def plot_constraint_violations_by_type(metrics, output_path=None):
+    """
+    Plot the evolution of different types of constraint violations over generations.
+    
+    Parameters:
+        metrics (dict): Dictionary containing optimization metrics
+        output_path (str): Path to save the plot (if None, plot will be displayed)
+    """
+    if not metrics['constraint_violations']:
+        return
+    
+    try:
+        # Extract violation types and prepare data
+        # constraint_violations now contains tuples of (hard_violations, soft_violations)
+        hard_violations, _ = metrics['constraint_violations'][0]
+        
+        # Check if hard_violations is a dictionary or tuple
+        if isinstance(hard_violations, dict):
+            violation_types = list(hard_violations.keys())
+            
+            # Remove 'total' for the detailed plot
+            if 'total' in violation_types:
+                violation_types.remove('total')
+            
+            x = range(len(metrics['constraint_violations']))
+            
+            # Setup figure
+            plt.figure(figsize=(14, 8))
+            
+            # Plot each violation type
+            for violation_type in violation_types:
+                values = [v[0][violation_type] for v in metrics['constraint_violations']]
+                plt.plot(x, values, marker='o', linestyle='-', markersize=4, linewidth=2,
+                        label=violation_type.replace('_', ' ').title())
+        else:
+            # If hard_violations is a tuple, plot each index separately
+            violation_names = ["Room Capacity", "Room Availability", "Lecturer Availability", 
+                              "Group Availability", "Consecutive Sessions"]
+            
+            x = range(len(metrics['constraint_violations']))
+            
+            # Setup figure
+            plt.figure(figsize=(14, 8))
+            
+            # Plot each violation type
+            for i, violation_name in enumerate(violation_names):
+                if i < len(hard_violations):  # Make sure we don't go out of bounds
+                    values = [v[0][i] if i < len(v[0]) else 0 for v in metrics['constraint_violations']]
+                    plt.plot(x, values, marker='o', linestyle='-', markersize=4, linewidth=2,
+                            label=violation_name)
+        
+        plt.title('Constraint Violations by Type Over Generations', fontsize=14)
+        plt.xlabel('Generation', fontsize=12)
+        plt.ylabel('Number of Violations', fontsize=12)
+        plt.grid(True, linestyle='--', alpha=0.7)
+        plt.legend()
+        
+        # Save or show plot
+        if output_path:
+            plt.savefig(output_path, dpi=100, bbox_inches='tight')
+            plt.close()
+        else:
+            plt.tight_layout()
+            plt.show()
+    except Exception as e:
+        print(f"Error generating plots: {str(e)}")
+
+
 def plot_pareto_front(metrics, save_dir='.'):
     """
     Plot the Pareto front size over generations.
@@ -340,7 +408,7 @@ def plot_all_metrics(metrics, save_dir='plots'):
     
     # Individual plots
     plot_convergence(metrics, save_dir)
-    plot_constraint_violations(metrics, save_dir)
+    plot_constraint_violations_by_type(metrics, f'{save_dir}/constraint_violations.png')
     plot_pareto_front(metrics, save_dir)
     plot_hypervolume(metrics, save_dir)
     plot_spacing(metrics, save_dir)
@@ -415,22 +483,44 @@ def _plot_dashboard_soft_constraints(ax, metrics):
 def _plot_dashboard_violations_by_type(ax, metrics):
     """Helper function to plot constraint violations by type on dashboard"""
     if metrics['constraint_violations']:
-        violation_types = list(metrics['constraint_violations'][0].keys())
-        if 'total' in violation_types:
-            violation_types.remove('total')
-        
-        x = range(len(metrics['constraint_violations']))
-        
-        for violation_type in violation_types:
-            values = [v[violation_type] for v in metrics['constraint_violations']]
-            ax.plot(x, values, marker='o', linestyle='-', markersize=3, linewidth=1.5,
-                    label=violation_type.replace('_', ' ').title())
-        
-        ax.set_title('Constraint Violations by Type', fontsize=14)
-        ax.set_xlabel('Generation', fontsize=12)
-        ax.set_ylabel('Count', fontsize=12)
-        ax.legend(fontsize=8, loc='upper right')
-        ax.grid(True, linestyle='--', alpha=0.7)
+        try:
+            # constraint_violations now contains tuples of (hard_violations, soft_violations)
+            hard_violations, _ = metrics['constraint_violations'][0]
+            
+            if isinstance(hard_violations, dict):
+                violation_types = list(hard_violations.keys())
+                if 'total' in violation_types:
+                    violation_types.remove('total')
+                
+                x = range(len(metrics['constraint_violations']))
+                
+                for violation_type in violation_types:
+                    values = [v[0][violation_type] for v in metrics['constraint_violations']]
+                    ax.plot(x, values, marker='o', linestyle='-', markersize=3, linewidth=1.5,
+                            label=violation_type.replace('_', ' ').title())
+            else:
+                # If hard_violations is a tuple, plot each index separately
+                violation_names = ["Room Capacity", "Room Availability", "Lecturer Availability", 
+                                  "Group Availability", "Consecutive Sessions"]
+                
+                x = range(len(metrics['constraint_violations']))
+                
+                for i, violation_name in enumerate(violation_names):
+                    if i < len(hard_violations):  # Make sure we don't go out of bounds
+                        values = [v[0][i] if i < len(v[0]) else 0 for v in metrics['constraint_violations']]
+                        ax.plot(x, values, marker='o', linestyle='-', markersize=3, linewidth=1.5,
+                                label=violation_name)
+            
+            ax.set_title('Constraint Violations by Type', fontsize=14)
+            ax.set_xlabel('Generation', fontsize=12)
+            ax.set_ylabel('Count', fontsize=12)
+            ax.grid(True, linestyle='--', alpha=0.4)
+            ax.legend(loc='upper right', fontsize=8)
+        except Exception as e:
+            print(f"Error generating violation plots: {str(e)}")
+            ax.text(0.5, 0.5, f"Error: {str(e)}", 
+                    horizontalalignment='center', verticalalignment='center',
+                    transform=ax.transAxes, fontsize=10)
     else:
         ax.text(0.5, 0.5, LABEL_NO_DATA, 
                 horizontalalignment='center', verticalalignment='center',

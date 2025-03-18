@@ -136,13 +136,42 @@ class MetricsTracker:
             self.metrics['spacing'].append(0.0)
             self.metrics['igd'].append(0.0)
     
-    def add_execution_time(self, time_elapsed):
-        """Add execution time for the current generation."""
-        self.metrics['execution_time'].append(time_elapsed)
+    def add_execution_time(self, execution_time):
+        """
+        Add execution time to the metrics.
+        
+        Args:
+            execution_time: Execution time in seconds
+        """
+        self.metrics['execution_time'] = execution_time
     
-    def add_constraint_violations(self, violations):
-        """Add detailed constraint violations for the current generation."""
-        self.metrics['constraint_violations'].append(violations)
+    def set_final_metrics(self, hard_violations=None, soft_score=None, execution_time=None):
+        """
+        Set final metrics for the optimization process.
+        
+        Args:
+            hard_violations: Number of hard constraint violations in the best solution
+            soft_score: Soft constraint score in the best solution
+            execution_time: Total execution time
+        """
+        if hard_violations is not None:
+            self.metrics['hard_violations'] = hard_violations
+        
+        if soft_score is not None:
+            self.metrics['soft_score'] = soft_score
+            
+        if execution_time is not None:
+            self.metrics['execution_time'] = execution_time
+            
+    def add_constraint_violations(self, hard_violations, soft_violations):
+        """
+        Add detailed constraint violations for the current generation.
+        
+        Args:
+            hard_violations: Number of hard constraint violations
+            soft_violations: Number of soft constraint violations
+        """
+        self.metrics['constraint_violations'].append((hard_violations, soft_violations))
     
     def add_diversity_metric(self, diversity):
         """Add solution diversity metric for the current generation."""

@@ -23,6 +23,9 @@ class PyObjectId(ObjectId):
 class TimetableParameters(BaseModel):
     population: int = 20
     generations: int = 10
+    learning_rate: float = 0.001
+    episodes: int = 100
+    epsilon: float = 0.1
     
 class TimetableMetrics(BaseModel):
     hardConstraintViolations: int = 0
@@ -55,7 +58,10 @@ class TimetableModel(BaseModel):
                 "algorithm": "spea2",
                 "parameters": {
                     "population": 20,
-                    "generations": 10
+                    "generations": 10,
+                    "learning_rate": 0.001,
+                    "episodes": 100,
+                    "epsilon": 0.1
                 },
                 "metrics": {
                     "hardConstraintViolations": 5,

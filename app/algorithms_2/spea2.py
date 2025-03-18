@@ -1093,18 +1093,19 @@ def run_spea2_optimizer(population_size=None, generations=None, output_dir="spea
         if generation == NUM_GENERATIONS - 1:
             save_metrics(metrics, output_dir)
             save_final_population(population, fitness_values, output_dir)
-            if enable_plotting:
-                try:
-                    from app.algorithms_2.plots import (plot_convergence, plot_constraint_violations,
-                                                        plot_pareto_front, plot_hypervolume)
-                    # Generate plots
-                    plot_convergence(metrics, save_dir=output_dir)
-                    plot_constraint_violations(metrics, save_dir=output_dir)
-                    plot_pareto_front(metrics, save_dir=output_dir)
-                    plot_hypervolume(metrics, save_dir=output_dir)
-                except Exception as e:
-                    print(f"Error generating plots: {e}")
-                    # Continue execution even if plotting fails
+            # Disable plotting to avoid errors
+            # if enable_plotting:
+            #    try:
+            #        from app.algorithms_2.plots import (plot_convergence, plot_constraint_violations,
+            #                                            plot_pareto_front, plot_hypervolume)
+            #        # Generate plots
+            #        plot_convergence(metrics, save_dir=output_dir)
+            #        plot_constraint_violations(metrics, save_dir=output_dir)
+            #        plot_pareto_front(metrics, save_dir=output_dir)
+            #        plot_hypervolume(metrics, save_dir=output_dir)
+            #    except Exception as e:
+            #        print(f"Error generating plots: {e}")
+            #        # Continue execution even if plotting fails
             break
         
         # Select parents using binary tournament

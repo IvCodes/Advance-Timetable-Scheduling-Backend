@@ -386,23 +386,20 @@ def generate_neighborhoods(weight_vectors, neighborhood_size):
     return neighborhoods
 
 
-def run_moead(population_size=POPULATION_SIZE, num_generations=NUM_GENERATIONS, 
-              mutation_rate=MUTATION_RATE, crossover_rate=CROSSOVER_RATE,
-              neighborhood_size=NUM_NEIGHBORHOOD_SIZE, output_dir=None, enable_plotting=False):
+def run_moead(population_size=50, num_generations=100, 
+            weight_vectors=None, neighborhood_size=20, output_dir=None):
     """
-    Run the MOEA/D algorithm.
+    Run the MOEA/D algorithm for timetable optimization.
     
     Args:
-        population_size: Size of the population
-        num_generations: Number of generations
-        mutation_rate: Probability of mutation
-        crossover_rate: Probability of crossover
-        neighborhood_size: Size of each neighborhood
+        population_size: Size of the population (default: 50)
+        num_generations: Number of generations to run (default: 100)
+        weight_vectors: List of weight vectors (default: None, will be generated)
+        neighborhood_size: Size of neighborhood for each subproblem (default: 20)
         output_dir: Directory to save output files (default: None)
-        enable_plotting: Whether to generate plots (default: False)
         
     Returns:
-        Final population, best solution, and metrics tracker
+        tuple: (population, best_solution, metrics)
     """
     start_time = time.time()
     metrics = MetricsTracker()
@@ -430,7 +427,8 @@ def run_moead(population_size=POPULATION_SIZE, num_generations=NUM_GENERATIONS,
     ideal_point = update_ideal_point(fitness_evaluations, ideal_point)
     
     # Generate weight vectors and neighborhoods
-    weight_vectors = generate_weight_vectors(population_size, NUM_OBJECTIVES)
+    if weight_vectors is None:
+        weight_vectors = generate_weight_vectors(population_size, NUM_OBJECTIVES)
     neighborhoods = generate_neighborhoods(weight_vectors, neighborhood_size)
     
     # Track metrics for initial population
@@ -443,7 +441,6 @@ def run_moead(population_size=POPULATION_SIZE, num_generations=NUM_GENERATIONS,
         if isinstance(first_violation, tuple) and len(first_violation) >= 5:
             # Create dictionary with proper keys
             violation_dict = {
-                "total": sum(first_violation),
                 "room_capacity": first_violation[0],
                 "room_availability": first_violation[1],
                 "lecturer_availability": first_violation[2],
@@ -451,7 +448,7 @@ def run_moead(population_size=POPULATION_SIZE, num_generations=NUM_GENERATIONS,
                 "consecutive_sessions": first_violation[4]
             }
         
-    metrics.add_constraint_violations(violation_dict)
+    metrics.add_constraint_violations(violation_dict, 0)
     metrics.add_execution_time(time.time() - start_time)
     
     # Main evolutionary loop
@@ -464,15 +461,15 @@ def run_moead(population_size=POPULATION_SIZE, num_generations=NUM_GENERATIONS,
             parent1, parent2 = select_parents(population, neighborhoods[i])
             
             # Create offspring through crossover and mutation
-            if random.random() < crossover_rate:
+            if random.random() < CROSSOVER_RATE:
                 child1, child2 = crossover(parent1, parent2)
             else:
                 child1, child2 = parent1.copy(), parent2.copy()
             
             # Apply mutation
-            if random.random() < mutation_rate:
+            if random.random() < MUTATION_RATE:
                 child1 = mutate(child1)
-            if random.random() < mutation_rate:
+            if random.random() < MUTATION_RATE:
                 child2 = mutate(child2)
             
             # Evaluate new solutions
@@ -513,7 +510,6 @@ def run_moead(population_size=POPULATION_SIZE, num_generations=NUM_GENERATIONS,
         
         # Convert to dictionary format for plotting
         violation_dict = {
-            "total": sum(best_violation),
             "room_capacity": best_violation[0],
             "room_availability": best_violation[1],
             "lecturer_availability": best_violation[2],
@@ -523,7 +519,7 @@ def run_moead(population_size=POPULATION_SIZE, num_generations=NUM_GENERATIONS,
         
         # Track metrics
         metrics.add_generation_metrics(population, fitness_values, generation)
-        metrics.add_constraint_violations(violation_dict)
+        metrics.add_constraint_violations(violation_dict, 0)
         metrics.add_execution_time(time.time() - gen_start_time)
         
         # Print progress
@@ -542,32 +538,19 @@ def run_moead(population_size=POPULATION_SIZE, num_generations=NUM_GENERATIONS,
     print(f"\nOptimization completed in {time.time() - start_time:.2f} seconds")
     print(f"Final best solution: Hard violations = {best_fitness[0]}, Soft score = {best_fitness[1]}")
     
-    # Visualize the results if plotting is enabled
-    if enable_plotting:
-        try:
-            from app.algorithms_2.plots import (plot_convergence, plot_constraint_violations,
-                                               plot_hypervolume)
-            # Generate plots
-            plot_convergence(metrics, save_dir=output_dir)
-            plot_constraint_violations(metrics, save_dir=output_dir)
-            plot_hypervolume(metrics, save_dir=output_dir)
-        except Exception as e:
-            print(f"Error generating plots: {e}")
-            # Continue execution even if plotting fails
+    # Plotting functionality removed to avoid errors
     
     return population, best_solution, metrics
 
 
-def run_moead_optimizer(population_size=POPULATION_SIZE, generations=NUM_GENERATIONS, 
-                        output_dir=None, enable_plotting=False):
+def run_moead_optimizer(population_size=50, num_generations=100, output_dir=None):
     """
     Main MOEA/D algorithm for timetable optimization, wrapper for the run_moead function.
     
     Args:
         population_size: Size of the population
-        generations: Number of generations
+        num_generations: Number of generations
         output_dir: Directory to save output files (default: None)
-        enable_plotting: Whether to generate plots (default: False)
         
     Returns:
         tuple: (best_solution, metrics_dict)
@@ -575,9 +558,8 @@ def run_moead_optimizer(population_size=POPULATION_SIZE, generations=NUM_GENERAT
     # Run the algorithm with specified parameters
     _, best_solution, metrics = run_moead(
         population_size=population_size,
-        num_generations=generations,
-        output_dir=output_dir,
-        enable_plotting=enable_plotting
+        num_generations=num_generations,
+        output_dir=output_dir
     )
     
     # Create a metrics dictionary to match the expected format from other algorithms

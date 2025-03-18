@@ -19,7 +19,7 @@ from pydantic import BaseModel, Field
 
 class TimetableCreateRequest(BaseModel):
     name: str = Field(..., description="Name of the timetable")
-    algorithm: str = Field(..., description="Algorithm to use: spea2, nsga2, or moead")
+    algorithm: str = Field(..., description="Algorithm to use: spea2, nsga2, moead, dqn, sarsa, or implicit_q")
     dataset: str = Field("sliit", description="Dataset to use")
     parameters: TimetableParameters = Field(default_factory=TimetableParameters, description="Algorithm parameters")
     user_id: Optional[str] = Field(None, description="ID of the user creating the timetable")
@@ -57,8 +57,10 @@ async def generate_timetable(
             algorithm=request.algorithm,
             population=request.parameters.population,
             generations=request.parameters.generations,
-            dataset=request.dataset,
-            enable_plotting=False  # Disable plotting for API requests to avoid errors
+            enable_plotting=False,  # Disable plotting for API requests to avoid errors
+            learning_rate=request.parameters.learning_rate,
+            episodes=request.parameters.episodes,
+            epsilon=request.parameters.epsilon
         )
         
         # Save timetable HTML content separately
@@ -276,6 +278,13 @@ async def get_timetable_stats(timetable_id: str, db = Depends(get_db)):
         
         # Return combined statistics
         response_data = {
+            "metrics": {
+                # Include optimization metrics for frontend display
+                "room_utilization": metrics.get("room_utilization", 0.0),
+                "teacher_satisfaction": metrics.get("teacher_satisfaction", 0.0),
+                "student_satisfaction": metrics.get("student_satisfaction", 0.0),
+                "time_efficiency": metrics.get("time_efficiency", 0.0)
+            },
             "basic": {
                 "hardConstraintViolations": metrics.get("hardConstraintViolations", 0),
                 "softConstraintScore": metrics.get("softConstraintScore", 0.0),
@@ -298,7 +307,7 @@ async def get_timetable_stats(timetable_id: str, db = Depends(get_db)):
             "algorithm": {
                 "name": timetable.get("algorithm", ""),
                 "parameters": timetable.get("parameters", {}),
-                "runTime": stats.get("runTime", "")
+                "runTime": stats.get("execution_time", stats.get("runTime", ""))
             },
             "timetable": {
                 "id": timetable_id,

@@ -568,6 +568,241 @@ def selection(population, fitness_values):
     return next_generation
 
 
+def find_best_solution(population):
+    """
+    Find the best solution in the population based on constraint violations.
+    
+    Parameters:
+        population (list): Population to evaluate
+        
+    Returns:
+        dict: Best solution found
+    """
+    best_solution = None
+    minimum_violations = float('inf')
+    
+    for solution in population:
+        # Calculate total violations
+        hard_violations = evaluate_hard_constraints(solution, activities_dict, groups_dict, spaces_dict)
+        violations = sum(hard_violations)
+        
+        # If this solution has fewer violations, update best
+        if violations < minimum_violations:
+            minimum_violations = violations
+            best_solution = solution
+    
+    print("Best solution has " + str(minimum_violations) + " total violations.")
+    return best_solution
+
+
+def run_nsga2_optimizer(
+    population_size=50,
+    num_generations=50,
+    crossover_rate=0.8,
+    mutation_rate=0.1,
+    output_dir="."
+):
+    """
+    Main function to run the NSGA-II optimizer.
+    
+    Args:
+        population_size: Size of the population
+        num_generations: Number of generations to run
+        crossover_rate: Probability of crossover
+        mutation_rate: Probability of mutation
+        output_dir: Directory to save output files
+    
+    Returns:
+        best_solution: Best solution found
+        metrics_tracker: Object containing optimization metrics
+    """
+    global POPULATION_SIZE, NUM_GENERATIONS, OUTPUT_DIR, CROSSOVER_RATE, MUTATION_RATE
+    
+    # Override global parameters if provided
+    if population_size is not None:
+        POPULATION_SIZE = population_size
+    if num_generations is not None:
+        NUM_GENERATIONS = num_generations
+    if crossover_rate is not None:
+        CROSSOVER_RATE = crossover_rate
+    if mutation_rate is not None:
+        MUTATION_RATE = mutation_rate
+    if output_dir is not None:
+        OUTPUT_DIR = output_dir
+        # Ensure the directory exists
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+    
+    print(f"Starting NSGA-II optimization with population={POPULATION_SIZE}, generations={NUM_GENERATIONS}...")
+    
+    # Setup phase
+    setup_optimization()
+    
+    # Main optimization loop
+    population = generate_initial_population()
+    start_time = time.time()
+    
+    # Evolution over generations
+    for generation in range(NUM_GENERATIONS):
+        population = run_single_generation(population, generation)
+    
+    # Find the best solution in the final population
+    best_solution = find_best_solution(population)
+    
+    # Generate final results
+    generate_final_results(best_solution, start_time)
+    
+    return best_solution, metrics_tracker
+
+
+def setup_optimization():
+    """Set up the optimization environment and metrics tracker."""
+    global metrics_tracker
+    metrics_tracker = MetricsTracker()
+    
+    # Create output directory if it doesn't exist
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+    
+    # Set reference point for hypervolume calculation
+    reference_point = [float('inf'), 1.0]
+    metrics_tracker.reference_point = reference_point
+
+
+def run_single_generation(population, generation):
+    """
+    Run a single generation of the NSGA-II algorithm.
+    
+    Args:
+        population: Current population
+        generation: Current generation number
+        
+    Returns:
+        Updated population
+    """
+    generation_start_time = time.time()
+    
+    # Print progress periodically
+    if generation % 10 == 0:
+        print(f"Generation {generation}/{NUM_GENERATIONS}...")
+    
+    # Evaluate current population
+    fitness_values = evaluate_population(population)
+    
+    # Track metrics for this generation
+    metrics_tracker.add_generation_metrics(population, fitness_values, generation)
+    
+    # Track constraint violations for the best individual
+    best_idx = min(range(len(fitness_values)), key=lambda i, fvals=fitness_values: fvals[i][0])
+    best_solution = population[best_idx]
+    hard_violations = evaluate_hard_constraints(best_solution, activities_dict, groups_dict, spaces_dict)
+    
+    # Convert hard_violations tuple to a dictionary for plotting
+    violation_dict = {
+        "room_capacity": hard_violations[0],
+        "room_availability": hard_violations[1],
+        "lecturer_availability": hard_violations[2],
+        "group_availability": hard_violations[3],
+        "consecutive_sessions": hard_violations[4]
+    }
+    
+    metrics_tracker.add_constraint_violations(violation_dict, 0)
+    
+    # Create and evaluate offspring
+    offspring = create_offspring(population)
+    offspring_fitness = evaluate_population(offspring)
+    
+    # Select next generation
+    combined_population = population + offspring
+    combined_fitness = fitness_values + offspring_fitness
+    population = selection(combined_population, combined_fitness)
+    
+    # Apply local search periodically
+    population = apply_periodic_local_search(population, generation)
+    
+    # Track execution time for this generation
+    generation_time = time.time() - generation_start_time
+    metrics_tracker.add_execution_time(generation_time)
+    
+    return population
+
+
+def apply_periodic_local_search(population, generation):
+    """
+    Apply local search periodically to improve solutions.
+    
+    Args:
+        population: Current population
+        generation: Current generation number
+        
+    Returns:
+        Updated population
+    """
+    if generation % 20 == 0:
+        improved_solutions = apply_local_search(population, evaluate_population(population))
+        
+        # Replace some random individuals with improved ones
+        if improved_solutions:
+            for i, solution in enumerate(improved_solutions):
+                idx = random.randint(0, len(population) - 1)
+                population[idx] = solution
+    
+    return population
+
+
+def generate_periodic_visualizations():
+    """Generate periodic visualizations during optimization."""
+    pass
+
+
+def generate_final_results(best_solution, start_time):
+    """
+    Generate final results and visualizations.
+    
+    Args:
+        best_solution: Best solution found
+        start_time: Start time of optimization
+    """
+    # Print optimization statistics
+    total_time = time.time() - start_time
+    print(f"Optimization complete in {total_time:.2f} seconds.")
+    print(f"Best solution found with {sum(evaluate_hard_constraints(best_solution, activities_dict, groups_dict, spaces_dict))} hard violations.")
+    
+    # Display final constraint violations breakdown
+    if metrics_tracker.metrics['constraint_violations']:
+        # The constraint_violations contains tuples of (hard_violations, soft_violations)
+        hard_violations_dict, _ = metrics_tracker.metrics['constraint_violations'][-1]
+        
+        print("\nFinal constraint violations:")
+        if isinstance(hard_violations_dict, dict):
+            for violation_type, count in hard_violations_dict.items():
+                print(f"  {violation_type.replace('_', ' ').title()}: {count}")
+            total = sum(hard_violations_dict.values())
+            print(f"  Total: {total}")
+        else:
+            # Handle case where hard_violations might be a tuple (from evaluate_hard_constraints)
+            if isinstance(hard_violations_dict, tuple):
+                violations = hard_violations_dict
+                violation_types = ["Room Capacity", "Room Availability", "Lecturer Availability", 
+                                  "Group Availability", "Consecutive Sessions"]
+                
+                for i, violation_type in enumerate(violation_types):
+                    if i < len(violations):
+                        print(f"  {violation_type}: {violations[i]}")
+                
+                total = sum(violations)
+                print(f"  Total: {total}")
+    
+    print(f"\nAll performance metrics saved to '{OUTPUT_DIR}' directory.")
+    
+    # Generate HTML timetable
+    try:
+        html_file = generate_timetable_html(best_solution, output_file=f"{OUTPUT_DIR}/timetable.html")
+        print(f"\nHTML timetable generated and saved to {html_file}")
+        print("Open this file in a web browser to view the complete timetable.")
+    except Exception as e:
+        print(f"\nError generating HTML timetable: {e}")
+
+
 def create_offspring(population):
     """
     Create offspring through crossover and mutation.
@@ -670,240 +905,6 @@ def apply_local_search(solutions, fitness_values):
         improved_solutions.append(improved)
     
     return improved_solutions
-
-
-def find_best_solution(population):
-    """
-    Find the best solution in the population based on constraint violations.
-    
-    Parameters:
-        population (list): Population to evaluate
-        
-    Returns:
-        dict: Best solution found
-    """
-    best_solution = None
-    minimum_violations = float('inf')
-    
-    for solution in population:
-        # Calculate total violations
-        hard_violations = evaluate_hard_constraints(solution, activities_dict, groups_dict, spaces_dict)
-        violations = sum(hard_violations)
-        
-        # If this solution has fewer violations, update best
-        if violations < minimum_violations:
-            minimum_violations = violations
-            best_solution = solution
-    
-    print("Best solution has " + str(minimum_violations) + " total violations.")
-    return best_solution
-
-
-def run_nsga2_optimizer(population_size=50, generations=30, crossover_prob=0.9, 
-                       mutation_prob=0.1, output_dir=".", enable_plotting=False):
-    """
-    Run the NSGA-II optimization algorithm for academic timetabling.
-    
-    Parameters:
-        population_size (int): Size of the population
-        generations (int): Number of generations to run
-        crossover_prob (float): Crossover probability
-        mutation_prob (float): Mutation probability
-        output_dir (str): Directory to save output files
-        enable_plotting (bool): Whether to generate plots
-        
-    Returns:
-        tuple: (best_solution, metrics)
-    """
-    global POPULATION_SIZE, NUM_GENERATIONS, OUTPUT_DIR, CROSSOVER_RATE, MUTATION_RATE
-    
-    # Override global parameters if provided
-    if population_size is not None:
-        POPULATION_SIZE = population_size
-    if generations is not None:
-        NUM_GENERATIONS = generations
-    if crossover_prob is not None:
-        CROSSOVER_RATE = crossover_prob
-    if mutation_prob is not None:
-        MUTATION_RATE = mutation_prob
-    if output_dir is not None:
-        OUTPUT_DIR = output_dir
-        # Ensure the directory exists
-        os.makedirs(OUTPUT_DIR, exist_ok=True)
-    
-    print(f"Starting NSGA-II optimization with population={POPULATION_SIZE}, generations={NUM_GENERATIONS}...")
-    
-    # Setup phase
-    setup_optimization()
-    
-    # Main optimization loop
-    population = generate_initial_population()
-    start_time = time.time()
-    
-    # Evolution over generations
-    for generation in range(NUM_GENERATIONS):
-        population = run_single_generation(population, generation)
-    
-    # Find the best solution in the final population
-    best_solution = find_best_solution(population)
-    
-    # Generate final results
-    generate_final_results(best_solution, start_time, enable_plotting)
-    
-    return best_solution, metrics_tracker
-
-
-def setup_optimization():
-    """Set up the optimization environment and metrics tracker."""
-    global metrics_tracker
-    metrics_tracker = MetricsTracker()
-    
-    # Create output directory if it doesn't exist
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
-    
-    # Set reference point for hypervolume calculation
-    reference_point = [float('inf'), 1.0]
-    metrics_tracker.reference_point = reference_point
-
-
-def run_single_generation(population, generation):
-    """
-    Run a single generation of the NSGA-II algorithm.
-    
-    Args:
-        population: Current population
-        generation: Current generation number
-        
-    Returns:
-        Updated population
-    """
-    generation_start_time = time.time()
-    
-    # Print progress periodically
-    if generation % 10 == 0:
-        print(f"Generation {generation}/{NUM_GENERATIONS}...")
-    
-    # Evaluate current population
-    fitness_values = evaluate_population(population)
-    
-    # Track metrics for this generation
-    metrics_tracker.add_generation_metrics(population, fitness_values, generation)
-    
-    # Track constraint violations for the best individual
-    best_idx = min(range(len(fitness_values)), key=lambda i, fvals=fitness_values: fvals[i][0])
-    best_solution = population[best_idx]
-    hard_violations = evaluate_hard_constraints(best_solution, activities_dict, groups_dict, spaces_dict)
-    
-    # Convert hard_violations tuple to a dictionary for plotting
-    violation_dict = {
-        "total": sum(hard_violations),
-        "room_capacity": hard_violations[0],
-        "room_availability": hard_violations[1],
-        "lecturer_availability": hard_violations[2],
-        "group_availability": hard_violations[3],
-        "consecutive_sessions": hard_violations[4]
-    }
-    
-    metrics_tracker.add_constraint_violations(violation_dict)
-    
-    # Create and evaluate offspring
-    offspring = create_offspring(population)
-    offspring_fitness = evaluate_population(offspring)
-    
-    # Select next generation
-    combined_population = population + offspring
-    combined_fitness = fitness_values + offspring_fitness
-    population = selection(combined_population, combined_fitness)
-    
-    # Apply local search periodically
-    population = apply_periodic_local_search(population, generation)
-    
-    # Track execution time for this generation
-    generation_time = time.time() - generation_start_time
-    metrics_tracker.add_execution_time(generation_time)
-    
-    # Generate periodic visualizations
-    if generation % 10 == 0 or generation == NUM_GENERATIONS - 1:
-        generate_periodic_visualizations()
-    
-    return population
-
-
-def apply_periodic_local_search(population, generation):
-    """
-    Apply local search periodically to improve solutions.
-    
-    Args:
-        population: Current population
-        generation: Current generation number
-        
-    Returns:
-        Updated population
-    """
-    if generation % 20 == 0:
-        improved_solutions = apply_local_search(population, evaluate_population(population))
-        
-        # Replace some random individuals with improved ones
-        if improved_solutions:
-            for i, solution in enumerate(improved_solutions):
-                idx = random.randint(0, len(population) - 1)
-                population[idx] = solution
-    
-    return population
-
-
-def generate_periodic_visualizations():
-    """Generate periodic visualizations during optimization."""
-    try:
-        metrics = metrics_tracker.get_metrics()
-        plot_convergence(metrics, OUTPUT_DIR)
-        plot_constraint_violations(metrics, OUTPUT_DIR)
-    except Exception as e:
-        print(f"Error generating plots: {e}")
-
-
-def generate_final_results(best_solution, start_time, enable_plotting):
-    """
-    Generate final results and visualizations.
-    
-    Args:
-        best_solution: Best solution found
-        start_time: Start time of optimization
-        enable_plotting: Whether to generate plots
-    """
-    # Create final visualization of all metrics
-    if enable_plotting:
-        try:
-            plot_metrics_dashboard(metrics_tracker.get_metrics(), OUTPUT_DIR)
-            print(f"Metrics dashboard saved to {OUTPUT_DIR}/metrics_dashboard.png")
-        except Exception as e:
-            print(f"Error generating metrics dashboard: {e}")
-    
-    # Print optimization statistics
-    total_time = time.time() - start_time
-    print(f"Optimization complete in {total_time:.2f} seconds.")
-    print(f"Best solution found with {sum(evaluate_hard_constraints(best_solution, activities_dict, groups_dict, spaces_dict))} hard violations.")
-    
-    # Display final constraint violations breakdown
-    if metrics_tracker.metrics['constraint_violations']:
-        final_violations = metrics_tracker.metrics['constraint_violations'][-1]
-        print("\nFinal constraint violations:")
-        for violation_type, count in final_violations.items():
-            if violation_type != 'total':
-                print(f"  {violation_type.replace('_', ' ').title()}: {count}")
-        print(f"  Total: {final_violations['total']}")
-    
-    print(f"\nAll performance metrics and visualizations saved to '{OUTPUT_DIR}' directory.")
-    print("View 'metrics_dashboard.png' for a comprehensive overview of the optimization process.")
-    
-    # Generate HTML timetable
-    try:
-        html_file = generate_timetable_html(best_solution, output_file=f"{OUTPUT_DIR}/timetable.html")
-        print(f"\nHTML timetable generated and saved to {html_file}")
-        print("Open this file in a web browser to view the complete timetable.")
-    except Exception as e:
-        print(f"\nError generating HTML timetable: {e}")
 
 
 # When this module is run directly, execute the optimizer
