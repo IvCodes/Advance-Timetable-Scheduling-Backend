@@ -41,6 +41,7 @@ class TimetableModel(BaseModel):
     createdBy: Optional[PyObjectId] = None
     timetable: Dict[str, Any]  # Store the timetable structure
     timetableHtmlPath: Optional[str] = None  # Path to the timetable HTML visualization
+    useAlgorithm2: Optional[bool] = False  # Flag indicating if algorithms_2 directory was used
     
     class Config:
         arbitrary_types_allowed = True
@@ -66,6 +67,7 @@ class TimetableModel(BaseModel):
                     "generationStats": []
                 },
                 "timetable": {},  # Would contain actual timetable data
-                "timetableHtmlPath": "/api/v1/timetable/sliit/html/some-id"
+                "timetableHtmlPath": "/api/v1/timetable/sliit/html/some-id",
+                "useAlgorithm2": False
             }
         }

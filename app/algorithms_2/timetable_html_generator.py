@@ -267,11 +267,14 @@ def _generate_timetable_row(time_range, time_slots, timetable, group_id):
             slot = time_slots[time_range][day]
             group_activities_found = False
             
+            # The timetable is now a dictionary with (slot, room) keys
             # Find activities for this group in this slot
-            for room, activity in timetable.get(slot, {}).items():
-                if activity is not None and group_id in activity.group_ids:
-                    row_html += format_activity_html(activity, room)
-                    group_activities_found = True
+            for (slot_id, room) in timetable:
+                if slot_id == slot:
+                    activity = timetable[(slot_id, room)]
+                    if activity is not None and group_id in activity.group_ids:
+                        row_html += format_activity_html(activity, room)
+                        group_activities_found = True
             
             if not group_activities_found:
                 row_html += '<div class="empty-slot">-x-</div>'
@@ -328,21 +331,29 @@ def _generate_debug_information(timetable):
     if not timetable:
         html += '<li>Timetable is empty</li>'
     else:
-        html += f'<li>Number of time slots: {len(timetable)}</li>'
-        html += f'<li>Available slots: {", ".join(slots)}</li>'
+        # Count unique slots
+        slots_dict = {}
+        for (slot, room) in timetable:
+            if slot not in slots_dict:
+                slots_dict[slot] = []
+            slots_dict[slot].append(room)
+        
+        html += f'<li>Number of time slots: {len(slots_dict)}</li>'
+        html += f'<li>Available slots: {", ".join(slots_dict.keys())}</li>'
         
         # Show some sample slots
         slot_count = 0
         html += '<li>Sample time slots:</li>'
         html += '<ul>'
-        for slot in timetable:
+        for slot in slots_dict:
             if slot_count < 5:  # Just show a few samples
-                html += f'<li>{slot} ({_get_day_from_slot(slot)} {_get_time_from_slot(slot)}): {len(timetable[slot])} rooms</li>'
+                html += f'<li>{slot} ({_get_day_from_slot(slot)} {_get_time_from_slot(slot)}): {len(slots_dict[slot])} rooms</li>'
                 
                 # Show a few activities in this slot
                 activity_count = 0
                 html += '<ul>'
-                for room, activity in timetable[slot].items():
+                for room in slots_dict[slot]:
+                    activity = timetable.get((slot, room))
                     if activity_count < 3 and activity is not None:  # Just show a few activities
                         groups = ', '.join([str(g) for g in activity.group_ids]) if activity.group_ids else "None"
                         html += f'<li>Room {room}: {activity.subject} (Groups: {groups})</li>'

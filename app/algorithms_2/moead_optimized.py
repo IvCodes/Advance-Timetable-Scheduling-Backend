@@ -558,6 +558,34 @@ def run_moead(population_size=POPULATION_SIZE, num_generations=NUM_GENERATIONS,
     return population, best_solution, metrics
 
 
+def run_moead_optimizer(population_size=POPULATION_SIZE, generations=NUM_GENERATIONS, 
+                        output_dir=None, enable_plotting=False):
+    """
+    Main MOEA/D algorithm for timetable optimization, wrapper for the run_moead function.
+    
+    Args:
+        population_size: Size of the population
+        generations: Number of generations
+        output_dir: Directory to save output files (default: None)
+        enable_plotting: Whether to generate plots (default: False)
+        
+    Returns:
+        tuple: (best_solution, metrics_dict)
+    """
+    # Run the algorithm with specified parameters
+    _, best_solution, metrics = run_moead(
+        population_size=population_size,
+        num_generations=generations,
+        output_dir=output_dir,
+        enable_plotting=enable_plotting
+    )
+    
+    # Create a metrics dictionary to match the expected format from other algorithms
+    metrics_dict = metrics.get_metrics() if metrics else {}
+    
+    return best_solution, metrics_dict
+
+
 def main():
     """Main function to run the MOEA/D algorithm and generate output."""
     # Run the algorithm
