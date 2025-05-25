@@ -11,7 +11,7 @@ from collections import namedtuple
 Activity = namedtuple('Activity', ['id', 'subject', 'teacher_id', 'group_ids', 'duration'])
 Group = namedtuple('Group', ['id', 'size'])
 Lecturer = namedtuple('Lecturer', ['id', 'first_name', 'last_name'])
-Space = namedtuple('Space', ['id', 'size'])
+Space = namedtuple('Space', ['code', 'size'])
 
 def _process_activity(activity_data, activity_id, activities_dict, groups_dict, lecturers_dict):
     """Process a single activity and update the respective dictionaries"""
@@ -44,7 +44,7 @@ def _process_activity(activity_data, activity_id, activities_dict, groups_dict, 
 def _process_room(room_id, spaces_dict):
     """Process a room and update the spaces dictionary"""
     if room_id not in spaces_dict:
-        spaces_dict[room_id] = Space(id=room_id, size=50)  # Default size
+        spaces_dict[room_id] = Space(code=room_id, size=50)  # Default size
 
 def convert_mongodb_timetable(mongodb_timetable):
     """
@@ -61,9 +61,9 @@ def convert_mongodb_timetable(mongodb_timetable):
         ...
     }
     
-    The expected format is a dictionary where:
-    - Keys are combinations of slot and room IDs: (slot_id, room_id)
-    - Values are Activity objects
+    The expected format is a nested dictionary where:
+    - Keys are slot IDs: slot_id
+    - Values are dictionaries with room_id as keys and Activity objects as values
     
     Returns:
         dict: A converted timetable in the format expected by the HTML generator
@@ -79,18 +79,21 @@ def convert_mongodb_timetable(mongodb_timetable):
         if not isinstance(rooms, dict):
             continue
             
+        # Initialize the slot in the converted timetable
+        converted_timetable[slot_id] = {}
+        
         # Process each room in the time slot
         for room_id, activity_data in rooms.items():
             # Process the room
             _process_room(room_id, spaces_dict)
             
             # Process the activity
-            activity_id = activity_data.get('id', f"ACT-{len(activities_dict) + 1}") if activity_data else None
-            activity = _process_activity(activity_data, activity_id, activities_dict, groups_dict, lecturers_dict)
-            
-            # Add to the converted timetable if activity was created
-            if activity:
-                converted_timetable[(slot_id, room_id)] = activity
+            if activity_data:
+                activity_id = activity_data.get('id', f"ACT-{len(activities_dict) + 1}")
+                activity = _process_activity(activity_data, activity_id, activities_dict, groups_dict, lecturers_dict)
+                converted_timetable[slot_id][room_id] = activity
+            else:
+                converted_timetable[slot_id][room_id] = None
     
     return {
         'timetable': converted_timetable,

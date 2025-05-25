@@ -93,9 +93,9 @@ async def get_faculty_unavailable_days(faculty_id: str, current_user: dict = Dep
     return faculty.get("unavailable_dates", [])
 
 @router.post("/faculty/unavailable-days", response_model=dict)
-async def mark_day_as_unavailable(request: UnavailabilityRequest, current_user: dict = Depends(get_current_user)):
+def mark_day_as_unavailable(request: UnavailabilityRequest, current_user: dict = Depends(get_current_user)):
     """
-    Mark a day as unavailable for a faculty member
+    Mark a day as unavailable for a faculty member - DEPRECATED: Use /api/v1/faculty-availability/unavailability-requests instead
     """
     print(f"Received request to mark day as unavailable: {request}")
     print(f"Current user: {current_user}")
@@ -118,11 +118,11 @@ async def mark_day_as_unavailable(request: UnavailabilityRequest, current_user: 
         if unavailable.get("date") == date_str:
             raise HTTPException(status_code=400, detail="This date is already marked as unavailable")
     
-    # Create unavailability record - simplified with no pending approval needed
+    # Create unavailability record with pending status for approval workflow
     unavailability = UnavailabilityRecord(
         date=request.date,
         reason=request.reason,
-        status="approved",  # Always approved - simplified workflow
+        status="pending",  # Now requires approval
         substitute_id=None
     )
     
@@ -140,10 +140,20 @@ async def mark_day_as_unavailable(request: UnavailabilityRequest, current_user: 
         {"$set": {"unavailable_dates": unavailable_dates}}
     )
     
+    # Create notification for admins
+    from app.Services.faculty_notification_service import FacultyNotificationService
+    faculty_name = f"{faculty.get('first_name', '')} {faculty.get('last_name', '')}"
+    FacultyNotificationService.create_unavailability_request_notification(
+        faculty_id=faculty_id,
+        faculty_name=faculty_name,
+        date=date_str,
+        reason=request.reason
+    )
+    
     return unavailability_dict
 
 @router.post("/faculty/faculty/unavailable-days", response_model=dict)
-async def mark_day_as_unavailable_duplicate_route(request: UnavailabilityRequest, current_user: dict = Depends(get_current_user)):
+def mark_day_as_unavailable_duplicate_route(request: UnavailabilityRequest, current_user: dict = Depends(get_current_user)):
     """
     Duplicate route to handle frontend URL structure
     """
@@ -153,7 +163,7 @@ async def mark_day_as_unavailable_duplicate_route(request: UnavailabilityRequest
         request.faculty_id = current_user["id"]
     
     # Delegate to the main function
-    return await mark_day_as_unavailable(request, current_user)
+    return mark_day_as_unavailable(request, current_user)
 
 @router.delete("/faculty/unavailable-days/{faculty_id}/{unavailable_date}", response_model=dict)
 async def mark_day_as_available(faculty_id: str, unavailable_date: date, current_user: dict = Depends(get_current_user)):
@@ -248,7 +258,7 @@ async def update_unavailability_status(
     unavailable_dates = faculty.get("unavailable_dates", [])
     
     # Find the specific unavailability record
-    found = False
+    updated_record = None
     for i, unavailable in enumerate(unavailable_dates):
         if unavailable.get("date") == unavailable_date.isoformat():
             # Update status
@@ -263,11 +273,10 @@ async def update_unavailability_status(
                 
                 unavailable_dates[i]["substitute_id"] = status_update.substitute_id
             
-            found = True
             updated_record = unavailable_dates[i]
             break
     
-    if not found:
+    if updated_record is None:
         raise HTTPException(status_code=404, detail=UNAVAILABILITY_RECORD_NOT_FOUND_MSG)
     
     # Update faculty record
@@ -282,7 +291,7 @@ async def update_unavailability_status(
     
     return updated_record
 
-@router.post("/faculty/initialize-unavailable-dates", response_model=dict)
+@router.post("/initialize-unavailable-dates", response_model=dict)
 async def initialize_unavailable_dates(current_user: dict = Depends(get_admin_role)):
     """
     Initialize the unavailable_dates field for all faculty users who don't have it yet.

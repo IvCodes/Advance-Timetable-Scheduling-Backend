@@ -70,9 +70,9 @@ def run_optimization_algorithm(
         
         # Run the optimization
         if algorithm in ['dqn', 'sarsa', 'implicit_q']:
-            learning_rate_param = learning_rate if learning_rate is not None else 0.001
-            episodes_param = episodes if episodes is not None else 100
-            epsilon_param = epsilon if epsilon is not None else 0.1
+            learning_rate_param = learning_rate if learning_rate is not None else 0.01
+            episodes_param = min(episodes if episodes is not None else 50, 100)  # Cap episodes at 100
+            epsilon_param = epsilon if epsilon is not None else 0.2
             
             # Get required data structures for the algorithm
             from app.algorithms_2.Data_Loading import activities_dict, groups_dict, spaces_dict, lecturers_dict, slots
@@ -138,17 +138,8 @@ def run_optimization_algorithm(
                         converted_solution[slot][room] = None
             evaluation_solution = converted_solution
         elif algorithm == 'sarsa':
-            # SARSA uses activity tuples instead of activity objects
-            converted_solution = {}
-            for slot in best_solution:
-                converted_solution[slot] = {}
-                for room, activity_tuple in best_solution[slot].items():
-                    if activity_tuple is not None:
-                        activity_id = activity_tuple[0]  # First element is the activity ID
-                        converted_solution[slot][room] = activities_dict.get(activity_id)
-                    else:
-                        converted_solution[slot][room] = None
-            evaluation_solution = converted_solution
+            # SARSA returns activity objects directly (converted internally)
+            evaluation_solution = best_solution
         else:
             evaluation_solution = best_solution
         
@@ -182,7 +173,7 @@ def run_optimization_algorithm(
         student_satisfaction = normalized_soft_score
         
         # Time efficiency: measure of how well time slots are utilized across the week
-        time_efficiency = min(100, max(0, (1 - hard_violations[4] / len(activities_dict)) * 100)) if activities_dict else 0
+        time_efficiency = min(100, max(0, (1 - hard_violations[5] / len(activities_dict)) * 100)) if activities_dict else 0
         
         execution_time = time.time() - start_time
         
@@ -204,9 +195,10 @@ def run_optimization_algorithm(
         
         # Compile all metrics
         enhanced_metrics = {
-            "hardConstraintViolations": sum(hard_violations[:4]),  # Exclude unassigned activities
+            "hardConstraintViolations": sum(hard_violations[:5]),  # Exclude unassigned activities
             "softConstraintScore": soft_score,
-            "unassignedActivities": hard_violations[4],
+            "unassignedActivities": hard_violations[5],
+            "timeConstraintViolations": hard_violations[4],
             "room_utilization": room_utilization,
             "teacher_satisfaction": teacher_satisfaction,
             "student_satisfaction": student_satisfaction,
@@ -225,7 +217,8 @@ def run_optimization_algorithm(
                         "time_conflicts": hard_violations[1],
                         "student_conflicts": hard_violations[2],
                         "capacity_violations": hard_violations[3],
-                        "unassigned_activities": hard_violations[4]
+                        "time_constraint_violations": hard_violations[4],
+                        "unassigned_activities": hard_violations[5]
                     }
                 }
             }

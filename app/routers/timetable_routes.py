@@ -17,6 +17,56 @@ import os
 from openai import OpenAI
 from pydantic import BaseModel 
 
+# Global variable to track generation status
+generation_status = {
+    "in_progress": False,
+    "completed": False,
+    "success_count": 0,
+    "algorithms_completed": 0,
+    "start_time": None,
+    "last_log": "",
+    "logs": []
+}
+
+def reset_generation_status():
+    """Reset the generation status to default values"""
+    global generation_status
+    generation_status.update({
+        "in_progress": False,
+        "completed": False,
+        "success_count": 0, 
+        "algorithms_completed": 0,
+        "start_time": None,
+        "last_log": "",
+        "logs": []
+    })
+
+def update_status(message, success=None, completed=None):
+    """Update the generation status with new information"""
+    global generation_status
+    
+    # Update the last log message
+    generation_status["last_log"] = message
+    
+    # Add to logs array with timestamp
+    log_entry = {
+        "message": message,
+        "timestamp": datetime.now().isoformat()
+    }
+    generation_status["logs"].append(log_entry)
+    
+    # If a success is reported, increment success count
+    if success is not None:
+        if success:
+            generation_status["success_count"] += 1
+        generation_status["algorithms_completed"] += 1
+    
+    # If completion is reported, mark as completed
+    if completed is not None:
+        generation_status["completed"] = completed
+        if completed:
+            generation_status["in_progress"] = False
+
 router = APIRouter()
 
 # Get OpenRouter API key from environment variables
@@ -114,166 +164,136 @@ def generate_timetable_code(index, algorithm):
 async def generate_timetable():
     logger = logging.getLogger(__name__)
     
+    # Reset generation status
+    reset_generation_status()
+    generation_status["in_progress"] = True
+    generation_status["start_time"] = datetime.now().isoformat()
+    
     # Create a thread to run the timetable generation
     def generate():
         logger = logging.getLogger(__name__)
         logger.info("Starting timetable generation with multiple algorithms")
+        update_status("Starting timetable generation with multiple algorithms")
         
-        # Add the missing results dictionary
+        # Track algorithm results
         results = {"GA": False, "CO": False, "RL": False}
         
-        # Run GA Algorithm
+        # Run GA
         try:
-            logger.info("Starting Genetic Algorithm execution")
-            logger.info("--------------------------------------------------")
-            logger.info("Loading dataset components...")
+            logger.info("Starting genetic algorithm (GA)...")
+            update_status("Starting genetic algorithm (GA)...")
             
-            # Add a small delay so frontend can see progress
-            import time
-            time.sleep(0.5)
+            ga_result = generate_ga()
+            results["GA"] = ga_result
             
-            logger.info("Initializing GA population...")
-            time.sleep(0.5)
-            
-            # Add algorithm metrics to logs
-            logger.info("Population size: 100")
-            logger.info("Iterations: 50")
-            
-            logger.info("Evolving solutions...")
-            time.sleep(0.5)
-            
-            logger.info("Evaluating fitness...")
-            time.sleep(0.5)
-            logger.info("Best fitness: 0.85")
-            logger.info("Selecting best solutions...")
-            time.sleep(0.5)
-            logger.info("Evolution complete")
-            
-            # Disable unnecessary GA logs to file system
-            import deap.tools
-            # Override the original Stats.compile to avoid file logging
-            original_compile = deap.tools.Statistics.compile
-            def no_file_compile(self, population):
-                record = original_compile(self, population)
-                # Skip logging to file
-                return record
-            deap.tools.Statistics.compile = no_file_compile
-            
-            pop, log, hof, li = generate_ga()
-            
-            results["GA"] = save_timetable(li, "GA")
-            logger.info(f"Genetic Algorithm completed - Success: {results['GA']}")
-            create_timetable_notification("GA", results["GA"])
-            
-            # Important: Add delay to see logs
-            time.sleep(0.5)  # Small delay to ensure logs are processed
-            
+            if ga_result:
+                logger.info("GA algorithm completed successfully")
+                update_status("GA algorithm completed successfully", success=True)
+                create_timetable_notification("GA", True)
+            else:
+                logger.warning("GA algorithm completed with no result")
+                update_status("GA algorithm completed with no result", success=False)
+                create_timetable_notification("GA", False)
+                
         except Exception as e:
             logger.error(f"GA algorithm failed: {str(e)}")
+            update_status(f"GA algorithm failed: {str(e)}", success=False)
             create_timetable_notification("GA", False)
-        
-        # Run CO Algorithm - Always run this regardless of GA success/failure
+            
+        # Run Constraint Optimization
         try:
-            logger.info("Starting Constraint Optimization Algorithm execution")
-            logger.info("--------------------------------------------------")
-            logger.info("Setting up constraint model...")
-            time.sleep(0.5)
-            logger.info("Defining constraints...")
-            time.sleep(0.5)
+            logger.info("Starting constraint optimization (CO)...")
+            update_status("Starting constraint optimization (CO)...")
             
-            # Add constraint metrics
-            logger.info("Constraints: 120")
-            logger.info("Violated: 5")
+            co_result = generate_co()
+            results["CO"] = co_result
             
-            sol = generate_co()
-            
-            logger.info("Constraint satisfaction achieved")
-            logger.info("Optimizing solution...")
-            time.sleep(0.5)
-            
-            results["CO"] = save_timetable(sol, "CO")
-            logger.info(f"Constraint Algorithm completed - Success: {results['CO']}")
-            create_timetable_notification("CO", results["CO"]) 
-            
-            # Small delay to ensure logs are processed
-            time.sleep(0.5)
-            
+            if co_result:
+                logger.info("CO algorithm completed successfully")
+                update_status("CO algorithm completed successfully", success=True)
+                create_timetable_notification("CO", True)
+            else:
+                logger.warning("CO algorithm completed with no result")
+                update_status("CO algorithm completed with no result", success=False)
+                create_timetable_notification("CO", False)
+                
         except Exception as e:
             logger.error(f"CO algorithm failed: {str(e)}")
+            update_status(f"CO algorithm failed: {str(e)}", success=False)
             create_timetable_notification("CO", False)
-        
-        # Run RL Algorithm - Always run this regardless of GA and CO success/failure
+            
+        # Run Reinforcement Learning
         try:
-            logger.info("Starting Reinforcement Learning Algorithm execution")
-            logger.info("--------------------------------------------------")
-            logger.info("Initializing reinforcement learning environment...")
-            time.sleep(0.5)
-            logger.info("Setting up reward functions...")
-            time.sleep(0.5)
+            logger.info("Starting reinforcement learning (RL)...")
+            update_status("Starting reinforcement learning (RL)...")
             
-            # Add RL metrics
-            logger.info("Episodes: 200")
-            logger.info("Reward: 156.8")
+            rl_result = generate_rl()
+            results["RL"] = rl_result
             
-            logger.info("Training agent...")
-            time.sleep(0.5)
-            
-            gen = generate_rl()
-            
-            logger.info("Agent training complete")
-            logger.info("Generating schedule from learned policy...")
-            time.sleep(0.5)
-            
-            results["RL"] = save_timetable(gen, "RL")
-            logger.info(f"Reinforcement Learning completed - Success: {results['RL']}")
-            create_timetable_notification("RL", results["RL"])
-            
-            # Small delay to ensure logs are processed
-            time.sleep(0.5)
-            
+            if rl_result:
+                logger.info("RL algorithm completed successfully")
+                update_status("RL algorithm completed successfully", success=True)
+                create_timetable_notification("RL", True)
+            else:
+                logger.warning("RL algorithm completed with no result")
+                update_status("RL algorithm completed with no result", success=False)
+                create_timetable_notification("RL", False)
+                
         except Exception as e:
             logger.error(f"RL algorithm failed: {str(e)}")
+            update_status(f"RL algorithm failed: {str(e)}", success=False)
             create_timetable_notification("RL", False)
-        
-        # Evaluate results 
-        logger.info("Evaluating algorithm results...")
-        logger.info("--------------------------------------------------")
-        eval_results = evaluate()
-        algorithm_scores = {}
-        
-        for algorithm, scores in eval_results.items():
-            if scores:  # Check if there are any scores
-                average_score = sum(scores) / len(scores)
-                algorithm_scores[algorithm] = {
-                    "average_score": average_score,
-                    "scores": scores  # Include individual scores for more detail
-                }
-                logger.info(f"Algorithm {algorithm} average score: {average_score:.2f}")
-        
-        # Important: Add sufficient delay before the final success message
-        # This ensures frontend notification appears at the right time
-        time.sleep(0.5)
-        
+            
         # Count successful algorithms
         successful_count = sum(1 for result in results.values() if result)
         
-        # Final success message - this is what your frontend is looking for
-        if any(results.values()):
-            logger.info(f"Schedule generated successfully with {successful_count} of 3 algorithms!")
-            
-            # List which algorithms succeeded
-            succeeded = [algo for algo, result in results.items() if result]
-            logger.info(f"Successful algorithms: {', '.join(succeeded)}")
-        else:
-            logger.warning("All timetable generation algorithms failed")
-            
-    # Start generation in a separate thread
-    thread = threading.Thread(target=generate)
-    thread.daemon = True  # Allow the thread to exit when the main program exits
-    thread.start()  
+        # Run evaluation if any algorithms succeeded
+        if successful_count > 0:
+            try:
+                logger.info("Starting timetable evaluation...")
+                update_status("Starting timetable evaluation...")
+                
+                evaluation_scores = evaluate_timetables()
+                
+                if evaluation_scores:
+                    # Save evaluation results to database
+                    evaluation_doc = {
+                        "timestamp": datetime.now(),
+                        "scores": dict(evaluation_scores),
+                        "algorithms_evaluated": list(evaluation_scores.keys())
+                    }
+                    
+                    # Replace any existing evaluation (keep only the latest)
+                    db["Evaluations"].delete_many({})
+                    db["Evaluations"].insert_one(evaluation_doc)
+                    
+                    logger.info("Timetable evaluation completed and saved")
+                    update_status("Timetable evaluation completed")
+                else:
+                    logger.warning("Evaluation completed but no scores generated")
+                    update_status("Evaluation completed with no scores")
+                    
+            except Exception as e:
+                logger.error(f"Evaluation failed: {str(e)}")
+                update_status(f"Evaluation failed: {str(e)}")
         
-    # Return immediately while generation continues in background
-    return {"status": "processing", "message": "Timetable generation started in background"}
+        # Mark generation as complete
+        final_message = f"Schedule generated successfully with {successful_count} of 3 algorithms"
+        logger.info(final_message)
+        update_status(final_message, completed=True)
+            
+    # Start the generation thread
+    thread = threading.Thread(target=generate)
+    thread.daemon = True
+    thread.start()
+    
+    return {"message": "Timetable generation in progress..."}
+
+@router.get("/generation-status")
+async def get_generation_status():
+    """Get the current status of the timetable generation process"""
+    global generation_status
+    return generation_status
 
 @router.get("/timetables")
 async def get_timetables():

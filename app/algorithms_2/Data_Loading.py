@@ -1,3 +1,7 @@
+import os
+import json
+
+
 class Space:
     def __init__(self, *args):
         self.code = args[0]
@@ -37,6 +41,7 @@ class Period:
     def __repr__(self):
         return f"Period(space={self.space}, group={self.group}, activity={self.activity})"
 
+
 class Lecturer:
     def __init__(self, id, first_name, last_name, username, department):
         self.id = id
@@ -48,9 +53,6 @@ class Lecturer:
     def __repr__(self):
         return f"Lecturer(id={self.id}, name={self.first_name} {self.last_name}, department={self.department})"
 
-
-import json
-import os
 
 # Get the directory where this file is located
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -91,7 +93,8 @@ print("spaces_dict=", spaces_dict)
 print("groups_dict=", groups_dict)
 print("activities_dict=", activities_dict)
 print("lecturers_dict=", lecturers_dict)
-print("slots=",slots)
+print("slots=", slots)
+
 
 class Period:
     def __init__(self, space, slot, activity=None):
@@ -101,6 +104,7 @@ class Period:
 
     def __repr__(self):
         return f"Period(space={self.space}, slot={self.slot}, activity={self.activity})"
+
 
 # Use either the hardcoded spaces or load from the dataset:
 # Uncomment the next line to use all spaces from your dataset:

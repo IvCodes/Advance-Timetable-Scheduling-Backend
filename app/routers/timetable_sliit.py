@@ -63,32 +63,54 @@ async def generate_timetable(
             epsilon=request.parameters.epsilon
         )
         
-        # Save timetable HTML content separately
+        # Generate HTML content separately and handle failures gracefully
         timetable_html = result.get("timetable_html", "")
         timetable_html_path = ""
         if timetable_html:
             # Store the HTML content in a separate field for easy access
             timetable_html_path = f"/api/v1/timetable/sliit/html/{result.get('timetable_id', '')}"
+        else:
+            # If HTML generation failed, we'll still save the timetable data
+            # HTML can be generated later on demand
+            print("Warning: HTML generation failed, but timetable data was saved successfully")
         
         # Update the timetable data dictionary directly instead of using the model constructor
         new_timetable.timetable = result["timetable"]
-        new_timetable.metrics.hardConstraintViolations = result.get("hardConstraintViolations", 0)
-        new_timetable.metrics.softConstraintScore = result.get("softConstraintScore", 0.0)
-        new_timetable.metrics.unassignedActivities = result.get("unassignedActivities", 0)
-        new_timetable.stats = result.get("stats", {})
+        
+        # Extract metrics from the result properly
+        metrics_data = result.get("metrics", {})
+        stats_data = result.get("stats", {})
+        
+        # Update metrics from the optimization result
+        new_timetable.metrics.hardConstraintViolations = metrics_data.get("hardConstraintViolations", 0)
+        new_timetable.metrics.softConstraintScore = metrics_data.get("softConstraintScore", 0.0)
+        new_timetable.metrics.unassignedActivities = metrics_data.get("unassignedActivities", 0)
+        
+        # Store additional metrics in stats for extended information
+        extended_stats = stats_data.copy()
+        extended_stats.update({
+            "room_utilization": metrics_data.get("room_utilization", 0.0),
+            "teacher_satisfaction": metrics_data.get("teacher_satisfaction", 0.0),
+            "student_satisfaction": metrics_data.get("student_satisfaction", 0.0),
+            "time_efficiency": metrics_data.get("time_efficiency", 0.0),
+            "timeConstraintViolations": metrics_data.get("timeConstraintViolations", 0)
+        })
+        
+        new_timetable.stats = extended_stats
         new_timetable.createdAt = datetime.now()
-        new_timetable.createdBy = request.user_id
+        # Only set createdBy if user_id is provided and valid
+        if request.user_id:
+            try:
+                from app.models.timetable_Sliit_model import PyObjectId
+                new_timetable.createdBy = PyObjectId(request.user_id)
+            except:
+                # If user_id is not a valid ObjectId, skip setting it
+                pass
         new_timetable.timetableHtmlPath = timetable_html_path
         
-        # Fix: Handle MongoDB operations properly based on client type
-        try:
-            # Try synchronous operation first
-            new_timetable_id = db["timetable_sliit"].insert_one(jsonable_encoder(new_timetable)).inserted_id
-            created_timetable = db["timetable_sliit"].find_one({"_id": new_timetable_id})
-        except (AttributeError, TypeError):
-            # If that fails, try async operation
-            new_timetable = await db["timetable_sliit"].insert_one(jsonable_encoder(new_timetable))
-            created_timetable = await db["timetable_sliit"].find_one({"_id": new_timetable.inserted_id})
+        # Use sync MongoDB operations since the db client is synchronous
+        new_timetable_id = db["timetable_sliit"].insert_one(jsonable_encoder(new_timetable)).inserted_id
+        created_timetable = db["timetable_sliit"].find_one({"_id": new_timetable_id})
         
         return JSONResponse(
             status_code=status.HTTP_201_CREATED, 
@@ -120,12 +142,8 @@ async def generate_timetable(
 @router.get("/", response_description="List all SLIIT timetables")
 async def list_timetables(db = Depends(get_db)):
     try:
-        # Try async first
-        try:
-            timetables = await db["timetable_sliit"].find().to_list(100)
-        except (AttributeError, TypeError):
-            # Fall back to sync for non-async MongoDB clients
-            timetables = list(db["timetable_sliit"].find().limit(100))
+        # Use sync MongoDB operations since the db client is synchronous
+        timetables = list(db["timetable_sliit"].find().limit(100))
         
         return JSONResponse(content=jsonable_encoder(timetables))
     except Exception as e:
@@ -140,12 +158,8 @@ async def list_timetables(db = Depends(get_db)):
 @router.get("/{id}", response_description="Get a single SLIIT timetable")
 async def show_timetable(id: str, db = Depends(get_db)):
     try:
-        # Try async first
-        try:
-            timetable = await db["timetable_sliit"].find_one({"_id": id})
-        except (AttributeError, TypeError):
-            # Fall back to sync for non-async MongoDB clients
-            timetable = db["timetable_sliit"].find_one({"_id": id})
+        # Use string ID directly since IDs are stored as strings in the database
+        timetable = db["timetable_sliit"].find_one({"_id": id})
         
         if timetable is not None:
             return JSONResponse(content=jsonable_encoder(timetable))
@@ -169,12 +183,8 @@ async def show_timetable(id: str, db = Depends(get_db)):
 @router.get("/html/{timetable_id}", response_description="Get timetable HTML visualization")
 async def get_timetable_html(timetable_id: str, db = Depends(get_db)):
     try:
-        # Try async first
-        try:
-            timetable = await db["timetable_sliit"].find_one({"_id": timetable_id})
-        except (AttributeError, TypeError):
-            # Fall back to sync for non-async MongoDB clients
-            timetable = db["timetable_sliit"].find_one({"_id": timetable_id})
+        # Use string ID directly since IDs are stored as strings in the database
+        timetable = db["timetable_sliit"].find_one({"_id": timetable_id})
         
         if timetable is None:
             raise HTTPException(
@@ -259,12 +269,8 @@ async def get_timetable_html(timetable_id: str, db = Depends(get_db)):
 @router.get("/stats/{timetable_id}", response_description="Get timetable statistics")
 async def get_timetable_stats(timetable_id: str, db = Depends(get_db)):
     try:
-        # Try async first
-        try:
-            timetable = await db["timetable_sliit"].find_one({"_id": timetable_id})
-        except (AttributeError, TypeError):
-            # Fall back to sync for non-async MongoDB clients
-            timetable = db["timetable_sliit"].find_one({"_id": timetable_id})
+        # Use string ID directly since IDs are stored as strings in the database
+        timetable = db["timetable_sliit"].find_one({"_id": timetable_id})
         
         if timetable is None:
             raise HTTPException(
@@ -279,11 +285,11 @@ async def get_timetable_stats(timetable_id: str, db = Depends(get_db)):
         # Return combined statistics
         response_data = {
             "metrics": {
-                # Include optimization metrics for frontend display
-                "room_utilization": metrics.get("room_utilization", 0.0),
-                "teacher_satisfaction": metrics.get("teacher_satisfaction", 0.0),
-                "student_satisfaction": metrics.get("student_satisfaction", 0.0),
-                "time_efficiency": metrics.get("time_efficiency", 0.0)
+                # Include optimization metrics for frontend display - check both metrics and stats
+                "room_utilization": stats.get("room_utilization", metrics.get("room_utilization", 0.0)),
+                "teacher_satisfaction": stats.get("teacher_satisfaction", metrics.get("teacher_satisfaction", 0.0)),
+                "student_satisfaction": stats.get("student_satisfaction", metrics.get("student_satisfaction", 0.0)),
+                "time_efficiency": stats.get("time_efficiency", metrics.get("time_efficiency", 0.0))
             },
             "basic": {
                 "hardConstraintViolations": metrics.get("hardConstraintViolations", 0),
@@ -350,4 +356,32 @@ async def get_timetable_stats(timetable_id: str, db = Depends(get_db)):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get timetable stats: {str(e)}"
+        )
+
+@router.delete("/{timetable_id}", response_description="Delete a SLIIT timetable")
+async def delete_timetable(timetable_id: str, db = Depends(get_db)):
+    try:
+        # Use string ID directly since IDs are stored as strings in the database
+        result = db["timetable_sliit"].delete_one({"_id": timetable_id})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail=f"Timetable with ID {timetable_id} not found"
+            )
+        
+        return JSONResponse(
+            content={"message": f"Timetable {timetable_id} deleted successfully"},
+            status_code=status.HTTP_200_OK
+        )
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        import traceback
+        traceback_str = traceback.format_exc()
+        print(f"Error deleting timetable: {str(e)}\n{traceback_str}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete timetable: {str(e)}"
         )

@@ -19,7 +19,7 @@ from logging.handlers import RotatingFileHandler
 from app.utils.database import test_connection
 from app.routers import space_routes 
 from app.routers import year_routes, info_router, module_routes, user_router, faculty_routes, timetable_routes, activity_routes
-from app.routers import timetable_sliit
+from app.routers import timetable_sliit, dashboard_routes, faculty_unavailability_routes, notification_routes
 from app.routers.chatbot.router import router as chatbot_router
 from app.etl import etl_router
 
@@ -137,6 +137,9 @@ app.include_router(activity_routes.router, prefix="/api/v1/activity", tags=["Act
 app.include_router(chatbot_router, prefix="/api/v1/chatbot", tags=["Chatbot"])
 app.include_router(etl_router, prefix="/api/v1/etl", tags=["etl"])
 app.include_router(timetable_sliit.router, prefix="/api/v1/timetable/sliit", tags=["Timetable SLIIT"]) # Include the new router
+app.include_router(dashboard_routes.router, prefix="/api/v1/dashboard", tags=["Dashboard"]) # Include dashboard routes
+app.include_router(faculty_unavailability_routes.router, prefix="/api/v1/faculty-availability", tags=["Faculty Availability"])
+app.include_router(notification_routes.router, prefix="/api/v1", tags=["Notifications"])
 
 @app.get("/")
 async def root():

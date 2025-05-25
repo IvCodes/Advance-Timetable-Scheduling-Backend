@@ -1,5 +1,6 @@
 import numpy as np
 from Data_Loading import Activity  # Import Activity class from data loading module
+from time_constraints import is_lunch_break_slot, is_valid_teaching_slot
 
 
 def _check_activity_validity(activity):
@@ -104,6 +105,7 @@ def evaluate_hard_constraints(timetable, activities_dict, groups_dict, spaces_di
     prof_conflicts = 0
     room_size_conflicts = 0
     sub_group_conflicts = 0
+    time_constraint_violations = 0
     activities_set = set()
 
     # Process each time slot in the timetable
@@ -117,11 +119,12 @@ def evaluate_hard_constraints(timetable, activities_dict, groups_dict, spaces_di
         prof_conflicts += slot_violations[1]
         room_size_conflicts += slot_violations[2]
         sub_group_conflicts += slot_violations[3]
+        time_constraint_violations += slot_violations[4]
 
     # Calculate unassigned activities
     unasigned_activities = len(activities_dict) - len(activities_set)
 
-    return (vacant_room_count, prof_conflicts, sub_group_conflicts, room_size_conflicts, unasigned_activities)
+    return (vacant_room_count, prof_conflicts, sub_group_conflicts, room_size_conflicts, time_constraint_violations, unasigned_activities)
 
 
 def _process_time_slot(slot_data, slot, activities_set, groups_dict, spaces_dict, vacant_rooms):
@@ -145,11 +148,21 @@ def _process_time_slot(slot_data, slot, activities_set, groups_dict, spaces_dict
     prof_conflicts = 0
     room_size_conflicts = 0
     sub_group_conflicts = 0
+    time_constraint_violations = 0
     
     # Process each room in this time slot
     for room in slot_data:
         activity = slot_data[room]
         activity_id = activity.id if _check_activity_validity(activity) else None
+        
+        # Check time constraints if activity is scheduled
+        if _check_activity_validity(activity):
+            # Check if activity is scheduled during lunch break
+            if is_lunch_break_slot(slot):
+                time_constraint_violations += 1
+            # Check if activity is scheduled outside valid teaching hours
+            elif not is_valid_teaching_slot(slot):
+                time_constraint_violations += 1
         
         # Process this activity
         is_vacant, prof_conflict, room_size_conflict, sub_group_conflict = _process_activity(
@@ -163,7 +176,7 @@ def _process_time_slot(slot_data, slot, activities_set, groups_dict, spaces_dict
         room_size_conflicts += room_size_conflict
         sub_group_conflicts += sub_group_conflict
     
-    return (vacant_room_count, prof_conflicts, room_size_conflicts, sub_group_conflicts)
+    return (vacant_room_count, prof_conflicts, room_size_conflicts, sub_group_conflicts, time_constraint_violations)
 
 
 def print_hard_constraint_results(violation_counts):
@@ -173,17 +186,18 @@ def print_hard_constraint_results(violation_counts):
     Parameters:
         violation_counts (tuple): Counts of different constraint violations
     """
-    vacant_room, prof_conflicts, sub_group_conflicts, room_size_conflicts, unasigned_activities = violation_counts
+    vacant_room, prof_conflicts, sub_group_conflicts, room_size_conflicts, time_constraint_violations, unasigned_activities = violation_counts
     
     print("\n--- Hard Constraint Evaluation Results ---")
     print(f"Vacant Rooms Count: {vacant_room}")
     print(f"Lecturer Conflict Violations: {prof_conflicts}")
     print(f"Student Group Conflict Violations: {sub_group_conflicts}")
     print(f"Room Capacity Violations: {room_size_conflicts}")
+    print(f"Time Constraint Violations (Lunch Break/Invalid Hours): {time_constraint_violations}")
     print(f"Unassigned Activity Violations: {unasigned_activities}")
 
     # Final Hard Constraint Violation Score
-    total_violations = prof_conflicts + sub_group_conflicts + room_size_conflicts + unasigned_activities
+    total_violations = prof_conflicts + sub_group_conflicts + room_size_conflicts + time_constraint_violations + unasigned_activities
     print(f"\nTotal Hard Constraint Violations: {total_violations}")
     
     return total_violations

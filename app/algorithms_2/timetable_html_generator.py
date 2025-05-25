@@ -13,140 +13,355 @@ HTML_HEADER = """<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SLIIT Timetable</title>
+    <title>SLIIT Course Timetable - Faculty of Computing</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
             color: #333;
+            background-color: #f8f9fa;
+            line-height: 1.6;
         }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .institution-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #003366 0%, #004080 100%);
+            color: white;
+            position: relative;
+        }
+        
+        .institution-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+            font-weight: 300;
+            letter-spacing: 1px;
+            color: white;
+        }
+        
+        .institution-header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .institution-header .generated-info {
+            font-size: 0.9em;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .actions-bar {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #003366;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #004080;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
         h1, h2, h3 {
             color: #003366;
         }
-        .institution-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background-color: #003366;
-            color: white;
-        }
+        
         .toc {
             margin-bottom: 30px;
-            padding: 15px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #003366;
         }
+        
         .toc h2 {
             margin-top: 0;
+            color: #003366;
         }
+        
         .toc-list {
-            column-count: 3;
-            column-gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
+        
         .toc-list a {
             display: block;
             text-decoration: none;
             color: #003366;
-            margin-bottom: 5px;
+            padding: 8px 12px;
+            background-color: white;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
         }
+        
         .toc-list a:hover {
-            text-decoration: underline;
+            background-color: #003366;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
         .timetable {
             width: 100%;
             margin-bottom: 40px;
             border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
         .timetable th {
-            background-color: #003366;
+            background: linear-gradient(135deg, #003366 0%, #004080 100%);
             color: white;
-            padding: 10px;
+            padding: 15px 10px;
             text-align: center;
-            border: 1px solid #ddd;
+            border: none;
+            font-weight: 600;
+            font-size: 0.95em;
         }
+        
         .timetable td {
-            border: 1px solid #ddd;
-            padding: 10px;
+            border: 1px solid #e9ecef;
+            padding: 12px 8px;
             vertical-align: top;
             min-height: 80px;
+            background-color: white;
         }
+        
         .timetable .time-slot {
-            background-color: #f0f0f0;
-            font-weight: bold;
+            background-color: #f8f9fa;
+            font-weight: 600;
             text-align: center;
-            width: 10%;
+            width: 12%;
+            color: #495057;
+            border-right: 2px solid #dee2e6;
         }
+        
         .activity {
-            padding: 5px;
-            margin-bottom: 5px;
-            background-color: #e6f3ff;
-            border-radius: 3px;
+            padding: 8px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9ff;
+            font-size: 0.85em;
+            transition: transform 0.2s ease;
         }
+        
+        .activity:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
         .activity .course-code {
-            font-weight: bold;
+            font-weight: 600;
             color: #003366;
+            margin-bottom: 2px;
         }
+        
         .activity .course-name {
             font-style: italic;
+            color: #6c757d;
+            margin-bottom: 2px;
         }
+        
         .activity .lecturer {
-            font-size: 0.9em;
-            color: #666;
+            font-size: 0.8em;
+            color: #495057;
+            margin-bottom: 1px;
         }
+        
         .activity .venue {
-            font-size: 0.9em;
-            color: #666;
+            font-size: 0.8em;
+            color: #6c757d;
+            font-weight: 500;
         }
+        
         .empty-slot {
             text-align: center;
-            color: #999;
+            color: #adb5bd;
+            font-style: italic;
+            padding: 20px;
         }
+        
         .back-to-top {
             display: block;
             text-align: center;
-            margin-top: 20px;
-            margin-bottom: 40px;
+            margin: 30px 0;
             text-decoration: none;
             color: #003366;
-        }
-        .back-to-top:hover {
-            text-decoration: underline;
-        }
-        .group-header {
-            background-color: #e6f3ff;
+            font-weight: 500;
             padding: 10px;
-            margin-top: 30px;
-            margin-bottom: 10px;
             border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
+        
+        .back-to-top:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .group-header {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 20px;
+            margin: 40px 0 20px 0;
+            border-radius: 8px;
+            border-left: 5px solid #003366;
+        }
+        
+        .group-header h2 {
+            margin: 0;
+            color: #003366;
+            font-size: 1.5em;
+        }
+        
         .activity.practical {
-            background-color: #e1f5e1;
+            background-color: #e8f5e8;
+            border-left-color: #28a745;
         }
+        
         .activity.lecture {
-            background-color: #e6f3ff;
+            background-color: #f8f9ff;
+            border-left-color: #007bff;
         }
+        
         .activity.tutorial {
-            background-color: #fff1e6;
+            background-color: #fff8e1;
+            border-left-color: #ffc107;
         }
-        .debug {
-            background-color: #ffffcc;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
+        
+        .lunch-break {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+            font-weight: 600;
+            text-align: center;
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid #ffc107;
+            position: relative;
+            font-size: 0.9em;
+        }
+        
+        .lunch-break::before {
+            content: "🍽️";
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+        
+        .lunch-break-row {
+            background-color: #fffbf0 !important;
+        }
+        
+        .lunch-break-time {
+            background-color: #fff3cd !important;
+            color: #856404 !important;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 0;
+            }
+            
+            .institution-header h1 {
+                font-size: 1.8em;
+            }
+            
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .timetable {
+                font-size: 0.8em;
+            }
+            
+            .activity {
+                padding: 6px;
+                font-size: 0.75em;
+            }
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .actions-bar {
+                display: none;
+            }
+            
+            .back-to-top {
+                display: none;
+            }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-    <div class="institution-header">
-        <h1>Sri Lanka Institute of Information Technology</h1>
-        <p>Generated Timetable</p>
-    </div>
+    <div class="container">
+        <div class="institution-header">
+            <h1>SLIIT Course Timetable</h1>
+            <div class="subtitle">Faculty of Computing</div>
+            <div class="generated-info">
+                Sri Lanka Institute of Information Technology
+            </div>
+        </div>
+        
+        <div class="actions-bar">
+            <a href="#" class="btn" onclick="downloadPDF()">📄 Download PDF</a>
+            <a href="#" class="btn btn-secondary" onclick="window.print()">🖨️ Print Timetable</a>
+        </div>
+        
+        <div class="content">
 """
 
 HTML_TOC_HEADER = """
     <div class="toc">
-        <h2>Table of Contents</h2>
+        <h2>📚 Course Groups</h2>
         <div class="toc-list">
 """
 
@@ -156,16 +371,74 @@ HTML_TOC_FOOTER = """
 """
 
 HTML_FOOTER = """
+        </div>
+    </div>
+    
     <script>
-        // Add any JavaScript functionality here if needed
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            
+            // Hide action buttons temporarily
+            const actionsBar = document.querySelector('.actions-bar');
+            actionsBar.style.display = 'none';
+            
+            try {
+                const canvas = await html2canvas(document.querySelector('.container'), {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true
+                });
+                
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('l', 'mm', 'a4'); // landscape orientation
+                
+                const imgWidth = 297; // A4 landscape width in mm
+                const pageHeight = 210; // A4 landscape height in mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                
+                let position = 0;
+                
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                const timestamp = new Date().toISOString().split('T')[0];
+                pdf.save(`SLIIT_Timetable_${timestamp}.pdf`);
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try using the print function instead.');
+            } finally {
+                // Show action buttons again
+                actionsBar.style.display = 'block';
+            }
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
 """
 
 # Constants for HTML generation
-UL_CLOSE = '</ul>'
-LI_CLOSE = '</li>'
 
 def get_activity_type(subject):
     """Determine the activity type based on its subject name."""
@@ -228,17 +501,17 @@ def _get_day_from_slot(slot):
 
 def _get_time_from_slot(slot):
     """Extract time from a slot like 'MON1'."""
-    # Convert slot numbers to time ranges
-    # This is a simplification - adjust as needed for your actual slot times
+    # Convert slot numbers to time ranges following SLIIT schedule
+    # 8:00 AM - 4:30 PM with lunch break at 12:30-1:30
     time_map = {
-        '1': '08:30',
-        '2': '09:30',
-        '3': '10:30',
-        '4': '11:30',
-        '5': '13:30',
-        '6': '14:30',
-        '7': '15:30',
-        '8': '16:30'
+        '1': '08:30 - 09:30',
+        '2': '09:30 - 10:30', 
+        '3': '10:30 - 11:30',
+        '4': '11:30 - 12:30',
+        '5': '12:30 - 13:30',  # Lunch break - should be blocked
+        '6': '13:30 - 14:30',
+        '7': '14:30 - 15:30',
+        '8': '15:30 - 16:30'
     }
     slot_num = slot[3:]
     return time_map.get(slot_num, 'Unknown')
@@ -257,29 +530,49 @@ def _organize_slots_by_time():
     
     return time_slots
 
+def _is_lunch_break_slot(slot):
+    """Check if a slot is during lunch break (12:30-13:30)."""
+    slot_num = slot[3:] if len(slot) > 3 else ''
+    return slot_num == '5'  # Slot 5 is 12:30-13:30
+
 def _generate_timetable_row(time_range, time_slots, timetable, group_id):
     """Helper function to generate a single row in the timetable."""
+    # Check if this is lunch break time
+    is_lunch_break = "12:30 - 13:30" in time_range
+    
+    if is_lunch_break:
+        # Special handling for lunch break row
+        row_html = f'<tr class="lunch-break-row"><td class="time-slot lunch-break-time">{time_range}</td>'
+        # Add a single lunch break cell spanning all days
+        row_html += '<td colspan="5"><div class="lunch-break">LUNCH BREAK</div></td>'
+        row_html += '</tr>'
+        return row_html
+    
+    # Regular time slot row
     row_html = f'<tr><td class="time-slot">{time_range}</td>'
     
     for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
         row_html += '<td>'
+        
         if day in time_slots[time_range]:
             slot = time_slots[time_range][day]
             group_activities_found = False
             
-            # The timetable is now a dictionary with (slot, room) keys
+            # The timetable is a dictionary with structure {slot: {room: activity_obj}}
             # Find activities for this group in this slot
-            for (slot_id, room) in timetable:
-                if slot_id == slot:
-                    activity = timetable[(slot_id, room)]
-                    if activity is not None and group_id in activity.group_ids:
-                        row_html += format_activity_html(activity, room)
-                        group_activities_found = True
+            if slot in timetable:
+                rooms_in_slot = timetable[slot]
+                if isinstance(rooms_in_slot, dict):
+                    for room_code, activity in rooms_in_slot.items():
+                        if activity is not None and hasattr(activity, 'group_ids') and group_id in activity.group_ids:
+                            row_html += format_activity_html(activity, room_code)
+                            group_activities_found = True
+                            break  # Found an activity for this group in this slot
             
             if not group_activities_found:
-                row_html += '<div class="empty-slot">-x-</div>'
+                row_html += '<div class="empty-slot">—</div>'
         else:
-            row_html += '<div class="empty-slot">---</div>'
+            row_html += '<div class="empty-slot">—</div>'
         
         row_html += '</td>'
     
@@ -319,63 +612,6 @@ def generate_group_timetable_html(group_id, timetable):
     html += '</table>'
     html += '<a href="#top" class="back-to-top">Back to Top</a>'
     
-    return html
-
-def _generate_debug_information(timetable):
-    """Generate HTML with debugging information."""
-    html = '<div class="debug">'
-    html += '<h3>Timetable Debugging Information</h3>'
-    html += '<p>Timetable structure:</p>'
-    html += '<ul>'
-    
-    if not timetable:
-        html += '<li>Timetable is empty</li>'
-    else:
-        # Count unique slots
-        slots_dict = {}
-        for (slot, room) in timetable:
-            if slot not in slots_dict:
-                slots_dict[slot] = []
-            slots_dict[slot].append(room)
-        
-        html += f'<li>Number of time slots: {len(slots_dict)}</li>'
-        html += f'<li>Available slots: {", ".join(slots_dict.keys())}</li>'
-        
-        # Show some sample slots
-        slot_count = 0
-        html += '<li>Sample time slots:</li>'
-        html += '<ul>'
-        for slot in slots_dict:
-            if slot_count < 5:  # Just show a few samples
-                html += f'<li>{slot} ({_get_day_from_slot(slot)} {_get_time_from_slot(slot)}): {len(slots_dict[slot])} rooms</li>'
-                
-                # Show a few activities in this slot
-                activity_count = 0
-                html += '<ul>'
-                for room in slots_dict[slot]:
-                    activity = timetable.get((slot, room))
-                    if activity_count < 3 and activity is not None:  # Just show a few activities
-                        groups = ', '.join([str(g) for g in activity.group_ids]) if activity.group_ids else "None"
-                        html += f'<li>Room {room}: {activity.subject} (Groups: {groups})</li>'
-                    activity_count += 1
-                html += UL_CLOSE
-                
-            slot_count += 1
-        html += UL_CLOSE
-        
-        # Show group information
-        html += '<li>Groups Information:</li>'
-        html += '<ul>'
-        group_count = 0
-        for group_id in groups_dict:
-            if group_count < 10:  # Just show a few samples
-                html += f'<li>Group ID: {group_id}, Size: {groups_dict[group_id].size}</li>'
-            group_count += 1
-        html += f'<li>Total groups: {len(groups_dict)}</li>'
-        html += UL_CLOSE
-    
-    html += UL_CLOSE
-    html += '</div>'
     return html
 
 def get_groups_by_year_semester():
@@ -423,11 +659,8 @@ def generate_timetable_html(timetable, output_file="timetable.html"):
     html = HTML_HEADER
     
     # Add a timestamp
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    html += f'<p id="top">Timetable generated on {timestamp}</p>'
-    
-    # Add debugging information
-    html += _generate_debug_information(timetable)
+    timestamp = datetime.datetime.now().strftime("%B %d, %Y at %I:%M %p")
+    html += f'<p id="top" style="text-align: center; color: #6c757d; margin-bottom: 20px;">Generated on {timestamp}</p>'
     
     # Organize groups by year and semester
     year_semester_groups = get_groups_by_year_semester()

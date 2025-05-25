@@ -265,9 +265,9 @@ def run_sarsa_optimizer(activities_dict, groups_dict, spaces_dict, lecturers_dic
         )
         
         # Sum up the relevant hard violations (excluding vacant rooms as they're not actual violations)
-        # The tuple has (vacant_room_count, prof_conflicts, sub_group_conflicts, room_size_conflicts, unasigned_activities)
-        _, prof_conflicts, sub_group_conflicts, room_size_conflicts, unasigned_activities = hard_violations_tuple
-        final_hard_violations = prof_conflicts + sub_group_conflicts + room_size_conflicts + unasigned_activities
+        # The tuple has (vacant_room_count, prof_conflicts, sub_group_conflicts, room_size_conflicts, time_constraint_violations, unasigned_activities)
+        _, prof_conflicts, sub_group_conflicts, room_size_conflicts, time_constraint_violations, unasigned_activities = hard_violations_tuple
+        final_hard_violations = prof_conflicts + sub_group_conflicts + room_size_conflicts + time_constraint_violations + unasigned_activities
         
         # Set final metrics
         metrics_tracker.set_final_metrics(

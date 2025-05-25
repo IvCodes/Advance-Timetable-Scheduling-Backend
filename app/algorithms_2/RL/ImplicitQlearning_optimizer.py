@@ -116,6 +116,7 @@ def run_implicit_qlearning_optimizer(activities_dict, groups_dict, spaces_dict, 
         best_schedule: The best schedule found.
         metrics: Dictionary of metrics tracking the optimization process.
     """
+    start_time = time.time()
     metrics_tracker = MetricsTracker()
     
     # Initialize best schedule and score
@@ -198,15 +199,15 @@ def run_implicit_qlearning_optimizer(activities_dict, groups_dict, spaces_dict, 
     )
     
     # Sum up the relevant hard violations (excluding vacant rooms as they're not actual violations)
-    # The tuple has (vacant_room_count, prof_conflicts, sub_group_conflicts, room_size_conflicts, unasigned_activities)
-    _, prof_conflicts, sub_group_conflicts, room_size_conflicts, unasigned_activities = hard_violations_tuple
-    final_hard_violations = prof_conflicts + sub_group_conflicts + room_size_conflicts + unasigned_activities
+    # The tuple has (vacant_room_count, prof_conflicts, sub_group_conflicts, room_size_conflicts, time_constraint_violations, unasigned_activities)
+    _, prof_conflicts, sub_group_conflicts, room_size_conflicts, time_constraint_violations, unasigned_activities = hard_violations_tuple
+    final_hard_violations = prof_conflicts + sub_group_conflicts + room_size_conflicts + time_constraint_violations + unasigned_activities
     
     # Set final metrics
     metrics_tracker.set_final_metrics(
         hard_violations=final_hard_violations,
         soft_score=final_soft_score,
-        execution_time=time.time() - metrics_tracker.start_time
+        execution_time=time.time() - start_time
     )
     
     # Return the best schedule and metrics
