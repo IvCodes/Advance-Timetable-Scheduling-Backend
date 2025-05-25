@@ -3,27 +3,33 @@
 env/
 venv/
 ENV/
+.venv/
 
 # Python cache files
 __pycache__/
 *.py[cod]
 *.so
 *.pyc
+*.pyo
+*.pyd
 
 # IDE settings
 .vscode/
 .idea/
 *.swp
 *.swo
+.qodo/
 
 # Environment variables
 .env
 .env.local
+.env.production
 
 # Distribution / packaging
 dist/
 build/
 *.egg-info/
+*.whl
 
 # Database
 *.db
@@ -31,15 +37,86 @@ build/
 
 # Logs
 *.log
+logs/
+*.log.*
 
 # OS generated files
 .DS_Store
 Thumbs.db
-"@ | Out-File -FilePath .gitignore -Encoding UTF8
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 
-.qodo 
-.idea 
+# Testing and Development Files (Optional - Uncomment to ignore)
+# scripts/testing/database/
+# scripts/testing/api/
+# scripts/testing/data/
+
+# Temporary Test Files (Always ignore)
+scripts/testing/**/*_temp.py
+scripts/testing/**/*_debug.py
+scripts/testing/**/temp_*.py
+scripts/testing/**/debug_*.py
+scripts/testing/**/*.tmp
+
+# Documentation - Development Notes (Optional - Uncomment to ignore)
+# docs/SCRIPT_ORGANIZATION_PLAN.md
+# docs/PROJECT_ORGANIZATION_SUMMARY.md
+# docs/UI_UX_FIXES_SUMMARY.md
+# docs/FRONTEND_FIXES_SUMMARY.md
+# docs/TIMETABLE_UI_FIXES.md
+# docs/FACULTY_AVAILABILITY_CONSOLIDATION_SUMMARY.md
+
+# Large HTML Test Files (Always ignore)
+*.html
+!templates/*.html
+!static/*.html
+
+# Test Output Files
+test_output.*
+*_test_output.*
+output_*.txt
+debug_output.*
+
+# Temporary Algorithm Output
+app/algorithms_2/output/*.txt
+app/algorithms_2/output/*.json
+app/algorithms_2/output/*.csv
+app/algorithms_2/output/temp_*
+
+# Jupyter Notebooks (if any)
+*.ipynb
+.ipynb_checkpoints/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# Archives
 *.zip
+*.tar.gz
+*.rar
 
-git rm --cached app/scripts/reset_passwords.py
-git rm --cached app/scripts/update_period_order.py
+# Node modules (if any frontend tools)
+node_modules/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Specific files that were mentioned as unnecessary
+scripts/utilities/create_*_request.py
+scripts/utilities/debug_*.py
+scripts/utilities/migrate_*.py
+scripts/utilities/test_*_availability.py
