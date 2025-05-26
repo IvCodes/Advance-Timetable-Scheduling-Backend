@@ -219,6 +219,28 @@
       }
     },
     {
+      "name": "A601",
+      "long_name": "Main Lecture Hall A601",
+      "code": "LH601",
+      "capacity": 200,
+      "attributes": {
+        "projector": "Yes",
+        "computers": "No",
+        "air_conditioned": "Yes"
+      }
+    },
+    {
+      "name": "A702",
+      "long_name": "Main Lecture Hall A702",
+      "code": "LH702",
+      "capacity": 200,
+      "attributes": {
+        "projector": "Yes",
+        "computers": "No",
+        "air_conditioned": "Yes"
+      }
+    },
+    {
       "name": "B501",
       "long_name": "Computer Lab B501",
       "code": "LAB501",
@@ -237,6 +259,17 @@
       "attributes": {
         "projector": "Yes",
         "computers": "Yes",
+        "air_conditioned": "Yes"
+      }
+    },
+    {
+      "name": "B503",
+      "long_name": "Computer Lab B503",
+      "code": "LAB 503",
+      "capacity": 60,
+      "attributes": {
+        "projector": "Yes",
+        "computers": "No",
         "air_conditioned": "Yes"
       }
     }
