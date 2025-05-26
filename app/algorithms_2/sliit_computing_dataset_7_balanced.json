@@ -4,12 +4,7 @@
       "name": "Computing",
       "code": "FCSC",
       "departments": [
-        "Computer Science and Software Engineering",
-        "Information Technology",
-        "Cyber Security",
-        "Interactive Media",
-        "Information Systems Engineering",
-        "Data Science"
+        "Information Technology"
       ]
     }
   ],
@@ -199,7 +194,7 @@
     {
       "name": "A401",
       "long_name": "Main Lecture Hall A401",
-      "code": "LH401",
+      "code": "A401",
       "capacity": 200,
       "attributes": {
         "projector": "Yes",
@@ -210,7 +205,29 @@
     {
       "name": "A501",
       "long_name": "Main Lecture Hall A501",
-      "code": "LH501",
+      "code": "A501",
+      "capacity": 200,
+      "attributes": {
+        "projector": "Yes",
+        "computers": "No",
+        "air_conditioned": "Yes"
+      }
+    },
+    {
+      "name": "A601",
+      "long_name": "Main Lecture Hall A601",
+      "code": "A601",
+      "capacity": 200,
+      "attributes": {
+        "projector": "Yes",
+        "computers": "No",
+        "air_conditioned": "Yes"
+      }
+    },
+    {
+      "name": "A702",
+      "long_name": "Main Lecture Hall A702",
+      "code": "A702",
       "capacity": 200,
       "attributes": {
         "projector": "Yes",
@@ -241,46 +258,13 @@
       }
     },
     {
-      "name": "A401",
-      "long_name": "Main Lecture Hall A401",
-      "code": "LH401",
-      "capacity": 250,
-      "attributes": {
-        "projector": "Yes",
-        "computers": "No",
-        "air_conditioned": "Yes"
-      }
-    },
-    {
-      "name": "A501",
-      "long_name": "Main Lecture Hall A501",
-      "code": "LH501",
-      "capacity": 300,
-      "attributes": {
-        "projector": "Yes",
-        "computers": "No",
-        "air_conditioned": "Yes"
-      }
-    },
-    {
-      "name": "B501",
-      "long_name": "Computer Lab B501",
-      "code": "LAB501",
-      "capacity": 100,
-      "attributes": {
-        "projector": "Yes",
-        "computers": "Yes",
-        "air_conditioned": "Yes"
-      }
-    },
-    {
       "name": "B503",
       "long_name": "Computer Lab B503",
       "code": "LAB503",
-      "capacity": 80,
+      "capacity": 60,
       "attributes": {
         "projector": "Yes",
-        "computers": "Yes",
+        "computers": "No",
         "air_conditioned": "Yes"
       }
     }
@@ -647,326 +631,6 @@
       "username": "kavindi.gunawardena",
       "role": "lecturer",
       "department": "Information Technology"
-    },
-    {
-      "id": "IT703519",
-      "first_name": "Student296",
-      "last_name": "Learner187",
-      "username": "it158305",
-      "role": "student",
-      "year_group": "Y1S1.1"
-    },
-    {
-      "id": "IT678676",
-      "first_name": "Student68",
-      "last_name": "Learner150",
-      "username": "it236861",
-      "role": "student",
-      "year_group": "Y1S1.2"
-    },
-    {
-      "id": "IT433711",
-      "first_name": "Student170",
-      "last_name": "Learner113",
-      "username": "it995730",
-      "role": "student",
-      "year_group": "Y1S1.3"
-    },
-    {
-      "id": "IT262427",
-      "first_name": "Student37",
-      "last_name": "Learner145",
-      "username": "it991833",
-      "role": "student",
-      "year_group": "Y1S1.4"
-    },
-    {
-      "id": "IT761792",
-      "first_name": "Student211",
-      "last_name": "Learner55",
-      "username": "it871899",
-      "role": "student",
-      "year_group": "Y1S1.5"
-    },
-    {
-      "id": "IT738600",
-      "first_name": "Student273",
-      "last_name": "Learner17",
-      "username": "it618021",
-      "role": "student",
-      "year_group": "Y1S2.1"
-    },
-    {
-      "id": "IT674840",
-      "first_name": "Student230",
-      "last_name": "Learner25",
-      "username": "it395682",
-      "role": "student",
-      "year_group": "Y1S2.2"
-    },
-    {
-      "id": "IT622476",
-      "first_name": "Student256",
-      "last_name": "Learner235",
-      "username": "it272324",
-      "role": "student",
-      "year_group": "Y1S2.3"
-    },
-    {
-      "id": "IT673742",
-      "first_name": "Student129",
-      "last_name": "Learner280",
-      "username": "it319548",
-      "role": "student",
-      "year_group": "Y1S2.4"
-    },
-    {
-      "id": "IT397951",
-      "first_name": "Student14",
-      "last_name": "Learner29",
-      "username": "it538902",
-      "role": "student",
-      "year_group": "Y1S2.5"
-    },
-    {
-      "id": "IT266779",
-      "first_name": "Student199",
-      "last_name": "Learner275",
-      "username": "it344675",
-      "role": "student",
-      "year_group": "Y2S1.1"
-    },
-    {
-      "id": "IT173141",
-      "first_name": "Student126",
-      "last_name": "Learner112",
-      "username": "it949176",
-      "role": "student",
-      "year_group": "Y2S1.2"
-    },
-    {
-      "id": "IT335084",
-      "first_name": "Student152",
-      "last_name": "Learner226",
-      "username": "it871913",
-      "role": "student",
-      "year_group": "Y2S1.3"
-    },
-    {
-      "id": "IT756472",
-      "first_name": "Student167",
-      "last_name": "Learner36",
-      "username": "it310733",
-      "role": "student",
-      "year_group": "Y2S1.4"
-    },
-    {
-      "id": "IT810986",
-      "first_name": "Student11",
-      "last_name": "Learner131",
-      "username": "it523776",
-      "role": "student",
-      "year_group": "Y2S1.5"
-    },
-    {
-      "id": "IT760021",
-      "first_name": "Student222",
-      "last_name": "Learner19",
-      "username": "it633277",
-      "role": "student",
-      "year_group": "Y2S2.1"
-    },
-    {
-      "id": "IT297734",
-      "first_name": "Student272",
-      "last_name": "Learner128",
-      "username": "it856139",
-      "role": "student",
-      "year_group": "Y2S2.2"
-    },
-    {
-      "id": "IT308823",
-      "first_name": "Student288",
-      "last_name": "Learner293",
-      "username": "it501691",
-      "role": "student",
-      "year_group": "Y2S2.3"
-    },
-    {
-      "id": "IT617801",
-      "first_name": "Student219",
-      "last_name": "Learner27",
-      "username": "it610427",
-      "role": "student",
-      "year_group": "Y2S2.4"
-    },
-    {
-      "id": "IT143379",
-      "first_name": "Student74",
-      "last_name": "Learner142",
-      "username": "it285667",
-      "role": "student",
-      "year_group": "Y2S2.5"
-    },
-    {
-      "id": "IT518278",
-      "first_name": "Student57",
-      "last_name": "Learner34",
-      "username": "it389526",
-      "role": "student",
-      "year_group": "Y3S1.1"
-    },
-    {
-      "id": "IT557660",
-      "first_name": "Student132",
-      "last_name": "Learner55",
-      "username": "it348524",
-      "role": "student",
-      "year_group": "Y3S1.2"
-    },
-    {
-      "id": "IT589436",
-      "first_name": "Student245",
-      "last_name": "Learner42",
-      "username": "it202878",
-      "role": "student",
-      "year_group": "Y3S1.3"
-    },
-    {
-      "id": "IT352711",
-      "first_name": "Student255",
-      "last_name": "Learner246",
-      "username": "it182524",
-      "role": "student",
-      "year_group": "Y3S1.4"
-    },
-    {
-      "id": "IT345269",
-      "first_name": "Student16",
-      "last_name": "Learner198",
-      "username": "it844364",
-      "role": "student",
-      "year_group": "Y3S1.5"
-    },
-    {
-      "id": "IT971921",
-      "first_name": "Student154",
-      "last_name": "Learner130",
-      "username": "it759265",
-      "role": "student",
-      "year_group": "Y3S2.1"
-    },
-    {
-      "id": "IT549281",
-      "first_name": "Student263",
-      "last_name": "Learner300",
-      "username": "it782926",
-      "role": "student",
-      "year_group": "Y3S2.2"
-    },
-    {
-      "id": "IT537405",
-      "first_name": "Student296",
-      "last_name": "Learner79",
-      "username": "it934063",
-      "role": "student",
-      "year_group": "Y3S2.3"
-    },
-    {
-      "id": "IT103516",
-      "first_name": "Student17",
-      "last_name": "Learner17",
-      "username": "it620352",
-      "role": "student",
-      "year_group": "Y3S2.4"
-    },
-    {
-      "id": "IT527707",
-      "first_name": "Student182",
-      "last_name": "Learner201",
-      "username": "it225391",
-      "role": "student",
-      "year_group": "Y3S2.5"
-    },
-    {
-      "id": "IT963632",
-      "first_name": "Student193",
-      "last_name": "Learner19",
-      "username": "it871882",
-      "role": "student",
-      "year_group": "Y4S1.1"
-    },
-    {
-      "id": "IT897239",
-      "first_name": "Student44",
-      "last_name": "Learner197",
-      "username": "it335354",
-      "role": "student",
-      "year_group": "Y4S1.2"
-    },
-    {
-      "id": "IT110124",
-      "first_name": "Student1",
-      "last_name": "Learner291",
-      "username": "it995262",
-      "role": "student",
-      "year_group": "Y4S1.3"
-    },
-    {
-      "id": "IT238732",
-      "first_name": "Student271",
-      "last_name": "Learner240",
-      "username": "it991425",
-      "role": "student",
-      "year_group": "Y4S1.4"
-    },
-    {
-      "id": "IT415852",
-      "first_name": "Student35",
-      "last_name": "Learner230",
-      "username": "it504133",
-      "role": "student",
-      "year_group": "Y4S1.5"
-    },
-    {
-      "id": "IT109853",
-      "first_name": "Student180",
-      "last_name": "Learner286",
-      "username": "it877858",
-      "role": "student",
-      "year_group": "Y4S2.1"
-    },
-    {
-      "id": "IT655408",
-      "first_name": "Student297",
-      "last_name": "Learner288",
-      "username": "it670170",
-      "role": "student",
-      "year_group": "Y4S2.2"
-    },
-    {
-      "id": "IT805205",
-      "first_name": "Student4",
-      "last_name": "Learner176",
-      "username": "it354355",
-      "role": "student",
-      "year_group": "Y4S2.3"
-    },
-    {
-      "id": "IT267211",
-      "first_name": "Student230",
-      "last_name": "Learner139",
-      "username": "it430601",
-      "role": "student",
-      "year_group": "Y4S2.4"
-    },
-    {
-      "id": "IT365154",
-      "first_name": "Student57",
-      "last_name": "Learner211",
-      "username": "it721234",
-      "role": "student",
-      "year_group": "Y4S2.5"
     }
   ],
   "activities": [
@@ -975,7 +639,7 @@
       "name": "Introduction to Computing Lecture",
       "subject": "IT1010",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000001"
       ],
       "subgroup_ids": [
         "Y1S1.1",
@@ -995,10 +659,14 @@
       "name": "Introduction to Computing Tutorial - Group 1",
       "subject": "IT1010",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y1S1.1"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1009,15 +677,19 @@
     },
     {
       "code": "AC-003",
-      "name": "Introduction to Computing Tutorial - Group 2",
+      "name": "Lecture: Introduction to Computing Tutorial - Group 2",
       "subject": "IT1010",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y1S1.2"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
-      "duration": 1,
+      "duration": 94,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1029,10 +701,14 @@
       "name": "Introduction to Computing Tutorial - Group 3",
       "subject": "IT1010",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y1S1.3"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1046,10 +722,14 @@
       "name": "Introduction to Computing Tutorial - Group 4",
       "subject": "IT1010",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y1S1.4"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1060,15 +740,19 @@
     },
     {
       "code": "AC-006",
-      "name": "Introduction to Computing Tutorial - Group 5",
+      "name": "Lecture: Introduction to Computing Tutorial - Group 5",
       "subject": "IT1010",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000006"
       ],
       "subgroup_ids": [
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
         "Y1S1.5"
       ],
-      "duration": 1,
+      "duration": 109,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1080,7 +764,7 @@
       "name": "IP Lecture",
       "subject": "IT1020",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000007"
       ],
       "subgroup_ids": [
         "Y1S1.1",
@@ -1100,10 +784,14 @@
       "name": "IP Tutorial - Group 1",
       "subject": "IT1020",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000008"
       ],
       "subgroup_ids": [
-        "Y1S1.1"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1117,10 +805,14 @@
       "name": "IP Tutorial - Group 2",
       "subject": "IT1020",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000009"
       ],
       "subgroup_ids": [
-        "Y1S1.2"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1134,10 +826,14 @@
       "name": "IP Tutorial - Group 3",
       "subject": "IT1020",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000010"
       ],
       "subgroup_ids": [
-        "Y1S1.3"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1151,10 +847,14 @@
       "name": "IP Tutorial - Group 4",
       "subject": "IT1020",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y1S1.4"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1165,15 +865,19 @@
     },
     {
       "code": "AC-012",
-      "name": "IP Tutorial - Group 5",
+      "name": "Lecture: IP Tutorial - Group 5",
       "subject": "IT1020",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000002"
       ],
       "subgroup_ids": [
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
         "Y1S1.5"
       ],
-      "duration": 1,
+      "duration": 90,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1185,7 +889,7 @@
       "name": "MC Lecture",
       "subject": "IT1030",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000003"
       ],
       "subgroup_ids": [
         "Y1S1.1",
@@ -1202,15 +906,19 @@
     },
     {
       "code": "AC-014",
-      "name": "MC Tutorial - Group 1",
+      "name": "Lecture: MC Tutorial - Group 1",
       "subject": "IT1030",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y1S1.1"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
-      "duration": 1,
+      "duration": 92,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1219,15 +927,19 @@
     },
     {
       "code": "AC-015",
-      "name": "MC Tutorial - Group 2",
+      "name": "Lecture: MC Tutorial - Group 2",
       "subject": "IT1030",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y1S1.2"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
-      "duration": 1,
+      "duration": 92,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1239,10 +951,14 @@
       "name": "MC Tutorial - Group 3",
       "subject": "IT1030",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000006"
       ],
       "subgroup_ids": [
-        "Y1S1.3"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1253,15 +969,19 @@
     },
     {
       "code": "AC-017",
-      "name": "MC Tutorial - Group 4",
+      "name": "Lecture: MC Tutorial - Group 4",
       "subject": "IT1030",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y1S1.4"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
-      "duration": 1,
+      "duration": 91,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1273,9 +993,13 @@
       "name": "MC Tutorial - Group 5",
       "subject": "IT1030",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000008"
       ],
       "subgroup_ids": [
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
         "Y1S1.5"
       ],
       "duration": 1,
@@ -1290,7 +1014,7 @@
       "name": "DBMS Lecture",
       "subject": "IT1040",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000009"
       ],
       "subgroup_ids": [
         "Y1S1.1",
@@ -1307,15 +1031,19 @@
     },
     {
       "code": "AC-020",
-      "name": "DBMS Tutorial - Group 1",
+      "name": "Lab: DBMS Tutorial - Group 1",
       "subject": "IT1040",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000010"
       ],
       "subgroup_ids": [
-        "Y1S1.1"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
-      "duration": 1,
+      "duration": 127,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1327,10 +1055,14 @@
       "name": "DBMS Tutorial - Group 2",
       "subject": "IT1040",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y1S1.2"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1341,15 +1073,19 @@
     },
     {
       "code": "AC-022",
-      "name": "DBMS Tutorial - Group 3",
+      "name": "Lecture: DBMS Tutorial - Group 3",
       "subject": "IT1040",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y1S1.3"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
-      "duration": 1,
+      "duration": 105,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1358,15 +1094,19 @@
     },
     {
       "code": "AC-023",
-      "name": "DBMS Tutorial - Group 4",
+      "name": "Lecture: DBMS Tutorial - Group 4",
       "subject": "IT1040",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y1S1.4"
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
+        "Y1S1.5"
       ],
-      "duration": 1,
+      "duration": 95,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1378,9 +1118,13 @@
       "name": "DBMS Tutorial - Group 5",
       "subject": "IT1040",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000004"
       ],
       "subgroup_ids": [
+        "Y1S1.1",
+        "Y1S1.2",
+        "Y1S1.3",
+        "Y1S1.4",
         "Y1S1.5"
       ],
       "duration": 1,
@@ -1395,7 +1139,7 @@
       "name": "OOP Lecture",
       "subject": "IT1550",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000005"
       ],
       "subgroup_ids": [
         "Y1S2.1",
@@ -1418,7 +1162,11 @@
         "FA0000006"
       ],
       "subgroup_ids": [
-        "Y1S2.1"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1432,10 +1180,14 @@
       "name": "OOP Tutorial - Group 2",
       "subject": "IT1550",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y1S2.2"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1446,15 +1198,19 @@
     },
     {
       "code": "AC-028",
-      "name": "OOP Tutorial - Group 3",
+      "name": "Lecture: OOP Tutorial - Group 3",
       "subject": "IT1550",
       "teacher_ids": [
         "FA0000008"
       ],
       "subgroup_ids": [
-        "Y1S2.3"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
-      "duration": 1,
+      "duration": 94,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1469,7 +1225,11 @@
         "FA0000009"
       ],
       "subgroup_ids": [
-        "Y1S2.4"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1483,9 +1243,13 @@
       "name": "OOP Tutorial - Group 5",
       "subject": "IT1550",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000010"
       ],
       "subgroup_ids": [
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
         "Y1S2.5"
       ],
       "duration": 1,
@@ -1500,7 +1264,7 @@
       "name": "Web Development Lecture",
       "subject": "IT1560",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000001"
       ],
       "subgroup_ids": [
         "Y1S2.1",
@@ -1520,10 +1284,14 @@
       "name": "Web Development Tutorial - Group 1",
       "subject": "IT1560",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y1S2.1"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1534,15 +1302,19 @@
     },
     {
       "code": "AC-033",
-      "name": "Web Development Tutorial - Group 2",
+      "name": "Lecture: Web Development Tutorial - Group 2",
       "subject": "IT1560",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y1S2.2"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
-      "duration": 1,
+      "duration": 103,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1554,10 +1326,14 @@
       "name": "Web Development Tutorial - Group 3",
       "subject": "IT1560",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y1S2.3"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1574,7 +1350,11 @@
         "FA0000005"
       ],
       "subgroup_ids": [
-        "Y1S2.4"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1588,9 +1368,13 @@
       "name": "Web Development Tutorial - Group 5",
       "subject": "IT1560",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000006"
       ],
       "subgroup_ids": [
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
         "Y1S2.5"
       ],
       "duration": 1,
@@ -1605,7 +1389,7 @@
       "name": "Web Development Practical - Group 1",
       "subject": "IT1560",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000007"
       ],
       "subgroup_ids": [
         "Y1S2.1"
@@ -1621,7 +1405,7 @@
       "name": "Web Development Practical - Group 2",
       "subject": "IT1560",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000008"
       ],
       "subgroup_ids": [
         "Y1S2.2"
@@ -1637,7 +1421,7 @@
       "name": "Web Development Practical - Group 3",
       "subject": "IT1560",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000009"
       ],
       "subgroup_ids": [
         "Y1S2.3"
@@ -1653,7 +1437,7 @@
       "name": "Web Development Practical - Group 4",
       "subject": "IT1560",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000010"
       ],
       "subgroup_ids": [
         "Y1S2.4"
@@ -1669,7 +1453,7 @@
       "name": "Web Development Practical - Group 5",
       "subject": "IT1560",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000001"
       ],
       "subgroup_ids": [
         "Y1S2.5"
@@ -1685,7 +1469,7 @@
       "name": "Statistics Lecture",
       "subject": "IT1570",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000002"
       ],
       "subgroup_ids": [
         "Y1S2.1",
@@ -1708,7 +1492,11 @@
         "FA0000003"
       ],
       "subgroup_ids": [
-        "Y1S2.1"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1722,10 +1510,14 @@
       "name": "Statistics Tutorial - Group 2",
       "subject": "IT1570",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y1S2.2"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1739,10 +1531,14 @@
       "name": "Statistics Tutorial - Group 3",
       "subject": "IT1570",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y1S2.3"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1753,15 +1549,19 @@
     },
     {
       "code": "AC-046",
-      "name": "Statistics Tutorial - Group 4",
+      "name": "Lecture: Statistics Tutorial - Group 4",
       "subject": "IT1570",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000006"
       ],
       "subgroup_ids": [
-        "Y1S2.4"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
-      "duration": 1,
+      "duration": 91,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1770,15 +1570,19 @@
     },
     {
       "code": "AC-047",
-      "name": "Statistics Tutorial - Group 5",
+      "name": "Lecture: Statistics Tutorial - Group 5",
       "subject": "IT1570",
       "teacher_ids": [
         "FA0000007"
       ],
       "subgroup_ids": [
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
         "Y1S2.5"
       ],
-      "duration": 1,
+      "duration": 102,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1790,7 +1594,7 @@
       "name": "DSA Lecture",
       "subject": "IT1580",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000008"
       ],
       "subgroup_ids": [
         "Y1S2.1",
@@ -1807,15 +1611,19 @@
     },
     {
       "code": "AC-049",
-      "name": "DSA Tutorial - Group 1",
+      "name": "Lecture: DSA Tutorial - Group 1",
       "subject": "IT1580",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000009"
       ],
       "subgroup_ids": [
-        "Y1S2.1"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
-      "duration": 1,
+      "duration": 92,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1824,15 +1632,19 @@
     },
     {
       "code": "AC-050",
-      "name": "DSA Tutorial - Group 2",
+      "name": "Lecture: DSA Tutorial - Group 2",
       "subject": "IT1580",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000010"
       ],
       "subgroup_ids": [
-        "Y1S2.2"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
-      "duration": 1,
+      "duration": 101,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1841,15 +1653,19 @@
     },
     {
       "code": "AC-051",
-      "name": "DSA Tutorial - Group 3",
+      "name": "Lab: DSA Tutorial - Group 3",
       "subject": "IT1580",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y1S2.3"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
-      "duration": 1,
+      "duration": 166,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1858,15 +1674,19 @@
     },
     {
       "code": "AC-052",
-      "name": "DSA Tutorial - Group 4",
+      "name": "Lab: DSA Tutorial - Group 4",
       "subject": "IT1580",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y1S2.4"
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
+        "Y1S2.5"
       ],
-      "duration": 1,
+      "duration": 148,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1878,9 +1698,13 @@
       "name": "DSA Tutorial - Group 5",
       "subject": "IT1580",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000003"
       ],
       "subgroup_ids": [
+        "Y1S2.1",
+        "Y1S2.2",
+        "Y1S2.3",
+        "Y1S2.4",
         "Y1S2.5"
       ],
       "duration": 1,
@@ -1895,7 +1719,7 @@
       "name": "Advanced Programming Lecture",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000004"
       ],
       "subgroup_ids": [
         "Y2S1.1",
@@ -1912,15 +1736,19 @@
     },
     {
       "code": "AC-055",
-      "name": "Advanced Programming Tutorial - Group 1",
+      "name": "Lab: Advanced Programming Tutorial - Group 1",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y2S1.1"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 154,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1929,15 +1757,19 @@
     },
     {
       "code": "AC-056",
-      "name": "Advanced Programming Tutorial - Group 2",
+      "name": "Lecture: Advanced Programming Tutorial - Group 2",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000006"
       ],
       "subgroup_ids": [
-        "Y2S1.2"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 96,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -1949,10 +1781,14 @@
       "name": "Advanced Programming Tutorial - Group 3",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y2S1.3"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1966,10 +1802,14 @@
       "name": "Advanced Programming Tutorial - Group 4",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000008"
       ],
       "subgroup_ids": [
-        "Y2S1.4"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -1980,15 +1820,19 @@
     },
     {
       "code": "AC-059",
-      "name": "Advanced Programming Tutorial - Group 5",
+      "name": "Lecture: Advanced Programming Tutorial - Group 5",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000009"
       ],
       "subgroup_ids": [
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
         "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 100,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2000,7 +1844,7 @@
       "name": "Advanced Programming Practical - Group 1",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000010"
       ],
       "subgroup_ids": [
         "Y2S1.1"
@@ -2016,7 +1860,7 @@
       "name": "Advanced Programming Practical - Group 2",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000001"
       ],
       "subgroup_ids": [
         "Y2S1.2"
@@ -2032,7 +1876,7 @@
       "name": "Advanced Programming Practical - Group 3",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000002"
       ],
       "subgroup_ids": [
         "Y2S1.3"
@@ -2048,7 +1892,7 @@
       "name": "Advanced Programming Practical - Group 4",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000003"
       ],
       "subgroup_ids": [
         "Y2S1.4"
@@ -2064,7 +1908,7 @@
       "name": "Advanced Programming Practical - Group 5",
       "subject": "IT2010",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000004"
       ],
       "subgroup_ids": [
         "Y2S1.5"
@@ -2080,7 +1924,7 @@
       "name": "DBMS II Lecture",
       "subject": "IT2020",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000005"
       ],
       "subgroup_ids": [
         "Y2S1.1",
@@ -2097,15 +1941,19 @@
     },
     {
       "code": "AC-066",
-      "name": "DBMS II Tutorial - Group 1",
+      "name": "Lab: DBMS II Tutorial - Group 1",
       "subject": "IT2020",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000006"
       ],
       "subgroup_ids": [
-        "Y2S1.1"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 178,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2114,15 +1962,19 @@
     },
     {
       "code": "AC-067",
-      "name": "DBMS II Tutorial - Group 2",
+      "name": "Lab: DBMS II Tutorial - Group 2",
       "subject": "IT2020",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y2S1.2"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 176,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2131,15 +1983,19 @@
     },
     {
       "code": "AC-068",
-      "name": "DBMS II Tutorial - Group 3",
+      "name": "Lecture: DBMS II Tutorial - Group 3",
       "subject": "IT2020",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000008"
       ],
       "subgroup_ids": [
-        "Y2S1.3"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 94,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2154,7 +2010,11 @@
         "FA0000009"
       ],
       "subgroup_ids": [
-        "Y2S1.4"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2165,15 +2025,19 @@
     },
     {
       "code": "AC-070",
-      "name": "DBMS II Tutorial - Group 5",
+      "name": "Lecture: DBMS II Tutorial - Group 5",
       "subject": "IT2020",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000010"
       ],
       "subgroup_ids": [
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
         "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 108,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2185,7 +2049,7 @@
       "name": "Software Engineering Lecture",
       "subject": "IT2030",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000001"
       ],
       "subgroup_ids": [
         "Y2S1.1",
@@ -2202,15 +2066,19 @@
     },
     {
       "code": "AC-072",
-      "name": "Software Engineering Tutorial - Group 1",
+      "name": "Lab: Software Engineering Tutorial - Group 1",
       "subject": "IT2030",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y2S1.1"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 170,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2225,7 +2093,11 @@
         "FA0000003"
       ],
       "subgroup_ids": [
-        "Y2S1.2"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2239,10 +2111,14 @@
       "name": "Software Engineering Tutorial - Group 3",
       "subject": "IT2030",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y2S1.3"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2256,10 +2132,14 @@
       "name": "Software Engineering Tutorial - Group 4",
       "subject": "IT2030",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y2S1.4"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2273,9 +2153,13 @@
       "name": "Software Engineering Tutorial - Group 5",
       "subject": "IT2030",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000006"
       ],
       "subgroup_ids": [
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
         "Y2S1.5"
       ],
       "duration": 1,
@@ -2290,7 +2174,7 @@
       "name": "Networking Lecture",
       "subject": "IT2040",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000007"
       ],
       "subgroup_ids": [
         "Y2S1.1",
@@ -2310,10 +2194,14 @@
       "name": "Networking Tutorial - Group 1",
       "subject": "IT2040",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000008"
       ],
       "subgroup_ids": [
-        "Y2S1.1"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2327,10 +2215,14 @@
       "name": "Networking Tutorial - Group 2",
       "subject": "IT2040",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000009"
       ],
       "subgroup_ids": [
-        "Y2S1.2"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2341,15 +2233,19 @@
     },
     {
       "code": "AC-080",
-      "name": "Networking Tutorial - Group 3",
+      "name": "Lecture: Networking Tutorial - Group 3",
       "subject": "IT2040",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000010"
       ],
       "subgroup_ids": [
-        "Y2S1.3"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 105,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2358,15 +2254,19 @@
     },
     {
       "code": "AC-081",
-      "name": "Networking Tutorial - Group 4",
+      "name": "Lecture: Networking Tutorial - Group 4",
       "subject": "IT2040",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y2S1.4"
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
+        "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 108,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2375,15 +2275,19 @@
     },
     {
       "code": "AC-082",
-      "name": "Networking Tutorial - Group 5",
+      "name": "Lecture: Networking Tutorial - Group 5",
       "subject": "IT2040",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000002"
       ],
       "subgroup_ids": [
+        "Y2S1.1",
+        "Y2S1.2",
+        "Y2S1.3",
+        "Y2S1.4",
         "Y2S1.5"
       ],
-      "duration": 1,
+      "duration": 90,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2395,7 +2299,7 @@
       "name": "Mobile Development Lecture",
       "subject": "IT2550",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000003"
       ],
       "subgroup_ids": [
         "Y2S2.1",
@@ -2412,15 +2316,19 @@
     },
     {
       "code": "AC-084",
-      "name": "Mobile Development Tutorial - Group 1",
+      "name": "Lecture: Mobile Development Tutorial - Group 1",
       "subject": "IT2550",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y2S2.1"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
-      "duration": 1,
+      "duration": 90,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2429,15 +2337,19 @@
     },
     {
       "code": "AC-085",
-      "name": "Mobile Development Tutorial - Group 2",
+      "name": "Lab: Mobile Development Tutorial - Group 2",
       "subject": "IT2550",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y2S2.2"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
-      "duration": 1,
+      "duration": 165,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2449,10 +2361,14 @@
       "name": "Mobile Development Tutorial - Group 3",
       "subject": "IT2550",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000006"
       ],
       "subgroup_ids": [
-        "Y2S2.3"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2466,10 +2382,14 @@
       "name": "Mobile Development Tutorial - Group 4",
       "subject": "IT2550",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y2S2.4"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2480,15 +2400,19 @@
     },
     {
       "code": "AC-088",
-      "name": "Mobile Development Tutorial - Group 5",
+      "name": "Lab: Mobile Development Tutorial - Group 5",
       "subject": "IT2550",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000008"
       ],
       "subgroup_ids": [
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
         "Y2S2.5"
       ],
-      "duration": 1,
+      "duration": 156,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2500,7 +2424,7 @@
       "name": "Web Programming Lecture",
       "subject": "IT2560",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000009"
       ],
       "subgroup_ids": [
         "Y2S2.1",
@@ -2520,10 +2444,14 @@
       "name": "Web Programming Tutorial - Group 1",
       "subject": "IT2560",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000010"
       ],
       "subgroup_ids": [
-        "Y2S2.1"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2540,7 +2468,11 @@
         "FA0000001"
       ],
       "subgroup_ids": [
-        "Y2S2.2"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2554,10 +2486,14 @@
       "name": "Web Programming Tutorial - Group 3",
       "subject": "IT2560",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y2S2.3"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2568,15 +2504,19 @@
     },
     {
       "code": "AC-093",
-      "name": "Web Programming Tutorial - Group 4",
+      "name": "Lab: Web Programming Tutorial - Group 4",
       "subject": "IT2560",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y2S2.4"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
-      "duration": 1,
+      "duration": 177,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2588,9 +2528,13 @@
       "name": "Web Programming Tutorial - Group 5",
       "subject": "IT2560",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000004"
       ],
       "subgroup_ids": [
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
         "Y2S2.5"
       ],
       "duration": 1,
@@ -2605,7 +2549,7 @@
       "name": "Web Programming Practical - Group 1",
       "subject": "IT2560",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000005"
       ],
       "subgroup_ids": [
         "Y2S2.1"
@@ -2621,7 +2565,7 @@
       "name": "Web Programming Practical - Group 2",
       "subject": "IT2560",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000006"
       ],
       "subgroup_ids": [
         "Y2S2.2"
@@ -2637,7 +2581,7 @@
       "name": "Web Programming Practical - Group 3",
       "subject": "IT2560",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000007"
       ],
       "subgroup_ids": [
         "Y2S2.3"
@@ -2653,7 +2597,7 @@
       "name": "Web Programming Practical - Group 4",
       "subject": "IT2560",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000008"
       ],
       "subgroup_ids": [
         "Y2S2.4"
@@ -2685,7 +2629,7 @@
       "name": "OS Lecture",
       "subject": "IT2570",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000010"
       ],
       "subgroup_ids": [
         "Y2S2.1",
@@ -2705,10 +2649,14 @@
       "name": "OS Tutorial - Group 1",
       "subject": "IT2570",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y2S2.1"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2722,10 +2670,14 @@
       "name": "OS Tutorial - Group 2",
       "subject": "IT2570",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y2S2.2"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2739,10 +2691,14 @@
       "name": "OS Tutorial - Group 3",
       "subject": "IT2570",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y2S2.3"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2756,10 +2712,14 @@
       "name": "OS Tutorial - Group 4",
       "subject": "IT2570",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y2S2.4"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2770,15 +2730,19 @@
     },
     {
       "code": "AC-105",
-      "name": "OS Tutorial - Group 5",
+      "name": "Lecture: OS Tutorial - Group 5",
       "subject": "IT2570",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000005"
       ],
       "subgroup_ids": [
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
         "Y2S2.5"
       ],
-      "duration": 1,
+      "duration": 91,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2790,7 +2754,7 @@
       "name": "Security Lecture",
       "subject": "IT2580",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000006"
       ],
       "subgroup_ids": [
         "Y2S2.1",
@@ -2810,10 +2774,14 @@
       "name": "Security Tutorial - Group 1",
       "subject": "IT2580",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y2S2.1"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2827,10 +2795,14 @@
       "name": "Security Tutorial - Group 2",
       "subject": "IT2580",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000008"
       ],
       "subgroup_ids": [
-        "Y2S2.2"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2841,15 +2813,19 @@
     },
     {
       "code": "AC-109",
-      "name": "Security Tutorial - Group 3",
+      "name": "Lecture: Security Tutorial - Group 3",
       "subject": "IT2580",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000009"
       ],
       "subgroup_ids": [
-        "Y2S2.3"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
-      "duration": 1,
+      "duration": 105,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2858,15 +2834,19 @@
     },
     {
       "code": "AC-110",
-      "name": "Security Tutorial - Group 4",
+      "name": "Lecture: Security Tutorial - Group 4",
       "subject": "IT2580",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000010"
       ],
       "subgroup_ids": [
-        "Y2S2.4"
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
+        "Y2S2.5"
       ],
-      "duration": 1,
+      "duration": 104,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2875,15 +2855,19 @@
     },
     {
       "code": "AC-111",
-      "name": "Security Tutorial - Group 5",
+      "name": "Lecture: Security Tutorial - Group 5",
       "subject": "IT2580",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000001"
       ],
       "subgroup_ids": [
+        "Y2S2.1",
+        "Y2S2.2",
+        "Y2S2.3",
+        "Y2S2.4",
         "Y2S2.5"
       ],
-      "duration": 1,
+      "duration": 90,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2895,7 +2879,7 @@
       "name": "Project Management Lecture",
       "subject": "IT3010",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000002"
       ],
       "subgroup_ids": [
         "Y3S1.1",
@@ -2915,10 +2899,14 @@
       "name": "Project Management Tutorial - Group 1",
       "subject": "IT3010",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y3S1.1"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2929,15 +2917,19 @@
     },
     {
       "code": "AC-114",
-      "name": "Project Management Tutorial - Group 2",
+      "name": "Lab: Project Management Tutorial - Group 2",
       "subject": "IT3010",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y3S1.2"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 149,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2949,10 +2941,14 @@
       "name": "Project Management Tutorial - Group 3",
       "subject": "IT3010",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y3S1.3"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -2963,15 +2959,19 @@
     },
     {
       "code": "AC-116",
-      "name": "Project Management Tutorial - Group 4",
+      "name": "Lecture: Project Management Tutorial - Group 4",
       "subject": "IT3010",
       "teacher_ids": [
         "FA0000006"
       ],
       "subgroup_ids": [
-        "Y3S1.4"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 102,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -2983,9 +2983,13 @@
       "name": "Project Management Tutorial - Group 5",
       "subject": "IT3010",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000007"
       ],
       "subgroup_ids": [
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
         "Y3S1.5"
       ],
       "duration": 1,
@@ -3000,7 +3004,7 @@
       "name": "DS Lecture",
       "subject": "IT3020",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000008"
       ],
       "subgroup_ids": [
         "Y3S1.1",
@@ -3017,15 +3021,19 @@
     },
     {
       "code": "AC-119",
-      "name": "DS Tutorial - Group 1",
+      "name": "Lab: DS Tutorial - Group 1",
       "subject": "IT3020",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000009"
       ],
       "subgroup_ids": [
-        "Y3S1.1"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 161,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3037,10 +3045,14 @@
       "name": "DS Tutorial - Group 2",
       "subject": "IT3020",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000010"
       ],
       "subgroup_ids": [
-        "Y3S1.2"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3054,10 +3066,14 @@
       "name": "DS Tutorial - Group 3",
       "subject": "IT3020",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y3S1.3"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3068,15 +3084,19 @@
     },
     {
       "code": "AC-122",
-      "name": "DS Tutorial - Group 4",
+      "name": "Lecture: DS Tutorial - Group 4",
       "subject": "IT3020",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y3S1.4"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 106,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3088,9 +3108,13 @@
       "name": "DS Tutorial - Group 5",
       "subject": "IT3020",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000003"
       ],
       "subgroup_ids": [
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
         "Y3S1.5"
       ],
       "duration": 1,
@@ -3122,15 +3146,19 @@
     },
     {
       "code": "AC-125",
-      "name": "AI Tutorial - Group 1",
+      "name": "Lab: AI Tutorial - Group 1",
       "subject": "IT3030",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y3S1.1"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 143,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3145,7 +3173,11 @@
         "FA0000006"
       ],
       "subgroup_ids": [
-        "Y3S1.2"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3156,15 +3188,19 @@
     },
     {
       "code": "AC-127",
-      "name": "AI Tutorial - Group 3",
+      "name": "Lab: AI Tutorial - Group 3",
       "subject": "IT3030",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y3S1.3"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 121,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3173,15 +3209,19 @@
     },
     {
       "code": "AC-128",
-      "name": "AI Tutorial - Group 4",
+      "name": "Lecture: AI Tutorial - Group 4",
       "subject": "IT3030",
       "teacher_ids": [
         "FA0000008"
       ],
       "subgroup_ids": [
-        "Y3S1.4"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 106,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3193,9 +3233,13 @@
       "name": "AI Tutorial - Group 5",
       "subject": "IT3030",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000009"
       ],
       "subgroup_ids": [
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
         "Y3S1.5"
       ],
       "duration": 1,
@@ -3210,7 +3254,7 @@
       "name": "Cloud Computing Lecture",
       "subject": "IT3040",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000010"
       ],
       "subgroup_ids": [
         "Y3S1.1",
@@ -3227,15 +3271,19 @@
     },
     {
       "code": "AC-131",
-      "name": "Cloud Computing Tutorial - Group 1",
+      "name": "Lecture: Cloud Computing Tutorial - Group 1",
       "subject": "IT3040",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y3S1.1"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 105,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3244,15 +3292,19 @@
     },
     {
       "code": "AC-132",
-      "name": "Cloud Computing Tutorial - Group 2",
+      "name": "Lab: Cloud Computing Tutorial - Group 2",
       "subject": "IT3040",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y3S1.2"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 124,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3261,15 +3313,19 @@
     },
     {
       "code": "AC-133",
-      "name": "Cloud Computing Tutorial - Group 3",
+      "name": "Lecture: Cloud Computing Tutorial - Group 3",
       "subject": "IT3040",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y3S1.3"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 90,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3281,10 +3337,14 @@
       "name": "Cloud Computing Tutorial - Group 4",
       "subject": "IT3040",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y3S1.4"
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
+        "Y3S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3295,15 +3355,19 @@
     },
     {
       "code": "AC-135",
-      "name": "Cloud Computing Tutorial - Group 5",
+      "name": "Lab: Cloud Computing Tutorial - Group 5",
       "subject": "IT3040",
       "teacher_ids": [
         "FA0000005"
       ],
       "subgroup_ids": [
+        "Y3S1.1",
+        "Y3S1.2",
+        "Y3S1.3",
+        "Y3S1.4",
         "Y3S1.5"
       ],
-      "duration": 1,
+      "duration": 148,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3315,7 +3379,7 @@
       "name": "ML Lecture",
       "subject": "IT3550",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000006"
       ],
       "subgroup_ids": [
         "Y3S2.1",
@@ -3335,10 +3399,14 @@
       "name": "ML Tutorial - Group 1",
       "subject": "IT3550",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y3S2.1"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3352,10 +3420,14 @@
       "name": "ML Tutorial - Group 2",
       "subject": "IT3550",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000008"
       ],
       "subgroup_ids": [
-        "Y3S2.2"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3366,15 +3438,19 @@
     },
     {
       "code": "AC-139",
-      "name": "ML Tutorial - Group 3",
+      "name": "Lecture: ML Tutorial - Group 3",
       "subject": "IT3550",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000009"
       ],
       "subgroup_ids": [
-        "Y3S2.3"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 94,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3383,15 +3459,19 @@
     },
     {
       "code": "AC-140",
-      "name": "ML Tutorial - Group 4",
+      "name": "Lecture: ML Tutorial - Group 4",
       "subject": "IT3550",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000010"
       ],
       "subgroup_ids": [
-        "Y3S2.4"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 98,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3400,15 +3480,19 @@
     },
     {
       "code": "AC-141",
-      "name": "ML Tutorial - Group 5",
+      "name": "Lecture: ML Tutorial - Group 5",
       "subject": "IT3550",
       "teacher_ids": [
         "FA0000001"
       ],
       "subgroup_ids": [
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
         "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 94,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3420,7 +3504,7 @@
       "name": "Research Methods Lecture",
       "subject": "IT3560",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000002"
       ],
       "subgroup_ids": [
         "Y3S2.1",
@@ -3437,15 +3521,19 @@
     },
     {
       "code": "AC-143",
-      "name": "Research Methods Tutorial - Group 1",
+      "name": "Lab: Research Methods Tutorial - Group 1",
       "subject": "IT3560",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y3S2.1"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 124,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3457,10 +3545,14 @@
       "name": "Research Methods Tutorial - Group 2",
       "subject": "IT3560",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y3S2.2"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3471,15 +3563,19 @@
     },
     {
       "code": "AC-145",
-      "name": "Research Methods Tutorial - Group 3",
+      "name": "Lab: Research Methods Tutorial - Group 3",
       "subject": "IT3560",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y3S2.3"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 147,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3488,15 +3584,19 @@
     },
     {
       "code": "AC-146",
-      "name": "Research Methods Tutorial - Group 4",
+      "name": "Lecture: Research Methods Tutorial - Group 4",
       "subject": "IT3560",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000006"
       ],
       "subgroup_ids": [
-        "Y3S2.4"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 109,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3505,15 +3605,19 @@
     },
     {
       "code": "AC-147",
-      "name": "Research Methods Tutorial - Group 5",
+      "name": "Lecture: Research Methods Tutorial - Group 5",
       "subject": "IT3560",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000007"
       ],
       "subgroup_ids": [
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
         "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 101,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3525,7 +3629,7 @@
       "name": "DevOps Lecture",
       "subject": "IT3570",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000008"
       ],
       "subgroup_ids": [
         "Y3S2.1",
@@ -3548,7 +3652,11 @@
         "FA0000009"
       ],
       "subgroup_ids": [
-        "Y3S2.1"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3565,7 +3673,11 @@
         "FA0000010"
       ],
       "subgroup_ids": [
-        "Y3S2.2"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3579,10 +3691,14 @@
       "name": "DevOps Tutorial - Group 3",
       "subject": "IT3570",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y3S2.3"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3593,15 +3709,19 @@
     },
     {
       "code": "AC-152",
-      "name": "DevOps Tutorial - Group 4",
+      "name": "Lab: DevOps Tutorial - Group 4",
       "subject": "IT3570",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y3S2.4"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 126,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3610,15 +3730,19 @@
     },
     {
       "code": "AC-153",
-      "name": "DevOps Tutorial - Group 5",
+      "name": "Lecture: DevOps Tutorial - Group 5",
       "subject": "IT3570",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000003"
       ],
       "subgroup_ids": [
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
         "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 102,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3630,7 +3754,7 @@
       "name": "QA Lecture",
       "subject": "IT3580",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000004"
       ],
       "subgroup_ids": [
         "Y3S2.1",
@@ -3647,15 +3771,19 @@
     },
     {
       "code": "AC-155",
-      "name": "QA Tutorial - Group 1",
+      "name": "Lecture: QA Tutorial - Group 1",
       "subject": "IT3580",
       "teacher_ids": [
         "FA0000005"
       ],
       "subgroup_ids": [
-        "Y3S2.1"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 92,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3667,10 +3795,14 @@
       "name": "QA Tutorial - Group 2",
       "subject": "IT3580",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000006"
       ],
       "subgroup_ids": [
-        "Y3S2.2"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3684,10 +3816,14 @@
       "name": "QA Tutorial - Group 3",
       "subject": "IT3580",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y3S2.3"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3698,15 +3834,19 @@
     },
     {
       "code": "AC-158",
-      "name": "QA Tutorial - Group 4",
+      "name": "Lecture: QA Tutorial - Group 4",
       "subject": "IT3580",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000008"
       ],
       "subgroup_ids": [
-        "Y3S2.4"
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
+        "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 98,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3715,15 +3855,19 @@
     },
     {
       "code": "AC-159",
-      "name": "QA Tutorial - Group 5",
+      "name": "Lab: QA Tutorial - Group 5",
       "subject": "IT3580",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000009"
       ],
       "subgroup_ids": [
+        "Y3S2.1",
+        "Y3S2.2",
+        "Y3S2.3",
+        "Y3S2.4",
         "Y3S2.5"
       ],
-      "duration": 1,
+      "duration": 159,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3735,7 +3879,7 @@
       "name": "Research Project Lecture",
       "subject": "IT4010",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000010"
       ],
       "subgroup_ids": [
         "Y4S1.1",
@@ -3755,10 +3899,14 @@
       "name": "Research Project Tutorial - Group 1",
       "subject": "IT4010",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y4S1.1"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3772,10 +3920,14 @@
       "name": "Research Project Tutorial - Group 2",
       "subject": "IT4010",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y4S1.2"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3789,10 +3941,14 @@
       "name": "Research Project Tutorial - Group 3",
       "subject": "IT4010",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y4S1.3"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3803,15 +3959,19 @@
     },
     {
       "code": "AC-164",
-      "name": "Research Project Tutorial - Group 4",
+      "name": "Lecture: Research Project Tutorial - Group 4",
       "subject": "IT4010",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y4S1.4"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
-      "duration": 1,
+      "duration": 106,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3823,9 +3983,13 @@
       "name": "Research Project Tutorial - Group 5",
       "subject": "IT4010",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000005"
       ],
       "subgroup_ids": [
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
         "Y4S1.5"
       ],
       "duration": 1,
@@ -3840,7 +4004,7 @@
       "name": "Enterprise Architecture Lecture",
       "subject": "IT4020",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000006"
       ],
       "subgroup_ids": [
         "Y4S1.1",
@@ -3857,15 +4021,19 @@
     },
     {
       "code": "AC-167",
-      "name": "Enterprise Architecture Tutorial - Group 1",
+      "name": "Lab: Enterprise Architecture Tutorial - Group 1",
       "subject": "IT4020",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y4S1.1"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
-      "duration": 1,
+      "duration": 123,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3874,15 +4042,19 @@
     },
     {
       "code": "AC-168",
-      "name": "Enterprise Architecture Tutorial - Group 2",
+      "name": "Lecture: Enterprise Architecture Tutorial - Group 2",
       "subject": "IT4020",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000008"
       ],
       "subgroup_ids": [
-        "Y4S1.2"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
-      "duration": 1,
+      "duration": 106,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3891,15 +4063,19 @@
     },
     {
       "code": "AC-169",
-      "name": "Enterprise Architecture Tutorial - Group 3",
+      "name": "Lecture: Enterprise Architecture Tutorial - Group 3",
       "subject": "IT4020",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000009"
       ],
       "subgroup_ids": [
-        "Y4S1.3"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
-      "duration": 1,
+      "duration": 90,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3908,15 +4084,19 @@
     },
     {
       "code": "AC-170",
-      "name": "Enterprise Architecture Tutorial - Group 4",
+      "name": "Lecture: Enterprise Architecture Tutorial - Group 4",
       "subject": "IT4020",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000010"
       ],
       "subgroup_ids": [
-        "Y4S1.4"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
-      "duration": 1,
+      "duration": 106,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3928,9 +4108,13 @@
       "name": "Enterprise Architecture Tutorial - Group 5",
       "subject": "IT4020",
       "teacher_ids": [
-        "FA0000009"
+        "FA0000001"
       ],
       "subgroup_ids": [
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
         "Y4S1.5"
       ],
       "duration": 1,
@@ -3945,7 +4129,7 @@
       "name": "Business Analytics Lecture",
       "subject": "IT4030",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000002"
       ],
       "subgroup_ids": [
         "Y4S1.1",
@@ -3962,15 +4146,19 @@
     },
     {
       "code": "AC-173",
-      "name": "Business Analytics Tutorial - Group 1",
+      "name": "Lecture: Business Analytics Tutorial - Group 1",
       "subject": "IT4030",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y4S1.1"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
-      "duration": 1,
+      "duration": 105,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -3982,10 +4170,14 @@
       "name": "Business Analytics Tutorial - Group 2",
       "subject": "IT4030",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y4S1.2"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -3996,15 +4188,19 @@
     },
     {
       "code": "AC-175",
-      "name": "Business Analytics Tutorial - Group 3",
+      "name": "Lab: Business Analytics Tutorial - Group 3",
       "subject": "IT4030",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y4S1.3"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
-      "duration": 1,
+      "duration": 158,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -4016,10 +4212,14 @@
       "name": "Business Analytics Tutorial - Group 4",
       "subject": "IT4030",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000006"
       ],
       "subgroup_ids": [
-        "Y4S1.4"
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
+        "Y4S1.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -4033,9 +4233,13 @@
       "name": "Business Analytics Tutorial - Group 5",
       "subject": "IT4030",
       "teacher_ids": [
-        "FA0000003"
+        "FA0000007"
       ],
       "subgroup_ids": [
+        "Y4S1.1",
+        "Y4S1.2",
+        "Y4S1.3",
+        "Y4S1.4",
         "Y4S1.5"
       ],
       "duration": 1,
@@ -4050,7 +4254,7 @@
       "name": "Research Project II Lecture",
       "subject": "IT4550",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000008"
       ],
       "subgroup_ids": [
         "Y4S2.1",
@@ -4070,10 +4274,14 @@
       "name": "Research Project II Tutorial - Group 1",
       "subject": "IT4550",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000009"
       ],
       "subgroup_ids": [
-        "Y4S2.1"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -4087,10 +4295,14 @@
       "name": "Research Project II Tutorial - Group 2",
       "subject": "IT4550",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000010"
       ],
       "subgroup_ids": [
-        "Y4S2.2"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -4104,10 +4316,14 @@
       "name": "Research Project II Tutorial - Group 3",
       "subject": "IT4550",
       "teacher_ids": [
-        "FA0000002"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y4S2.3"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -4118,15 +4334,19 @@
     },
     {
       "code": "AC-182",
-      "name": "Research Project II Tutorial - Group 4",
+      "name": "Lecture: Research Project II Tutorial - Group 4",
       "subject": "IT4550",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y4S2.4"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
-      "duration": 1,
+      "duration": 97,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -4138,9 +4358,13 @@
       "name": "Research Project II Tutorial - Group 5",
       "subject": "IT4550",
       "teacher_ids": [
-        "FA0000007"
+        "FA0000003"
       ],
       "subgroup_ids": [
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
         "Y4S2.5"
       ],
       "duration": 1,
@@ -4155,7 +4379,7 @@
       "name": "Emerging Technologies Lecture",
       "subject": "IT4560",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000004"
       ],
       "subgroup_ids": [
         "Y4S2.1",
@@ -4175,10 +4399,14 @@
       "name": "Emerging Technologies Tutorial - Group 1",
       "subject": "IT4560",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000005"
       ],
       "subgroup_ids": [
-        "Y4S2.1"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -4189,15 +4417,19 @@
     },
     {
       "code": "AC-186",
-      "name": "Emerging Technologies Tutorial - Group 2",
+      "name": "Lecture: Emerging Technologies Tutorial - Group 2",
       "subject": "IT4560",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000006"
       ],
       "subgroup_ids": [
-        "Y4S2.2"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
-      "duration": 1,
+      "duration": 90,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -4206,15 +4438,19 @@
     },
     {
       "code": "AC-187",
-      "name": "Emerging Technologies Tutorial - Group 3",
+      "name": "Lecture: Emerging Technologies Tutorial - Group 3",
       "subject": "IT4560",
       "teacher_ids": [
-        "FA0000010"
+        "FA0000007"
       ],
       "subgroup_ids": [
-        "Y4S2.3"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
-      "duration": 1,
+      "duration": 90,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -4226,10 +4462,14 @@
       "name": "Emerging Technologies Tutorial - Group 4",
       "subject": "IT4560",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000008"
       ],
       "subgroup_ids": [
-        "Y4S2.4"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -4243,9 +4483,13 @@
       "name": "Emerging Technologies Tutorial - Group 5",
       "subject": "IT4560",
       "teacher_ids": [
-        "FA0000006"
+        "FA0000009"
       ],
       "subgroup_ids": [
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
         "Y4S2.5"
       ],
       "duration": 1,
@@ -4260,7 +4504,7 @@
       "name": "Professional Practice Lecture",
       "subject": "IT4570",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000010"
       ],
       "subgroup_ids": [
         "Y4S2.1",
@@ -4280,10 +4524,14 @@
       "name": "Professional Practice Tutorial - Group 1",
       "subject": "IT4570",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000001"
       ],
       "subgroup_ids": [
-        "Y4S2.1"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
       "duration": 1,
       "type": "Tutorial",
@@ -4294,15 +4542,19 @@
     },
     {
       "code": "AC-192",
-      "name": "Professional Practice Tutorial - Group 2",
+      "name": "Lecture: Professional Practice Tutorial - Group 2",
       "subject": "IT4570",
       "teacher_ids": [
-        "FA0000001"
+        "FA0000002"
       ],
       "subgroup_ids": [
-        "Y4S2.2"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
-      "duration": 1,
+      "duration": 93,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -4311,15 +4563,19 @@
     },
     {
       "code": "AC-193",
-      "name": "Professional Practice Tutorial - Group 3",
+      "name": "Lab: Professional Practice Tutorial - Group 3",
       "subject": "IT4570",
       "teacher_ids": [
-        "FA0000004"
+        "FA0000003"
       ],
       "subgroup_ids": [
-        "Y4S2.3"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
-      "duration": 1,
+      "duration": 155,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -4328,15 +4584,19 @@
     },
     {
       "code": "AC-194",
-      "name": "Professional Practice Tutorial - Group 4",
+      "name": "Lab: Professional Practice Tutorial - Group 4",
       "subject": "IT4570",
       "teacher_ids": [
-        "FA0000005"
+        "FA0000004"
       ],
       "subgroup_ids": [
-        "Y4S2.4"
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
+        "Y4S2.5"
       ],
-      "duration": 1,
+      "duration": 153,
       "type": "Tutorial",
       "space_requirements": [
         "Tutorial Room",
@@ -4348,9 +4608,13 @@
       "name": "Professional Practice Tutorial - Group 5",
       "subject": "IT4570",
       "teacher_ids": [
-        "FA0000008"
+        "FA0000005"
       ],
       "subgroup_ids": [
+        "Y4S2.1",
+        "Y4S2.2",
+        "Y4S2.3",
+        "Y4S2.4",
         "Y4S2.5"
       ],
       "duration": 1,
@@ -4361,36 +4625,166 @@
       ]
     }
   ],
-  "constraints": [
+  "groups": [
     {
-      "name": "No Teacher Overlap",
-      "description": "A teacher cannot be scheduled for multiple activities at the same time",
-      "type": "hard",
-      "weight": 10
+      "id": "Y1S1.1",
+      "size": 40
     },
     {
-      "name": "No Student Group Overlap",
-      "description": "A student group cannot be scheduled for multiple activities at the same time",
-      "type": "hard",
-      "weight": 10
+      "id": "Y1S1.2",
+      "size": 40
     },
     {
-      "name": "No Room Overlap",
-      "description": "A room cannot be scheduled for multiple activities at the same time",
-      "type": "hard",
-      "weight": 10
+      "id": "Y1S1.3",
+      "size": 40
     },
     {
-      "name": "Room Type Match",
-      "description": "Activities must be scheduled in rooms that match their requirements",
-      "type": "hard",
-      "weight": 10
+      "id": "Y1S1.4",
+      "size": 40
     },
     {
-      "name": "Room Capacity",
-      "description": "Room capacity must be sufficient for the student group size",
-      "type": "hard",
-      "weight": 10
+      "id": "Y1S1.5",
+      "size": 40
+    },
+    {
+      "id": "Y1S2.1",
+      "size": 40
+    },
+    {
+      "id": "Y1S2.2",
+      "size": 40
+    },
+    {
+      "id": "Y1S2.3",
+      "size": 40
+    },
+    {
+      "id": "Y1S2.4",
+      "size": 40
+    },
+    {
+      "id": "Y1S2.5",
+      "size": 40
+    },
+    {
+      "id": "Y2S1.1",
+      "size": 40
+    },
+    {
+      "id": "Y2S1.2",
+      "size": 40
+    },
+    {
+      "id": "Y2S1.3",
+      "size": 40
+    },
+    {
+      "id": "Y2S1.4",
+      "size": 40
+    },
+    {
+      "id": "Y2S1.5",
+      "size": 40
+    },
+    {
+      "id": "Y2S2.1",
+      "size": 40
+    },
+    {
+      "id": "Y2S2.2",
+      "size": 40
+    },
+    {
+      "id": "Y2S2.3",
+      "size": 40
+    },
+    {
+      "id": "Y2S2.4",
+      "size": 40
+    },
+    {
+      "id": "Y2S2.5",
+      "size": 40
+    },
+    {
+      "id": "Y3S1.1",
+      "size": 40
+    },
+    {
+      "id": "Y3S1.2",
+      "size": 40
+    },
+    {
+      "id": "Y3S1.3",
+      "size": 40
+    },
+    {
+      "id": "Y3S1.4",
+      "size": 40
+    },
+    {
+      "id": "Y3S1.5",
+      "size": 40
+    },
+    {
+      "id": "Y3S2.1",
+      "size": 40
+    },
+    {
+      "id": "Y3S2.2",
+      "size": 40
+    },
+    {
+      "id": "Y3S2.3",
+      "size": 40
+    },
+    {
+      "id": "Y3S2.4",
+      "size": 40
+    },
+    {
+      "id": "Y3S2.5",
+      "size": 40
+    },
+    {
+      "id": "Y4S1.1",
+      "size": 40
+    },
+    {
+      "id": "Y4S1.2",
+      "size": 40
+    },
+    {
+      "id": "Y4S1.3",
+      "size": 40
+    },
+    {
+      "id": "Y4S1.4",
+      "size": 40
+    },
+    {
+      "id": "Y4S1.5",
+      "size": 40
+    },
+    {
+      "id": "Y4S2.1",
+      "size": 40
+    },
+    {
+      "id": "Y4S2.2",
+      "size": 40
+    },
+    {
+      "id": "Y4S2.3",
+      "size": 40
+    },
+    {
+      "id": "Y4S2.4",
+      "size": 40
+    },
+    {
+      "id": "Y4S2.5",
+      "size": 40
     }
   ]
 }

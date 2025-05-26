@@ -174,7 +174,7 @@ def evaluate_timetable(conflict_count, utilization, overlap_count):
 
 def evaluate():
     """
-    Evaluate all timetables in the database and return scores by algorithm
+    Evaluate all timetables in the database and return detailed metrics by algorithm
     """
     # Get all timetables from the database
     try:
@@ -187,8 +187,12 @@ def evaluate():
         logger.error(f"Error retrieving timetables from database: {str(e)}")
         return {}
         
-    results_by_algorithm = defaultdict(list)
-    algorithm_scores = defaultdict(list) 
+    algorithm_metrics = defaultdict(lambda: {
+        'scores': [],
+        'conflicts': [],
+        'room_utilization': [],
+        'period_overlap': []
+    })
     wins = defaultdict(int)
 
     # Group timetables by semester
@@ -222,10 +226,13 @@ def evaluate():
                 # Calculate overall score
                 score = evaluate_timetable(conflict_count, utilization, overlap_count)
                 
-                # Store score for this algorithm
-                algorithm_scores[algorithm].append(score)
+                # Store detailed metrics for this algorithm
+                algorithm_metrics[algorithm]['scores'].append(score)
+                algorithm_metrics[algorithm]['conflicts'].append(conflict_count)
+                algorithm_metrics[algorithm]['room_utilization'].append(utilization)
+                algorithm_metrics[algorithm]['period_overlap'].append(overlap_count)
                 
-                logger.info(f"  Algorithm: {algorithm}, Code: {timetable.get('code', 'N/A')}, Score: {score:.2f}")
+                logger.info(f"  Algorithm: {algorithm}, Code: {timetable.get('code', 'N/A')}, Score: {score:.2f}, Conflicts: {conflict_count}, Utilization: {utilization:.1f}%, Overlap: {overlap_count}")
 
                 if score > best_score:
                     best_score = score
@@ -238,7 +245,18 @@ def evaluate():
             wins[best_algorithm] += 1
             logger.info(f"Best algorithm for {semester}: {best_algorithm} (Score: {best_score:.2f})")
     
-    logger.info("Evaluation complete")
+    # Calculate averages and return structured data
+    result = {}
+    for algorithm, metrics in algorithm_metrics.items():
+        if metrics['scores']:  # Only include algorithms with data
+            result[algorithm] = {
+                'average_score': sum(metrics['scores']) / len(metrics['scores']),
+                'conflicts': sum(metrics['conflicts']) / len(metrics['conflicts']),
+                'room_utilization': sum(metrics['room_utilization']) / len(metrics['room_utilization']),
+                'period_distribution': 100 - (sum(metrics['period_overlap']) / len(metrics['period_overlap']) * 10)  # Convert overlap to distribution score
+            }
     
-    # Return only the scores, not the logging output
-    return algorithm_scores
+    logger.info("Evaluation complete")
+    logger.info(f"Final results: {result}")
+    
+    return result

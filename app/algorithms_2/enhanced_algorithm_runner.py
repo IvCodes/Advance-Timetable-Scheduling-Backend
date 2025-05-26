@@ -117,21 +117,21 @@ class EnhancedAlgorithmRunner:
                     timetable = result['timetable']
                     html_path = generate_enhanced_timetable_html(timetable, html_path)
                     
-                    print(f"✅ Enhanced HTML generated: {html_path}")
+                    print(f" Enhanced HTML generated: {html_path}")
                     
                 except Exception as e:
-                    print(f"⚠️ Warning: Could not generate enhanced HTML: {e}")
+                    print(f" Warning: Could not generate enhanced HTML: {e}")
                     html_path = None
             
             # Create success message
-            message = (f"✅ Success: {hard_violations} hard violations, "
+            message = (f" Success: {hard_violations} hard violations, "
                       f"soft score: {soft_score:.3f}, "
                       f"unassigned: {unassigned} ({runtime:.1f}s)")
             
             return True, message, html_path
             
         except Exception as e:
-            return False, f"❌ Error: {str(e)}", None
+            return False, f" Error: {str(e)}", None
     
     def run_all_algorithms(self, mode: str = 'standard', 
                           generate_html: bool = True) -> Dict[str, Dict[str, Any]]:
@@ -147,11 +147,11 @@ class EnhancedAlgorithmRunner:
         """
         results = {}
         
-        print(f"\n🔬 Running All Algorithms ({mode.upper()} mode)")
+        print(f"\n Running All Algorithms ({mode.upper()} mode)")
         print("=" * 60)
         
         for algorithm, description in self.available_algorithms.items():
-            print(f"\n📊 {algorithm.upper()}: {description}")
+            print(f"\n {algorithm.upper()}: {description}")
             
             success, message, html_path = self.run_single_algorithm(
                 algorithm, mode, generate_html
@@ -217,12 +217,12 @@ class EnhancedAlgorithmRunner:
         stats = self.get_algorithm_statistics()
         
         report = f"""
-🎓 ENHANCED ALGORITHM RUNNER SUMMARY REPORT
+ ENHANCED ALGORITHM RUNNER SUMMARY REPORT
 {'=' * 60}
 Generated on: {timestamp}
 Run Mode: {mode.upper()}
 
-📊 DATASET STATISTICS:
+ DATASET STATISTICS:
   • Students: {stats['total_students']}
   • Activities: {stats['total_activities']}
   • Groups: {stats['total_groups']}
@@ -230,7 +230,7 @@ Run Mode: {mode.upper()}
   • Rooms: {stats['total_rooms']}
   • Time Slots: {stats['total_slots']}
 
-🏆 ALGORITHM RESULTS:
+ ALGORITHM RESULTS:
   • Total Algorithms: {len(results)}
   • Successful: {len(successful)} ({len(successful)/len(results)*100:.1f}%)
   • Failed: {len(failed)} ({len(failed)/len(results)*100:.1f}%)
@@ -245,12 +245,12 @@ Run Mode: {mode.upper()}
                 report += f"    📄 HTML: {result['html_path']}\n"
         
         if failed:
-            report += f"\n❌ FAILED ALGORITHMS:\n"
+            report += f"\n FAILED ALGORITHMS:\n"
             for alg in failed:
                 result = results[alg]
                 report += f"  • {alg.upper()}: {result['message']}\n"
         
-        report += f"\n📁 Output Directory: {self.output_dir}\n"
+        report += f"\n Output Directory: {self.output_dir}\n"
         report += "=" * 60
         
         return report
@@ -266,7 +266,7 @@ def run_enhanced_algorithm_interface():
     
     # Display dataset statistics
     stats = runner.get_algorithm_statistics()
-    print(f"\n📊 Dataset Overview:")
+    print(f"\n Dataset Overview:")
     print(f"  • {stats['total_students']} students with unique IDs")
     print(f"  • {stats['total_activities']} activities")
     print(f"  • {stats['total_groups']} groups")
@@ -275,7 +275,7 @@ def run_enhanced_algorithm_interface():
     print(f"  • {stats['total_slots']} time slots")
     
     while True:
-        print("\n📋 MAIN MENU")
+        print("\n MAIN MENU")
         print("=" * 30)
         print("1. Run Single Algorithm")
         print("2. Run All Algorithms")
@@ -288,7 +288,7 @@ def run_enhanced_algorithm_interface():
             choice = input("\nEnter choice (0-5): ").strip()
             
             if choice == '0':
-                print("👋 Exiting Enhanced Algorithm Runner...")
+                print(" Exiting Enhanced Algorithm Runner...")
                 break
             
             elif choice == '1':
@@ -303,12 +303,12 @@ def run_enhanced_algorithm_interface():
                     if 1 <= alg_num <= len(runner.available_algorithms):
                         algorithm = list(runner.available_algorithms.keys())[alg_num - 1]
                     else:
-                        print("❌ Invalid algorithm number!")
+                        print(" Invalid algorithm number!")
                         continue
                 else:
                     algorithm = alg_input.lower()
                     if algorithm not in runner.available_algorithms:
-                        print("❌ Invalid algorithm name!")
+                        print(" Invalid algorithm name!")
                         continue
                 
                 # Mode selection
@@ -321,7 +321,7 @@ def run_enhanced_algorithm_interface():
                 mode_map = {'1': 'quick', '2': 'standard', '3': 'full'}
                 
                 if mode_input not in mode_map:
-                    print("❌ Invalid mode choice!")
+                    print(" Invalid mode choice!")
                     continue
                 
                 mode = mode_map[mode_input]
@@ -330,7 +330,7 @@ def run_enhanced_algorithm_interface():
                 html_choice = input("\nGenerate enhanced HTML? (y/n, default: y): ").strip().lower()
                 generate_html = html_choice != 'n'
                 
-                print(f"\n🚀 Running {algorithm.upper()} ({mode.upper()} mode)")
+                print(f"\n Running {algorithm.upper()} ({mode.upper()} mode)")
                 print("=" * 50)
                 
                 success, message, html_path = runner.run_single_algorithm(
@@ -339,8 +339,8 @@ def run_enhanced_algorithm_interface():
                 
                 print(f"\n📊 Result: {message}")
                 if html_path:
-                    print(f"📄 Enhanced HTML: {html_path}")
-                    print("💡 Open this file in a web browser to view the enhanced timetable!")
+                    print(f" Enhanced HTML: {html_path}")
+                    print(" Open this file in a web browser to view the enhanced timetable!")
             
             elif choice == '2':
                 # Run all algorithms
@@ -353,7 +353,7 @@ def run_enhanced_algorithm_interface():
                 mode_map = {'1': 'quick', '2': 'standard', '3': 'full'}
                 
                 if mode_input not in mode_map:
-                    print("❌ Invalid mode choice!")
+                    print(" Invalid mode choice!")
                     continue
                 
                 mode = mode_map[mode_input]
@@ -396,20 +396,20 @@ def run_enhanced_algorithm_interface():
                     
                     html_path = generate_enhanced_timetable_html(test_timetable, html_path)
                     
-                    print(f"✅ Test HTML generated: {html_path}")
-                    print("💡 This shows the enhanced layout with student ID mappings!")
+                    print(f" Test HTML generated: {html_path}")
+                    print(" This shows the enhanced layout with student ID mappings!")
                     
                 except Exception as e:
-                    print(f"❌ Error generating test HTML: {e}")
+                    print(f" Error generating test HTML: {e}")
             
             else:
-                print("❌ Invalid choice!")
+                print(" Invalid choice!")
         
         except (ValueError, KeyboardInterrupt):
-            print("\n👋 Exiting...")
+            print("\n Exiting...")
             break
         except Exception as e:
-            print(f"❌ Error: {e}")
+            print(f" Error: {e}")
 
 
 if __name__ == "__main__":

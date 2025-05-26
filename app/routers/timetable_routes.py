@@ -89,6 +89,17 @@ ENTRY_INDEX_OUT_OF_RANGE = "Entry index is out of range"
 class AlgorithmEvaluation(BaseModel):
     """Model for timetable algorithm evaluation input"""
     scores: Dict[str, Dict[str, float]]
+    
+    def validate_scores(self):
+        """Validate that all algorithms have required metrics"""
+        required_metrics = ["average_score", "conflicts", "room_utilization", "period_distribution"]
+        
+        for algorithm, metrics in self.scores.items():
+            missing_metrics = [metric for metric in required_metrics if metric not in metrics]
+            if missing_metrics:
+                raise ValueError(f"Algorithm '{algorithm}' is missing required metrics: {missing_metrics}")
+        
+        return True
 
 def evaluate():
     """
@@ -887,56 +898,203 @@ async def remove_substitute(
         logging.error(f"Failed to remove substitute teacher: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to remove substitute teacher: {str(e)}")
 
+def analyze_algorithms_locally(scores: Dict[str, Dict[str, float]]) -> str:
+    """
+    Provide local analysis of algorithm performance when external API is unavailable.
+    """
+    try:
+        # Filter to only GA, RL, CO algorithms
+        target_algorithms = {k: v for k, v in scores.items() if k in ["GA", "RL", "CO"]}
+        
+        if not target_algorithms:
+            return "No GA, RL, or CO algorithms found in the provided data."
+        
+        # Sort algorithms by average score (higher is better)
+        sorted_algorithms = sorted(
+            target_algorithms.items(), 
+            key=lambda x: x[1].get("average_score", 0), 
+            reverse=True
+        )
+        
+        analysis = "## Algorithm Performance Analysis\n\n"
+        analysis += "### How Timetable Evaluation Works:\n"
+        analysis += "Timetable algorithms are evaluated based on multiple criteria:\n"
+        analysis += "- **Average Score**: Composite fitness score considering all constraints\n"
+        analysis += "- **Conflicts**: Number of scheduling conflicts (lower is better)\n"
+        analysis += "- **Room Utilization**: Percentage of available rooms used efficiently\n"
+        analysis += "- **Period Distribution**: How evenly classes are distributed across time slots\n\n"
+        analysis += "**Note**: Timetable scores are typically 15-30 due to complex multi-objective optimization.\n"
+        analysis += "Perfect scores (100+) are nearly impossible due to conflicting constraints.\n\n"
+        
+        # Best to Worst ranking
+        analysis += "**Best to Worst Ranking:**\n"
+        for i, (algo, metrics) in enumerate(sorted_algorithms, 1):
+            score = metrics.get("average_score", 0)
+            analysis += f"{i}. {algo} (Score: {score:.1f})\n"
+        
+        analysis += "\n**Algorithm Analysis:**\n"
+        
+        # Detailed analysis for each algorithm
+        for algo, metrics in sorted_algorithms:
+            score = metrics.get("average_score", 0)
+            conflicts = metrics.get("conflicts", 0)
+            room_util = metrics.get("room_utilization", 0)
+            period_dist = metrics.get("period_distribution", 0)
+            
+            analysis += f"**{algo} Algorithm:** Score {score:.1f}, with {conflicts:.1f} conflicts, "
+            analysis += f"{room_util:.1f}% room utilization, and {period_dist:.1f}% period distribution. "
+            
+            # Add performance assessment based on realistic timetable scoring
+            # Note: Timetable scores are typically much lower than 100 due to complex constraints
+            if score >= 25:
+                analysis += "Excellent performance with superior constraint satisfaction.\n"
+            elif score >= 20:
+                analysis += "Very good performance with strong optimization.\n"
+            elif score >= 15:
+                analysis += "Good performance with acceptable constraint handling.\n"
+            elif score >= 10:
+                analysis += "Moderate performance with room for improvement.\n"
+            else:
+                analysis += "Poor performance requiring significant optimization.\n"
+        
+        # Recommendation
+        best_algo, best_metrics = sorted_algorithms[0]
+        analysis += f"\n### Recommendation:\n"
+        analysis += f"**Primary Choice: {best_algo} Algorithm**\n"
+        analysis += f"- Achieved highest composite score: {best_metrics.get('average_score', 0):.1f}\n"
+        analysis += f"- Conflict count: {best_metrics.get('conflicts', 0):.1f} "
+        
+        if best_metrics.get("conflicts", 0) == 0:
+            analysis += "(Perfect - no scheduling conflicts)\n"
+        elif best_metrics.get("conflicts", 0) < 2:
+            analysis += "(Excellent - minimal conflicts)\n"
+        elif best_metrics.get("conflicts", 0) < 5:
+            analysis += "(Good - acceptable conflict level)\n"
+        else:
+            analysis += "(Needs improvement - high conflict count)\n"
+            
+        analysis += f"- Room utilization: {best_metrics.get('room_utilization', 0):.1f}% "
+        room_util = best_metrics.get('room_utilization', 0)
+        if room_util > 15:
+            analysis += "(Efficient space usage)\n"
+        elif room_util > 10:
+            analysis += "(Moderate space usage)\n"
+        else:
+            analysis += "(Conservative space usage)\n"
+            
+        analysis += f"- Period distribution: {best_metrics.get('period_distribution', 0):.1f}% "
+        period_dist = best_metrics.get('period_distribution', 0)
+        if period_dist >= 95:
+            analysis += "(Excellent time slot distribution)\n"
+        elif period_dist >= 85:
+            analysis += "(Good time slot distribution)\n"
+        else:
+            analysis += "(Uneven time slot distribution)\n"
+            
+        # Add context about why this algorithm is recommended
+        analysis += f"\n**Why {best_algo}?** "
+        if best_algo == "GA":
+            analysis += "Genetic Algorithm excels at finding globally optimal solutions through evolutionary search."
+        elif best_algo == "RL":
+            analysis += "Reinforcement Learning adapts well to complex constraints and learns optimal scheduling patterns."
+        elif best_algo == "CO":
+            analysis += "Ant Colony Optimization efficiently explores solution space using swarm intelligence."
+        else:
+            analysis += "This algorithm demonstrated superior performance across all evaluation metrics."
+            
+        return analysis
+        
+    except Exception as e:
+        return f"Error in local analysis: {str(e)}"
+
 @router.post("/evaluate-algorithms")
 async def evaluate_algorithms(evaluation: AlgorithmEvaluation):
     """
-    Evaluate timetable algorithms using DeepSeek V3 via OpenRouter.
+    Evaluate timetable algorithms using DeepSeek V3 via OpenRouter with fallback to local analysis.
     
     This endpoint accepts evaluation scores for different algorithms and 
-    returns an analysis and recommendation from the LLM.
+    returns an analysis and recommendation. If external API fails, provides local analysis.
     """
     try:
-        # Format the scores for the LLM prompt
-        evaluation_summary = format_scores_for_api(evaluation.scores)
+        # Validate input data
+        evaluation.validate_scores()
         
-        prompt = f"""
+        # Try external API first if available
+        if openrouter_api_key:
+            try:
+                # Format the scores for the LLM prompt
+                evaluation_summary = format_scores_for_api(evaluation.scores)
+                
+                prompt = f"""
 The following are evaluation scores for different algorithms used in a timetable scheduling optimization project:
 {evaluation_summary}
 
 Based on these results, provide an analysis of ONLY the GA, RL, and CO algorithms in this format:
-1. First, list these three algorithms (GA, RL, CO) from best to worst based on their scores
-2. Then, for each of these three algorithms, provide a 1-2 sentence description of its suitability for timetable generation
-3. Finally, provide a clear recommendation about which of these three algorithms should be used and why
+1. **Best to Worst:** List these three algorithms (GA, RL, CO) from best to worst based on their average scores
+2. **Algorithm Analysis:** For each algorithm, provide a 1-2 sentence description including their EXACT NUMERIC VALUES from the data above (average_score, conflicts, room_utilization, period_distribution)
+3. **Recommendation:** Provide a clear recommendation about which algorithm should be used and why
 
-IMPORTANT: Focus ONLY on GA (Genetic Algorithm), RL (Reinforcement Learning), and CO (Ant Colony Optimization) algorithms. Do NOT include or mention PSO or BC algorithms in your analysis.
+CRITICAL REQUIREMENTS:
+- MUST include the exact numeric values (e.g., "GA: 17.4 score, 0.0 conflicts, 11.6% room utilization, 100.0% period distribution")
+- Focus ONLY on GA (Genetic Algorithm), RL (Reinforcement Learning), and CO (Ant Colony Optimization) algorithms
+- Do NOT mention PSO or BC algorithms
+- Keep response under 200 words but include all specific numbers
 
-Keep your entire response under 150 words. Be specific about the strengths and weaknesses of each algorithm based on the metrics provided.
+Example format: "**GA Algorithm:** Score 17.4, with 0.0 conflicts and 11.6% room utilization, making it highly reliable..."
 """
 
-        logging.info("Sending evaluation request to DeepSeek")
-        
-        # Call DeepSeek V3 via OpenRouter API
-        # Note: OpenAI client.chat.completions.create() doesn't need to be awaited
-        completion = client.chat.completions.create(
-            model="deepseek/deepseek-chat:free",
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt
+                logging.info("Sending evaluation request to DeepSeek")
+                
+                # Call DeepSeek V3 via OpenRouter API
+                completion = client.chat.completions.create(
+                    model="deepseek/deepseek-chat:free",
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": prompt
+                        }
+                    ],
+                    temperature=0.7,
+                    max_tokens=250
+                )
+                
+                # Extract the response content
+                response = completion.choices[0].message.content
+                logging.info("Received response from DeepSeek")
+                
+                return {
+                    "analysis": response,
+                    "source": "external_api",
+                    "status": "success"
                 }
-            ],
-            temperature=0.7,
-            max_tokens=250
-        )
-        
-        # Extract the response content
-        response = completion.choices[0].message.content
-        logging.info("Received response from DeepSeek")
-        
-        return {"analysis": response}
+                
+            except Exception as api_error:
+                logging.warning(f"External API failed: {str(api_error)}")
+                logging.info("Falling back to local analysis")
+                
+                # Fall back to local analysis
+                local_analysis = analyze_algorithms_locally(evaluation.scores)
+                return {
+                    "analysis": local_analysis,
+                    "source": "local_analysis",
+                    "status": "fallback",
+                    "api_error": str(api_error)
+                }
+        else:
+            # No API key available, use local analysis
+            logging.info("No OpenRouter API key available, using local analysis")
+            local_analysis = analyze_algorithms_locally(evaluation.scores)
+            return {
+                "analysis": local_analysis,
+                "source": "local_analysis",
+                "status": "no_api_key"
+            }
     
+    except ValueError as ve:
+        logging.error(f"Validation error: {str(ve)}")
+        raise HTTPException(status_code=422, detail=f"Validation error: {str(ve)}")
     except Exception as e:
-        logging.error(f"Error evaluating algorithms with DeepSeek: {str(e)}")
+        logging.error(f"Error evaluating algorithms: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to evaluate algorithms: {str(e)}")
 
 def format_scores_for_api(scores):

@@ -8,9 +8,110 @@ from app.algorithms_2.evaluate import evaluate_hard_constraints, evaluate_soft_c
 from app.algorithms_2.metrics_tracker import MetricsTracker
 from app.algorithms_2.timetable_html_generator import generate_timetable_html
 
+def get_activity_size(activity, groups_dict):
+    """Calculate total students for an activity"""
+    total_students = 0
+    for group_id in activity.group_ids:
+        if group_id in groups_dict:
+            total_students += groups_dict[group_id].size
+    return total_students
+
+def can_place_activity(activity, start_slot, schedule, groups_dict, spaces_dict):
+    """Check if an activity can be placed starting at a specific slot"""
+    try:
+        slot_index = slots.index(start_slot)
+        duration = activity.duration
+        
+        # Check if we have enough consecutive slots
+        if slot_index + duration > len(slots):
+            return False
+        
+        # Get required slots
+        required_slots = slots[slot_index:slot_index + duration]
+        
+        # Check for conflicts in each required slot
+        for slot in required_slots:
+            # Check lecturer conflicts
+            for room_id, existing_activity in schedule[slot].items():
+                if existing_activity and existing_activity.teacher_id == activity.teacher_id:
+                    return False
+            
+            # Check group conflicts
+            for room_id, existing_activity in schedule[slot].items():
+                if existing_activity:
+                    for group_id in activity.group_ids:
+                        if group_id in existing_activity.group_ids:
+                            return False
+        
+        return True
+    except Exception as e:
+        print(f"Error in can_place_activity: {e}")
+        return False
+
+def find_suitable_room(activity, start_slot, schedule, groups_dict, spaces_dict):
+    """Find a suitable room for an activity starting at a specific slot"""
+    try:
+        activity_size = get_activity_size(activity, groups_dict)
+        slot_index = slots.index(start_slot)
+        duration = activity.duration
+        required_slots = slots[slot_index:slot_index + duration]
+        
+        # Sort rooms by capacity (largest first) to prefer bigger rooms for bigger activities
+        sorted_rooms = sorted(spaces_dict.items(), key=lambda x: x[1].size, reverse=True)
+        
+        # Check each room
+        for room_id, room in sorted_rooms:
+            # Check room capacity with some flexibility (allow 90% capacity utilization)
+            if room.size < activity_size * 0.9:
+                continue
+            
+            # Check if room is available for all required slots
+            room_available = True
+            for slot in required_slots:
+                if schedule[slot][room_id] is not None:
+                    room_available = False
+                    break
+            
+            if room_available:
+                return room_id
+        
+        # If no room found with strict capacity, try with relaxed capacity (allow overcrowding)
+        for room_id, room in sorted_rooms:
+            # Allow up to 120% capacity utilization as fallback
+            if room.size < activity_size * 0.8:
+                continue
+                
+            # Check if room is available for all required slots
+            room_available = True
+            for slot in required_slots:
+                if schedule[slot][room_id] is not None:
+                    room_available = False
+                    break
+            
+            if room_available:
+                print(f"Warning: Placing activity {activity.id} in room {room_id} with overcrowding")
+                return room_id
+        
+        return None
+    except Exception as e:
+        print(f"Error in find_suitable_room: {e}")
+        return None
+
+def place_activity(activity, start_slot, room_id, schedule):
+    """Place an activity in the schedule for its full duration"""
+    try:
+        slot_index = slots.index(start_slot)
+        duration = activity.duration
+        required_slots = slots[slot_index:slot_index + duration]
+        
+        for slot in required_slots:
+            schedule[slot][room_id] = activity
+    except Exception as e:
+        print(f"Error in place_activity: {e}")
+
 def reward(schedule, groups_dict, spaces_dict):
     """
-    Reward function to evaluate schedule quality
+    Enhanced reward function to evaluate schedule quality
     
     Args:
         schedule: The current timetable schedule
@@ -21,49 +122,61 @@ def reward(schedule, groups_dict, spaces_dict):
         int: Reward score for the schedule
     """
     score = 0
-    teacher_assignments = {}
-    group_assignments = {}
-
+    
+    # Count assigned activities
+    assigned_activities = set()
+    total_activity_slots = 0
+    
     for slot, space_dict in schedule.items():
         for space, activity in space_dict.items():
             if activity:
-                # Reward for valid placement
-                score += 10
-
-                # Check for teacher conflicts
-                teacher = activity.teacher_id
-                if teacher in teacher_assignments and teacher_assignments[teacher] == slot:
-                    score -= 20  # Penalize teacher conflict
-                else:
-                    teacher_assignments[teacher] = slot
-
-                # Check for group conflicts
-                for group in activity.group_ids:
-                    if group in group_assignments and group_assignments[group] == slot:
-                        score -= 15  # Penalize group conflict
-                    else:
-                        group_assignments[group] = slot
-
-                # Check for student group clashes within the same time slot
-                assigned_groups = set()
-                for other_space, other_activity in space_dict.items():
-                    if other_activity and other_activity != activity:
-                        for group in other_activity.group_ids:
-                            if group in assigned_groups:
-                                score -= 25  # Higher penalty for student group clashes
-                            assigned_groups.add(group)
+                assigned_activities.add(activity.id)
+                total_activity_slots += 1
+                score += 20  # Higher reward for valid placement
+    
+    # Major bonus for assigning more unique activities
+    unique_activities_bonus = len(assigned_activities) * 50
+    score += unique_activities_bonus
+    
+    # Bonus for efficient room utilization
+    if total_activity_slots > 0:
+        score += total_activity_slots * 5
+    
+    # Check for conflicts and penalize
+    conflict_penalty = 0
+    for slot, space_dict in schedule.items():
+        teacher_assignments = set()
+        group_assignments = set()
+        
+        for space, activity in space_dict.items():
+            if activity:
+                # Teacher conflict penalty
+                if activity.teacher_id in teacher_assignments:
+                    conflict_penalty += 100
+                teacher_assignments.add(activity.teacher_id)
                 
-                # Room capacity penalty
-                if space in spaces_dict:
-                    total_students = sum(groups_dict[group].size for group in activity.group_ids if group in groups_dict)
-                    if total_students > spaces_dict[space].size:
-                        score -= 30  # Penalize exceeding room capacity
+                # Group conflict penalty
+                for group_id in activity.group_ids:
+                    if group_id in group_assignments:
+                        conflict_penalty += 80
+                    group_assignments.add(group_id)
+                
+                # Room capacity penalty (less severe)
+                activity_size = get_activity_size(activity, groups_dict)
+                if space in spaces_dict and activity_size > spaces_dict[space].size:
+                    conflict_penalty += 20  # Reduced penalty for overcrowding
 
+    score -= conflict_penalty
+    
+    # Ensure minimum positive score for any assignment
+    if len(assigned_activities) > 0:
+        score = max(score, len(assigned_activities) * 10)
+    
     return score
 
 def find_best_position(activity, schedule, groups_dict, spaces_dict):
     """
-    Find the best slot and space for an activity based on the highest reward
+    Find the best slot and room for an activity based on the highest reward
     
     Args:
         activity: Activity to place
@@ -72,32 +185,41 @@ def find_best_position(activity, schedule, groups_dict, spaces_dict):
         spaces_dict: Dictionary of spaces/rooms
         
     Returns:
-        tuple: (best_slot, best_space, best_reward)
+        tuple: (best_slot, best_room, best_reward)
     """
-    best_slot = None
-    best_space = None
-    best_reward_value = float('-inf')
-    
-    # Try placing the activity in each possible slot and space
-    for slot in slots:
-        for space in spaces_dict:
-            if schedule[slot][space] is None:
-                # Temporarily place activity
-                schedule[slot][space] = activity
-                
-                # Calculate reward
-                current_reward = reward(schedule, groups_dict, spaces_dict)
-                
-                # If better than previous best, update
-                if current_reward > best_reward_value:
-                    best_reward_value = current_reward
-                    best_slot = slot
-                    best_space = space
-                
-                # Remove temporary placement
-                schedule[slot][space] = None
-    
-    return best_slot, best_space, best_reward_value
+    try:
+        best_slot = None
+        best_room = None
+        best_reward_value = float('-inf')
+        
+        # Try placing the activity in each possible starting slot
+        for slot in slots:
+            if can_place_activity(activity, slot, schedule, groups_dict, spaces_dict):
+                room_id = find_suitable_room(activity, slot, schedule, groups_dict, spaces_dict)
+                if room_id:
+                    # Temporarily place activity
+                    place_activity(activity, slot, room_id, schedule)
+                    
+                    # Calculate reward
+                    current_reward = reward(schedule, groups_dict, spaces_dict)
+                    
+                    # If better than previous best, update
+                    if current_reward > best_reward_value:
+                        best_reward_value = current_reward
+                        best_slot = slot
+                        best_room = room_id
+                    
+                    # Remove temporary placement
+                    slot_index = slots.index(slot)
+                    duration = activity.duration
+                    required_slots = slots[slot_index:slot_index + duration]
+                    for temp_slot in required_slots:
+                        schedule[temp_slot][room_id] = None
+        
+        return best_slot, best_room, best_reward_value
+    except Exception as e:
+        print(f"Error in find_best_position: {e}")
+        return None, None, float('-inf')
 
 def run_implicit_qlearning_optimizer(activities_dict, groups_dict, spaces_dict, lecturers_dict, slots, episodes=100, epsilon=0.1):
     """
@@ -119,6 +241,15 @@ def run_implicit_qlearning_optimizer(activities_dict, groups_dict, spaces_dict, 
     start_time = time.time()
     metrics_tracker = MetricsTracker()
     
+    print(f"🚀 Starting Implicit Q-Learning optimization with {len(activities_dict)} activities")
+    
+    # Sort activities by duration and size for better scheduling
+    activity_list = sorted(activities_dict.values(), 
+                          key=lambda x: (x.duration, get_activity_size(x, groups_dict)), 
+                          reverse=True)
+    
+    print(f"📋 Activity list prepared: {len(activity_list)} activities")
+    
     # Initialize best schedule and score
     best_schedule = None
     best_score = float('-inf')
@@ -130,28 +261,36 @@ def run_implicit_qlearning_optimizer(activities_dict, groups_dict, spaces_dict, 
         current_schedule = {slot: {space: None for space in spaces_dict} for slot in slots}
         
         # Shuffle activities to get different ordering in each episode
-        episode_activities = list(activities_dict.values())
+        episode_activities = copy.deepcopy(activity_list)
         random.shuffle(episode_activities)
+        
+        activities_placed_this_episode = 0
         
         # Schedule each activity using epsilon-greedy approach
         for activity in episode_activities:
+            # Get valid starting slots for this activity
+            valid_slots = []
+            for slot in slots:
+                if can_place_activity(activity, slot, current_schedule, groups_dict, spaces_dict):
+                    room_id = find_suitable_room(activity, slot, current_schedule, groups_dict, spaces_dict)
+                    if room_id:
+                        valid_slots.append((slot, room_id))
+            
+            if not valid_slots:
+                continue  # Skip this activity if no valid placement
+            
             # Use epsilon-greedy approach for exploration vs exploitation
-            if random.random() < epsilon:
-                # Exploration: Choose a random valid slot and space
-                valid_slots_spaces = []
-                for slot in slots:
-                    for space in spaces_dict:
-                        if current_schedule[slot][space] is None:
-                            valid_slots_spaces.append((slot, space))
-                
-                if valid_slots_spaces:
-                    slot, space = random.choice(valid_slots_spaces)
-                    current_schedule[slot][space] = activity
+            if random.random() < epsilon or len(valid_slots) == 1:
+                # Exploration: Choose a random valid slot and room
+                slot, room_id = random.choice(valid_slots)
+                place_activity(activity, slot, room_id, current_schedule)
+                activities_placed_this_episode += 1
             else:
-                # Exploitation: Find best slot and space using greedy search
-                best_slot, best_space, _ = find_best_position(activity, current_schedule, groups_dict, spaces_dict)
-                if best_slot and best_space:
-                    current_schedule[best_slot][best_space] = activity
+                # Exploitation: Find best slot and room using greedy search
+                best_slot, best_room, _ = find_best_position(activity, current_schedule, groups_dict, spaces_dict)
+                if best_slot and best_room:
+                    place_activity(activity, best_slot, best_room, current_schedule)
+                    activities_placed_this_episode += 1
         
         # Evaluate the current schedule
         hard_violations, soft_score = evaluate_timetable(
@@ -184,36 +323,54 @@ def run_implicit_qlearning_optimizer(activities_dict, groups_dict, spaces_dict, 
         if current_reward > best_score:
             best_score = current_reward
             best_schedule = copy.deepcopy(current_schedule)
+            print(f"🎯 New best schedule found at episode {episode}: {activities_placed_this_episode} activities, reward: {current_reward}")
         
+        # Decay epsilon
+        epsilon = max(epsilon * 0.995, 0.01)
+        
+        # Print progress every 10 episodes
+        if episode % 10 == 0:
+            assigned_count = len(set(activity.id for slot_dict in current_schedule.values() 
+                                   for activity in slot_dict.values() if activity))
+            print(f"Episode {episode}: Assigned {assigned_count}/{len(activities_dict)} activities, Reward: {current_reward}")
+    
     # Final evaluation
-    print("Optimization completed. Evaluating best solution...")
+    if best_schedule:
+        print("✅ Optimization completed. Evaluating best solution...")
+        
+        # Count final assignments
+        final_assigned = len(set(activity.id for slot_dict in best_schedule.values() 
+                               for activity in slot_dict.values() if activity))
+        print(f"📊 Final result: {final_assigned}/{len(activities_dict)} activities assigned")
+        
+        hard_violations_tuple, final_soft_score = evaluate_timetable(
+            best_schedule,
+            activities_dict,
+            groups_dict,
+            spaces_dict,
+            lecturers_dict,
+            slots,
+            verbose=True
+        )
+        
+        # Sum up the relevant hard violations
+        _, prof_conflicts, sub_group_conflicts, room_size_conflicts, time_constraint_violations, unasigned_activities = hard_violations_tuple
+        final_hard_violations = prof_conflicts + sub_group_conflicts + room_size_conflicts + time_constraint_violations + unasigned_activities
+        
+        # Set final metrics
+        metrics_tracker.set_final_metrics(
+            hard_violations=final_hard_violations,
+            soft_score=final_soft_score,
+            execution_time=time.time() - start_time
+        )
+        
+        return best_schedule, metrics_tracker.get_metrics()
     
-    hard_violations_tuple, final_soft_score = evaluate_timetable(
-        best_schedule,
-        activities_dict,
-        groups_dict,
-        spaces_dict,
-        lecturers_dict,
-        slots,
-        verbose=True
-    )
-    
-    # Sum up the relevant hard violations (excluding vacant rooms as they're not actual violations)
-    # The tuple has (vacant_room_count, prof_conflicts, sub_group_conflicts, room_size_conflicts, time_constraint_violations, unasigned_activities)
-    _, prof_conflicts, sub_group_conflicts, room_size_conflicts, time_constraint_violations, unasigned_activities = hard_violations_tuple
-    final_hard_violations = prof_conflicts + sub_group_conflicts + room_size_conflicts + time_constraint_violations + unasigned_activities
-    
-    # Set final metrics
-    metrics_tracker.set_final_metrics(
-        hard_violations=final_hard_violations,
-        soft_score=final_soft_score,
-        execution_time=time.time() - start_time
-    )
-    
-    # Return the best schedule and metrics
-    return best_schedule, metrics_tracker.get_metrics()
+    # Return empty schedule if no solution found
+    print("❌ No valid schedule found")
+    empty_schedule = {slot: {space: None for space in spaces_dict} for slot in slots}
+    return empty_schedule, metrics_tracker.get_metrics()
 
 if __name__ == "__main__":
     best_schedule, metrics = run_implicit_qlearning_optimizer(activities_dict, groups_dict, spaces_dict, lecturers_dict, slots, episodes=100, epsilon=0.1)
     print(f"Final solution metrics: {metrics}")
-    print(f"Execution time: {time.time() - time.time():.2f} seconds")
