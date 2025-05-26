@@ -1,0 +1,80 @@
+{
+  "timestamp": "2025-05-26T08:30:41.721230",
+  "dataset": "STA83",
+  "approach": "Constraint Programming (CP-SAT)",
+  "experiments": [
+    {
+      "name": "Minimum Timeslots",
+      "objective": "Minimize timeslots used",
+      "status": "OPTIMAL",
+      "timeslots_used": 13,
+      "proximity_penalty": 211.6317512274959,
+      "solve_time": 1.350473403930664,
+      "time_limit": 300
+    },
+    {
+      "name": "Fixed Timeslots Optimization",
+      "objective": "Minimize proximity penalty",
+      "timeslots_fixed": 13,
+      "runs": 5,
+      "best_penalty": 211.6317512274959,
+      "worst_penalty": 212.11947626841243,
+      "average_penalty": 211.72929623567921,
+      "penalties": [
+        211.6317512274959,
+        211.6317512274959,
+        212.11947626841243,
+        211.6317512274959,
+        211.6317512274959
+      ],
+      "best_solution_time": 0.43668627738952637
+    },
+    {
+      "name": "Timeslot Limit Analysis",
+      "objective": "Analyze penalty vs timeslots trade-off",
+      "tests": [
+        {
+          "timeslots": 13,
+          "penalty": 211.6317512274959,
+          "solve_time": 0.3845376968383789,
+          "status": "SUCCESS"
+        },
+        {
+          "timeslots": 14,
+          "penalty": 192.99345335515548,
+          "solve_time": 0.32694387435913086,
+          "status": "SUCCESS"
+        },
+        {
+          "timeslots": 15,
+          "penalty": 191.93617021276594,
+          "solve_time": 0.2979147434234619,
+          "status": "SUCCESS"
+        }
+      ]
+    },
+    {
+      "name": "Literature Comparison",
+      "literature_benchmarks": {
+        "Carter_et_al_1996": {
+          "timeslots": 13,
+          "penalty": "Unknown"
+        },
+        "Burke_et_al_2007": {
+          "timeslots": 13,
+          "penalty": "Unknown"
+        },
+        "Pillay_2016": {
+          "timeslots": 13,
+          "penalty": "Unknown"
+        }
+      },
+      "our_result": {
+        "timeslots": 13,
+        "penalty": 211.6317512274959,
+        "method": "CP-SAT (OR-Tools)",
+        "solve_time": 0.43668627738952637
+      }
+    }
+  ]
+}

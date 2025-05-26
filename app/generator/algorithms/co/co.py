@@ -51,12 +51,15 @@ def get_num_students_per_activity(activity_code):
     return len([student for student in students if module_code in student["subjects"]])
 
 def initialize_pheromone():
-    amount_of_intervals = sum([1 for x in periods if x.get("is_interval", False)])
+    # Get non-interval periods count
+    non_interval_periods = [x for x in periods if not x.get("is_interval", False)]
+    max_teachers_per_activity = max(len(activity["teacher_ids"]) for activity in activities) if activities else 1
+    
     pheromone = {
         "room": np.ones((len(activities), len(facilities))),
         "day": np.ones((len(activities), len(days))),
-        "period": np.ones((len(activities), len(periods) - amount_of_intervals)),
-        "teacher": np.ones((len(activities), len(teachers))),
+        "period": np.ones((len(activities), len(non_interval_periods))),
+        "teacher": np.ones((len(activities), max_teachers_per_activity)),
     }
     return pheromone
 
@@ -65,8 +68,11 @@ def calculate_heuristic(activity, num_of_students):
         1.0 / (abs(room["capacity"] - num_of_students) + 1) if room["capacity"] >= num_of_students else 0
         for room in facilities
     ]
-    teacher_scores = [1.0 for teacher in activity["teacher_ids"]]
-    period_scores = [1.0 for x in periods if not x.get("is_interval", False)]
+    # Teacher scores should only be for teachers assigned to this activity
+    teacher_scores = [1.0 for _ in activity["teacher_ids"]]
+    # Only consider non-interval periods
+    non_interval_periods = [x for x in periods if not x.get("is_interval", False)]
+    period_scores = [1.0 for _ in non_interval_periods]
     day_scores = [1.0 for _ in days]
 
     return {
@@ -78,33 +84,45 @@ def calculate_heuristic(activity, num_of_students):
 
 def construct_solution(pheromone, heuristics):
     individual = []
+    non_interval_periods = [x for x in periods if not x.get("is_interval", False)]
+    
     for i, activity in enumerate(activities):
         num_of_students = get_num_students_per_activity(activity["code"])
         heuristic = heuristics[i]
-        print(heuristic["teacher"])
-        print(pheromone["teacher"][i])
+        
+        # Calculate probabilities
         room_probs = (pheromone["room"][i] ** ALPHA) * (heuristic["room"] ** BETA)
         day_probs = (pheromone["day"][i] ** ALPHA) * (heuristic["day"] ** BETA)
         period_probs = (pheromone["period"][i] ** ALPHA) * (heuristic["period"] ** BETA)
-        teacher_probs = (pheromone["teacher"][i] ** ALPHA) * (heuristic["teacher"] ** BETA)
+        
+        # Teacher probabilities - only for teachers assigned to this activity
+        teacher_pheromone = pheromone["teacher"][i][:len(activity["teacher_ids"])]
+        teacher_probs = (teacher_pheromone ** ALPHA) * (heuristic["teacher"] ** BETA)
 
+        # Normalize probabilities
         room_probs /= room_probs.sum()
         day_probs /= day_probs.sum()
         period_probs /= period_probs.sum()
         teacher_probs /= teacher_probs.sum()
 
+        # Make selections
         room = facilities[np.random.choice(len(facilities), p=room_probs)]
         day = days[np.random.choice(len(days), p=day_probs)]
-        period_start = periods[np.random.choice(len(periods)-amount_of_intervals, p=period_probs)]
-        print(len(activity["teacher_ids"]))
-        print(len(teacher_probs))
-        teacher = activity["teacher_ids"][np.random.choice(len(teachers), p=teacher_probs)]
+        period_start = non_interval_periods[np.random.choice(len(non_interval_periods), p=period_probs)]
+        
+        # Select teacher from activity's assigned teachers
+        teacher_idx = np.random.choice(len(activity["teacher_ids"]), p=teacher_probs)
+        teacher = activity["teacher_ids"][teacher_idx]
 
+        # Build consecutive periods for multi-period activities
         period = [period_start]
+        period_start_index = non_interval_periods.index(period_start)
         for j in range(1, activity["duration"]):
-            next_period_index = periods.index(period_start) + j
-            if next_period_index < len(periods):
-                period.append(periods[next_period_index])
+            next_period_index = period_start_index + j
+            if next_period_index < len(non_interval_periods):
+                period.append(non_interval_periods[next_period_index])
+            else:
+                break  # Can't schedule full duration
 
         individual.append({
             "subgroup": activity["subgroup_ids"][0],
@@ -123,6 +141,7 @@ def evaluate_solution(individual):
     room_conflicts = 0
     teacher_conflicts = 0
 
+    # Group activities by time slot for room and teacher conflict checking
     scheduled_activities = {}
     for schedule in individual:
         key = (schedule["day"]["_id"], schedule["period"][0]["_id"])
@@ -130,6 +149,7 @@ def evaluate_solution(individual):
             scheduled_activities[key] = []
         scheduled_activities[key].append(schedule)
 
+    # Check room and teacher conflicts (these apply across all subgroups)
     for key, scheduled in scheduled_activities.items():
         rooms_used = {}
         teachers_involved = []
@@ -149,16 +169,49 @@ def evaluate_solution(individual):
 
         teacher_conflicts += len(teachers_involved) - len(set(teachers_involved))
 
-    return teacher_conflicts, room_conflicts
+    # Check period conflicts within same subgroup only
+    subgroup_period_assignments = {}
+    for schedule in individual:
+        subgroup = schedule["subgroup"]
+        for per in schedule["period"]:
+            key = (subgroup, schedule["day"]["_id"], per["_id"])
+            if key not in subgroup_period_assignments:
+                subgroup_period_assignments[key] = []
+            subgroup_period_assignments[key].append(schedule["activity_id"])
+    
+    period_conflicts = 0
+    for key, activities in subgroup_period_assignments.items():
+        if len(activities) > 1:
+            period_conflicts += len(activities) - 1
+
+    return teacher_conflicts, room_conflicts, period_conflicts
 
 def update_pheromone(pheromone, solutions, scores):
-    for i, (solution, (teacher_conflicts, room_conflicts)) in enumerate(zip(solutions, scores)):
+    non_interval_periods = [x for x in periods if not x.get("is_interval", False)]
+    
+    for i, (solution, (teacher_conflicts, room_conflicts, period_conflicts)) in enumerate(zip(solutions, scores)):
+        total_conflicts = teacher_conflicts + room_conflicts + period_conflicts
         for j, activity in enumerate(solution):
-            pheromone["room"][j][facilities.index(activity["room"])] += Q / (1 + teacher_conflicts + room_conflicts)
-            pheromone["day"][j][days.index(activity["day"])] += Q / (1 + teacher_conflicts + room_conflicts)
-            pheromone["period"][j][periods.index(activity["period"][0])] += Q / (1 + teacher_conflicts + room_conflicts)
-            pheromone["teacher"][j][activity["teacher"]] += Q / (1 + teacher_conflicts + room_conflicts)
+            # Update room pheromone
+            room_idx = facilities.index(activity["room"])
+            pheromone["room"][j][room_idx] += Q / (1 + total_conflicts)
+            
+            # Update day pheromone
+            day_idx = days.index(activity["day"])
+            pheromone["day"][j][day_idx] += Q / (1 + total_conflicts)
+            
+            # Update period pheromone (only for non-interval periods)
+            period_idx = non_interval_periods.index(activity["period"][0])
+            pheromone["period"][j][period_idx] += Q / (1 + total_conflicts)
+            
+            # Update teacher pheromone (find teacher index in activity's teacher list)
+            activity_obj = activities[j]
+            if activity["teacher"] in activity_obj["teacher_ids"]:
+                teacher_idx = activity_obj["teacher_ids"].index(activity["teacher"])
+                if teacher_idx < pheromone["teacher"].shape[1]:
+                    pheromone["teacher"][j][teacher_idx] += Q / (1 + total_conflicts)
 
+    # Evaporate pheromone
     for key in pheromone:
         pheromone[key] *= (1 - RHO)
 

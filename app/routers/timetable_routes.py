@@ -184,18 +184,27 @@ async def generate_timetable():
             update_status("Starting genetic algorithm (GA)...")
             
             ga_result = generate_ga()
-            results["GA"] = ga_result
-            
-            if ga_result:
-                logger.info("GA algorithm completed successfully")
-                update_status("GA algorithm completed successfully", success=True)
-                create_timetable_notification("GA", True)
+            # GA returns (pop, log, hof, formatted_solution) - we need the 4th element
+            if ga_result and len(ga_result) >= 4:
+                timetable_data = ga_result[3]  # formatted_solution
+                if timetable_data and save_timetable(timetable_data, "GA"):
+                    results["GA"] = True
+                    logger.info("GA algorithm completed successfully")
+                    update_status("GA algorithm completed successfully", success=True)
+                    create_timetable_notification("GA", True)
+                else:
+                    results["GA"] = False
+                    logger.warning("GA algorithm completed but failed to save timetable")
+                    update_status("GA algorithm completed but failed to save timetable", success=False)
+                    create_timetable_notification("GA", False)
             else:
+                results["GA"] = False
                 logger.warning("GA algorithm completed with no result")
                 update_status("GA algorithm completed with no result", success=False)
                 create_timetable_notification("GA", False)
                 
         except Exception as e:
+            results["GA"] = False
             logger.error(f"GA algorithm failed: {str(e)}")
             update_status(f"GA algorithm failed: {str(e)}", success=False)
             create_timetable_notification("GA", False)
@@ -206,18 +215,20 @@ async def generate_timetable():
             update_status("Starting constraint optimization (CO)...")
             
             co_result = generate_co()
-            results["CO"] = co_result
-            
-            if co_result:
+            # CO returns formatted_solution directly
+            if co_result and save_timetable(co_result, "CO"):
+                results["CO"] = True
                 logger.info("CO algorithm completed successfully")
                 update_status("CO algorithm completed successfully", success=True)
                 create_timetable_notification("CO", True)
             else:
-                logger.warning("CO algorithm completed with no result")
-                update_status("CO algorithm completed with no result", success=False)
+                results["CO"] = False
+                logger.warning("CO algorithm completed with no result or failed to save")
+                update_status("CO algorithm completed with no result or failed to save", success=False)
                 create_timetable_notification("CO", False)
                 
         except Exception as e:
+            results["CO"] = False
             logger.error(f"CO algorithm failed: {str(e)}")
             update_status(f"CO algorithm failed: {str(e)}", success=False)
             create_timetable_notification("CO", False)
@@ -228,18 +239,20 @@ async def generate_timetable():
             update_status("Starting reinforcement learning (RL)...")
             
             rl_result = generate_rl()
-            results["RL"] = rl_result
-            
-            if rl_result:
+            # RL returns schedule directly
+            if rl_result and save_timetable(rl_result, "RL"):
+                results["RL"] = True
                 logger.info("RL algorithm completed successfully")
                 update_status("RL algorithm completed successfully", success=True)
                 create_timetable_notification("RL", True)
             else:
-                logger.warning("RL algorithm completed with no result")
-                update_status("RL algorithm completed with no result", success=False)
+                results["RL"] = False
+                logger.warning("RL algorithm completed with no result or failed to save")
+                update_status("RL algorithm completed with no result or failed to save", success=False)
                 create_timetable_notification("RL", False)
                 
         except Exception as e:
+            results["RL"] = False
             logger.error(f"RL algorithm failed: {str(e)}")
             update_status(f"RL algorithm failed: {str(e)}", success=False)
             create_timetable_notification("RL", False)

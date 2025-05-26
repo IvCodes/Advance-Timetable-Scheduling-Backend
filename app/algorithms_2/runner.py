@@ -121,6 +121,26 @@ def run_optimization_algorithm(
         # Convert the timetable to a JSON-serializable format
         json_timetable = timetable_to_json(best_solution)
         
+        # Generate enhanced HTML timetable with student ID mappings
+        try:
+            from app.algorithms_2.enhanced_html_generator import generate_enhanced_timetable_html
+            import os
+            
+            # Create output directory if it doesn't exist
+            os.makedirs(OUTPUT_DIR, exist_ok=True)
+            
+            # Generate enhanced HTML with timestamp
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            html_filename = f"enhanced_timetable_{algorithm}_{timestamp}.html"
+            html_path = os.path.join(OUTPUT_DIR, html_filename)
+            
+            enhanced_html_path = generate_enhanced_timetable_html(best_solution, html_path)
+            print(f"✅ Enhanced HTML timetable generated: {enhanced_html_path}")
+            
+        except Exception as e:
+            print(f"⚠️ Warning: Could not generate enhanced HTML: {e}")
+            enhanced_html_path = None
+        
         # Get evaluation metrics
         from app.algorithms_2.evaluate import evaluate_timetable
         from app.algorithms_2.Data_Loading import activities_dict, groups_dict, spaces_dict, lecturers_dict, slots
@@ -198,6 +218,7 @@ def run_optimization_algorithm(
             "hardConstraintViolations": sum(hard_violations[:5]),  # Exclude unassigned activities
             "softConstraintScore": soft_score,
             "unassignedActivities": hard_violations[5],
+            "enhancedHtmlPath": enhanced_html_path,  # Add HTML path to results
             "timeConstraintViolations": hard_violations[4],
             "room_utilization": room_utilization,
             "teacher_satisfaction": teacher_satisfaction,

@@ -121,37 +121,117 @@ def generate_individual():
     logging.debug("Generating new individual...")
     individual = []
     
+    # Get non-interval periods only
+    non_interval_periods = [p for p in periods if not p.get("is_interval", False)]
+    logging.debug(f"Available non-interval periods: {len(non_interval_periods)} out of {len(periods)} total periods")
+    
+    # Track occupied time slots per subgroup to avoid conflicts
+    subgroup_schedules = {}
+    
     for idx, activity in enumerate(activities):
         num_of_students = get_num_students_per_activity(activity["code"])
         logging.debug(f"Processing activity {activity['code']} with {num_of_students} students")
         
-        suitable_rooms = [x for x in facilities if x["capacity"] >= num_of_students]
-        room = random.choice(suitable_rooms)
-        logging.debug(f"Selected room {room['code']} with capacity {room['capacity']}")
+        subgroup = activity["subgroup_ids"][0]
+        if subgroup not in subgroup_schedules:
+            subgroup_schedules[subgroup] = set()
         
-        day = random.choice(days)
+        suitable_rooms = [x for x in facilities if x["capacity"] >= num_of_students]
+        if not suitable_rooms:
+            # If no suitable rooms, use the largest available room
+            suitable_rooms = [max(facilities, key=lambda x: x["capacity"])]
+            logging.warning(f"No suitable room for {num_of_students} students, using largest room")
+        
+        room = random.choice(suitable_rooms)
         teacher = random.choice(activity["teacher_ids"])
         
-        period_start = random.choice(periods[:len(periods) - activity["duration"] - 1])
-        period = [period_start]
-        for i in range(1, activity["duration"]):
-            next_period = periods[periods.index(period_start) + i]
-            period.append(next_period)
+        # Find a conflict-free time slot for this subgroup
+        max_attempts = 50  # Prevent infinite loops
+        attempt = 0
+        scheduled = False
         
-        logging.debug(f"Scheduled: Room={room['code']}, Day={day['name']}, Teacher={teacher}, Periods={[p['name'] for p in period]}")
+        while attempt < max_attempts and not scheduled:
+            day = random.choice(days)
+            
+            # Only select from non-interval periods and ensure we have enough consecutive periods
+            max_start_index = len(non_interval_periods) - activity["duration"]
+            if max_start_index < 0:
+                logging.error(f"Activity {activity['code']} duration {activity['duration']} exceeds available periods")
+                max_start_index = 0
+            
+            period_start_index = random.randint(0, max_start_index)
+            period_start = non_interval_periods[period_start_index]
+            
+            # Build consecutive periods for the activity duration
+            period = [period_start]
+            for i in range(1, activity["duration"]):
+                next_index = period_start_index + i
+                if next_index < len(non_interval_periods):
+                    period.append(non_interval_periods[next_index])
+                else:
+                    logging.warning(f"Cannot schedule full duration for activity {activity['code']}")
+                    break
+            
+            # Check for conflicts with existing activities in this subgroup
+            conflict_found = False
+            for p in period:
+                time_slot = (day["_id"], p["_id"])
+                if time_slot in subgroup_schedules[subgroup]:
+                    conflict_found = True
+                    break
+            
+            if not conflict_found:
+                # No conflict, schedule the activity
+                for p in period:
+                    time_slot = (day["_id"], p["_id"])
+                    subgroup_schedules[subgroup].add(time_slot)
+                
+                logging.debug(f"Scheduled: Room={room['code']}, Day={day['name']}, Teacher={teacher}, Periods={[p['name'] for p in period]}")
+                
+                individual.append({
+                    "subgroup": subgroup,
+                    "activity_id": activity["code"],
+                    "day": day,
+                    "period": period,
+                    "room": room,
+                    "teacher": teacher,
+                    "duration": activity["duration"],
+                    "subject": activity["subject"]
+                })
+                
+                scheduled = True
+            else:
+                attempt += 1
+                logging.debug(f"Conflict found for {activity['code']}, attempt {attempt}")
         
-        individual.append({
-            "subgroup": activity["subgroup_ids"][0],
-            "activity_id": activity["code"],
-            "day": day,
-            "period": period,
-            "room": room,
-            "teacher": teacher,
-            "duration": activity["duration"],
-            "subject": activity["subject"]
-        })
-        
-        activity["periods_assigned"] = activity.get("periods_assigned", []) + period
+        if not scheduled:
+            # Fallback: schedule anyway but log the issue
+            logging.warning(f"Could not find conflict-free slot for {activity['code']}, scheduling with potential conflict")
+            day = random.choice(days)
+            max_start_index = len(non_interval_periods) - activity["duration"]
+            if max_start_index < 0:
+                max_start_index = 0
+            period_start_index = random.randint(0, max_start_index)
+            period_start = non_interval_periods[period_start_index]
+            
+            period = [period_start]
+            for i in range(1, activity["duration"]):
+                next_index = period_start_index + i
+                if next_index < len(non_interval_periods):
+                    period.append(non_interval_periods[next_index])
+                else:
+                    break
+            
+            individual.append({
+                "subgroup": subgroup,
+                "activity_id": activity["code"],
+                "day": day,
+                "period": period,
+                "room": room,
+                "teacher": teacher,
+                "duration": activity["duration"],
+                "subject": activity["subject"]
+            })
     
     logging.debug(f"Individual generation complete with {len(individual)} scheduled activities")
     return individual
@@ -170,8 +250,7 @@ def evaluate(individual):
     period_conflicts = 0
 
     scheduled_activities = {}
-    interval_usage = {}
-
+    
     # Count conflicts
     for schedule in individual:
         key = (schedule["day"]["_id"], schedule["period"][0]["_id"])
@@ -179,18 +258,19 @@ def evaluate(individual):
             scheduled_activities[key] = []
         scheduled_activities[key].append(schedule)
         
+        # Check for interval violations (activities scheduled during break times)
         for per in schedule["period"]:
-            if per["is_interval"]:
-                interval_usage[per["_id"]] = interval_usage.get(per["_id"], 0) + 1
+            if per.get("is_interval", False):
+                interval_conflicts += 1
+                logging.debug(f"Interval violation: Activity {schedule['activity_id']} scheduled during interval {per['name']}")
 
-    # Evaluate conflicts
+    # Evaluate conflicts for each time slot
     for key, scheduled in scheduled_activities.items():
         day_id, period_id = key
         logging.debug(f"Checking conflicts for day={day_id}, period={period_id}")
         
         rooms_used = {}
         teachers_involved = []
-        periods_used = {}
 
         for activity in scheduled:
             room = activity["room"]
@@ -202,30 +282,76 @@ def evaluate(individual):
 
             teachers_involved.append(activity["teacher"])
 
-            for per in activity["period"]:
-                periods_used[per["_id"]] = periods_used.get(per["_id"], 0) + 1
-
-        # Log conflicts
+        # Count room conflicts (multiple activities in same room at same time)
         for room, count in rooms_used.items():
             if count > 1:
                 room_conflicts += count - 1
                 logging.debug(f"Room {room} has {count} conflicts")
 
-        teacher_conflicts += len(teachers_involved) - len(set(teachers_involved))
-        if teacher_conflicts > 0:
-            logging.debug(f"Teacher conflicts: {teacher_conflicts}")
+        # Count teacher conflicts (same teacher in multiple places at same time)
+        unique_teachers = len(set(teachers_involved))
+        if len(teachers_involved) > unique_teachers:
+            teacher_conflicts += len(teachers_involved) - unique_teachers
+            logging.debug(f"Teacher conflicts in this slot: {len(teachers_involved) - unique_teachers}")
 
-    interval_conflicts = sum(interval_usage.values())
-    period_conflicts = sum(periods_used.values())
+    # Period conflicts: check for overlapping activities within the SAME subgroup
+    subgroup_period_assignments = {}
+    for schedule in individual:
+        subgroup = schedule["subgroup"]
+        for per in schedule["period"]:
+            key = (subgroup, schedule["day"]["_id"], per["_id"])
+            if key not in subgroup_period_assignments:
+                subgroup_period_assignments[key] = []
+            subgroup_period_assignments[key].append(schedule["activity_id"])
+    
+    for key, activities in subgroup_period_assignments.items():
+        if len(activities) > 1:
+            period_conflicts += len(activities) - 1
+            subgroup = key[0]
+            logging.debug(f"Period conflict: {len(activities)} activities for subgroup {subgroup} in same period")
 
     logging.debug(f"Evaluation complete - Conflicts: Teacher={teacher_conflicts}, Room={room_conflicts}, "
                 f"Interval={interval_conflicts}, Period={period_conflicts}")
     
     return teacher_conflicts, room_conflicts, interval_conflicts, period_conflicts
 
+def custom_mutate(individual, indpb=0.2):
+    """Custom mutation that tries to resolve conflicts"""
+    non_interval_periods = [p for p in periods if not p.get("is_interval", False)]
+    
+    for i in range(len(individual)):
+        if random.random() < indpb:
+            activity = individual[i]
+            
+            # Try to find a better time slot for this activity
+            max_attempts = 10
+            for attempt in range(max_attempts):
+                new_day = random.choice(days)
+                max_start_index = len(non_interval_periods) - activity["duration"]
+                if max_start_index < 0:
+                    continue
+                    
+                period_start_index = random.randint(0, max_start_index)
+                period_start = non_interval_periods[period_start_index]
+                
+                new_period = [period_start]
+                for j in range(1, activity["duration"]):
+                    next_index = period_start_index + j
+                    if next_index < len(non_interval_periods):
+                        new_period.append(non_interval_periods[next_index])
+                    else:
+                        break
+                
+                # Update the activity
+                individual[i]["day"] = new_day
+                individual[i]["period"] = new_period
+                break
+    
+    return individual,
+
 toolbox.register("evaluate", evaluate)
 toolbox.register("mate", tools.cxTwoPoint)
-toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.2)
+toolbox.register("mutate", custom_mutate, indpb=0.2)
 toolbox.register("select", tools.selNSGA2)
 
 def generate_ga():

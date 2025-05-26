@@ -23,6 +23,15 @@ from app.routers import timetable_sliit, dashboard_routes, faculty_unavailabilit
 from app.routers.chatbot.router import router as chatbot_router
 from app.etl import etl_router
 
+# Import enhanced timetable router
+try:
+    from app.routers.enhanced_timetable import get_router as get_enhanced_timetable_router
+    enhanced_timetable_available = True
+except ImportError as e:
+    print(f"Enhanced timetable router not available: {e}")
+    enhanced_timetable_available = False
+    get_enhanced_timetable_router = None
+
 log_queue = queue.Queue()
 
 class QueueHandler(logging.Handler):
@@ -140,6 +149,27 @@ app.include_router(timetable_sliit.router, prefix="/api/v1/timetable/sliit", tag
 app.include_router(dashboard_routes.router, prefix="/api/v1/dashboard", tags=["Dashboard"]) # Include dashboard routes
 app.include_router(faculty_unavailability_routes.router, prefix="/api/v1/faculty-availability", tags=["Faculty Availability"])
 app.include_router(notification_routes.router, prefix="/api/v1", tags=["Notifications"])
+
+# Include enhanced timetable router if available
+if enhanced_timetable_available and get_enhanced_timetable_router is not None:
+    try:
+        enhanced_router = get_enhanced_timetable_router()
+        app.include_router(enhanced_router, tags=["Enhanced Timetable"])
+        logger.info("Enhanced timetable router loaded successfully")
+    except Exception as e:
+        logger.error(f"Failed to load enhanced timetable router: {e}")
+else:
+    logger.warning("Enhanced timetable router not available")
+
+# Include exam metrics router
+try:
+    from app.routers.exam_metrics_router import router as exam_metrics_router
+    app.include_router(exam_metrics_router, prefix="/api/exam-metrics", tags=["Exam Algorithm Metrics"])
+    logger.info("Exam metrics router loaded successfully")
+except ImportError as e:
+    logger.warning(f"Exam metrics router not available: {e}")
+except Exception as e:
+    logger.error(f"Failed to load exam metrics router: {e}")
 
 @app.get("/")
 async def root():

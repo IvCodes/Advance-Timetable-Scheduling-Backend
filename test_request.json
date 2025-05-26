@@ -1,0 +1,5 @@
+{
+  "algorithm": "nsga2",
+  "mode": "quick", 
+  "generate_html": true
+} 

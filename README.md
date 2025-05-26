@@ -1,276 +1,237 @@
-# University Scheduler Backend
+# Advanced Timetable Scheduling System - Backend
 
-Project 24-25J-238
+A comprehensive timetable scheduling system using advanced optimization algorithms including Genetic Algorithm (GA), NSGA-II, and Constraint Optimization techniques.
 
-## Project Description
-
-The University Scheduler Backend is an advanced timetable scheduling system that uses multiple AI algorithms to generate optimal schedules for universities. The system employs Genetic Algorithms (GA), Constraint Optimization (CO), Reinforcement Learning (RL), and comprehensive evaluation metrics to create conflict-free timetables while considering various constraints.
-
-## 👥 Team Members
-
-### Group Leader: IT21259852 - Weerasinghe K.D.E.I - it21259852@my.sliit.lk
-
-### Member 1: IT21172182 - Wijayawardhana G.L.C.N.D. - it21172182@my.sliit.lk
-
-### Member 2: IT21208980 - De Silva K H P N - it21208980@my.sliit.lk
-
-### Member 3: IT21266164 - Udayantha D.M.S - it21266164@my.sliit.lk
-
-## System Architecture
-
-```mermaid
-flowchart TD
-    A[Frontend] --> B[FastAPI Backend]
-    B --> C[Authentication]
-    B --> D[Data Management]
-    B --> E[Scheduler Engine]
-    E --> F[GA Algorithm]
-    E --> G[CO Algorithm]
-    E --> H[RL Algorithm]
-    E --> I[Evaluation]
-    D --> J[(Database)]
-```
-
-## Component Architecture
-
-```mermaid
-flowchart TD
-    subgraph Frontend
-    A[React UI] --> B[Redux State]
-    B --> C[API Integration]
-    end
-
-    subgraph Backend
-    D[FastAPI] --> E[Routers]
-    D --> F[Models]
-    D --> G[Services]
-    end
-
-    subgraph Algorithms
-    H[GA] --> K[Evaluation]
-    I[CO] --> K
-    J[RL] --> K
-    end
-
-    C --> D
-    E --> L
-    F --> L
-
-```
-
-### Authentication Flow
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant F as Frontend
-    participant A as Auth Service
-    participant D as Database
-
-    U->>F: Login Request
-    F->>A: Authenticate
-    A->>D: Validate Credentials
-    D-->>A: User Data
-    A-->>F: JWT Token
-    F-->>U: Auth Success
-
-```
-
-```mermaid
-graph TD
-    A[Input Data] --> B[Data Collector]
-    B --> C{Algorithm Selection}
-    C --> D[GA]
-    C --> E[CO]
-    C --> F[RL]
-    D --> G[Evaluation]
-    E --> G
-    F --> G
-    G --> H[Best Schedule]
-    H --> I[Output]
-```
-
-## ER Diagram
-
-```mermaid
-erDiagram
-    Users {
-        string id
-        string first_name
-        string last_name
-        string username
-        string email
-        string telephone
-        string position
-        string role
-        string hashed_password
-        object subjects
-        number target_hours
-        object unavailable_dates
-    }
-
-    Roles {
-        string role_id
-        string role_name
-    }
-
-    Timetable {
-        string code
-        string algorithm
-        string semester
-        object timetable
-        boolean is_active
-    }
-
-    AlgorithmSelection {
-        string selected_algorithm
-        object assigned_timetable_id
-    }
-
-    timetable_history {
-        object timetable_id
-        object previous_state
-        object new_state
-        string modified_by
-        object modified_at
-    }
-
-    old_scores {
-        object value
-    }
-
-    settings {
-        string option
-        object value
-    }
-
-    constraints {
-        string code
-        string type
-        string scope
-        string name
-        string description
-        object settings
-        object applicability
-        number weight
-        object created_at
-        object updated_at
-    }
-
-    modules {
-        string code
-        string name
-        string long_name
-        string description
-    }
-
-    days_of_operation {
-        string name
-        string long_name
-    }
-
-    periods_of_operation {
-        string name
-        string long_name
-        boolean is_interval
-    }
-
-    Activities {
-        string code
-        string name
-        string subject
-        object teacher_ids
-        object subgroup_ids
-        number duration
-    }
-
-    faculties {
-        string code
-        string short_name
-        string long_name
-    }
-
-    Years {
-        number name
-        string long_name
-        number total_capacity
-        number total_students
-        object subgroups
-    }
-
-    old_timetables {
-        string code
-        string algorithm
-        string semester
-        object timetable
-        object date_created
-    }
-
-    notifications {
-        string message
-        string type
-        boolean read
-    }
-
-    Spaces {
-        string name
-        string long_name
-        string code
-        number capacity
-        object attributes
-    }
-
-    university_info {
-        string institution_name
-        string description
-        object id
-    }
-
-    AlgorithmSelection ||--o| Timetable : "assigns"
-    AlgorithmSelection ||--o| constraints : "considers"
-    AlgorithmSelection ||--o| days_of_operation : "considers"
-    AlgorithmSelection ||--o| periods_of_operation : "considers"
-    AlgorithmSelection ||--o| university_info : "considers"
-    Users ||--o{ Activities : "teaches"
-    Users ||--o| Roles : "has role"
-    Users ||--o{ Timetable : "assigned to"
-    faculties ||--o{ Timetable : "assigned to"
-    Timetable ||--|{ timetable_history : "has history"
-    Timetable ||--o{ old_timetables : "previous versions"
-    Activities ||--o{ modules : "relates to"
-    Activities ||--o{ faculties : "associated with"
-    Activities ||--o{ Years : "scheduled in"
-    Spaces ||--o{ Timetable : "assigned to"
-    constraints ||--o{ settings : "defined by"
-    Users ||--o{ notifications : "receives"
-    faculties ||--o{ Spaces : "manages"
-
-```
-
-## Setup Instructions
+## 🚀 Quick Start
 
 ### Prerequisites
-
 - Python 3.8+
 - MongoDB
 - Virtual Environment
 
-### Installation Steps
-
+### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-repo/university-scheduler-backend.git
-cd university-scheduler-backend
+git clone <repository-url>
+cd Advance-Timetable-Scheduling-Backend
 
 # Create and activate virtual environment
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
-.\venv\Scripts\activate   # Windows
+# or
+venv\Scripts\activate     # Windows
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Run the application
-uvicorn main:app --reload
-fastapi dev run
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your configuration
 ```
+
+### Running the Application
+```bash
+# Start the FastAPI server
+uvicorn app.main:app --reload
+
+# The API will be available at:
+# - Main API: http://localhost:8000
+# - API Documentation: http://localhost:8000/docs
+# - Alternative docs: http://localhost:8000/redoc
+```
+
+## 📁 Project Structure
+
+```
+Advance-Timetable-Scheduling-Backend/
+├── app/                    # Main application code
+│   ├── algorithms_2/       # Optimization algorithms
+│   ├── models/            # Database models
+│   ├── routers/           # API route handlers
+│   ├── Services/          # Business logic services
+│   └── utils/             # Utility functions
+├── scripts/               # Testing and utility scripts
+│   ├── testing/           # Organized testing scripts
+│   │   ├── database/      # Database testing
+│   │   ├── api/           # API testing
+│   │   └── data/          # Test data generation
+│   └── utilities/         # System maintenance scripts
+├── docs/                  # Comprehensive documentation
+├── logs/                  # Application logs
+├── Data/                  # Data files
+└── venv/                  # Virtual environment
+```
+
+## 🔧 Key Features
+
+### Timetable Generation
+- **Multiple Algorithms**: Genetic Algorithm, NSGA-II, Constraint Optimization
+- **Constraint Handling**: Hard and soft constraints
+- **Multi-objective Optimization**: Balancing multiple criteria
+- **Real-time Generation**: Dynamic timetable creation
+
+### Faculty Management
+- **Availability Tracking**: Faculty unavailability management
+- **Substitute Assignment**: Automatic substitute teacher assignment
+- **Workload Balancing**: Optimal distribution of teaching loads
+- **Request Workflow**: Admin approval process for leave requests
+
+### System Administration
+- **User Management**: Role-based access control
+- **Data Management**: CRUD operations for all entities
+- **Reporting**: Comprehensive reports and analytics
+- **API Documentation**: Auto-generated Swagger documentation
+
+## 📚 Documentation
+
+### Quick Links
+- **[System Architecture](docs/DATABASE_AND_SYSTEM_DOCUMENTATION.md)** - Complete system overview
+- **[API Documentation](http://localhost:8000/docs)** - Interactive API docs (when running)
+- **[Scripts Guide](scripts/README.md)** - Testing and utility scripts
+- **[Documentation Index](docs/README.md)** - All documentation files
+
+### Key Documentation Files
+- `docs/DATABASE_AND_SYSTEM_DOCUMENTATION.md` - Database structure and algorithms
+- `docs/FACULTY_AVAILABILITY_IMPLEMENTATION.md` - Faculty management system
+- `docs/UI_UX_FIXES_SUMMARY.md` - Recent improvements and fixes
+- `docs/SCRIPT_ORGANIZATION_PLAN.md` - Script organization and usage
+
+## 🧪 Testing
+
+### Database Testing
+```bash
+# Test database connectivity
+python scripts/testing/database/check_db.py
+
+# Validate user data
+python scripts/testing/database/check_users.py
+
+# Check faculty assignments
+python scripts/testing/database/check_teacher_faculty.py
+```
+
+### API Testing
+```bash
+# Test all API endpoints
+python scripts/testing/api/test_frontend_api.py
+
+# Test faculty availability system
+python scripts/testing/api/test_faculty_availability.py
+
+# End-to-end system testing
+python scripts/testing/api/test_consolidated_system.py
+```
+
+### Test Data Generation
+```bash
+# Generate test data for development
+python scripts/testing/data/create_test_data.py
+```
+
+## 🛠 Development
+
+### Environment Setup
+1. Ensure MongoDB is running
+2. Configure `.env` file with database connection
+3. Activate virtual environment
+4. Install dependencies from `requirements.txt`
+
+### Database Collections
+- `Users` - User management (faculty, admin, students)
+- `faculty_unavailability` - Faculty availability requests
+- `subjects` - Course definitions
+- `spaces` - Room and facility management
+- `days` - Academic day definitions
+- `periods` - Time period definitions
+
+### API Endpoints
+- `/api/v1/faculty-availability/` - Faculty availability management
+- `/api/v1/data/` - Data management (CRUD operations)
+- `/api/v1/timetable/` - Timetable generation and retrieval
+- `/api/v1/auth/` - Authentication and authorization
+
+## 🔍 Algorithms
+
+### Genetic Algorithm (GA)
+- Population-based optimization
+- Crossover and mutation operations
+- Fitness evaluation based on constraints
+
+### NSGA-II
+- Multi-objective optimization
+- Pareto front generation
+- Non-dominated sorting
+
+### Constraint Optimization
+- Hard and soft constraint satisfaction
+- Penalty-based scoring
+- Backtracking algorithms
+
+## 📊 System Insights
+
+### Recent Improvements
+- ✅ Fixed faculty assignment data issues
+- ✅ Improved UI/UX across all interfaces
+- ✅ Enhanced PDF export functionality
+- ✅ Consolidated faculty availability management
+- ✅ Organized testing and utility scripts
+
+### Database Statistics
+- 22 Faculty members properly assigned
+- Multiple optimization algorithms integrated
+- Comprehensive API coverage
+- Role-based access control implemented
+
+## 🤝 Contributing
+
+### Development Workflow
+1. Run database tests to ensure connectivity
+2. Run API tests to verify functionality
+3. Use test data generation for development
+4. Update documentation for any changes
+
+### Adding Features
+1. Follow existing code structure
+2. Add appropriate tests in `scripts/testing/`
+3. Update documentation in `docs/`
+4. Ensure API documentation is current
+
+## 📝 Maintenance
+
+### Regular Tasks
+- Run database tests weekly
+- Update test data monthly
+- Review and update documentation quarterly
+- Monitor system performance and logs
+
+### Utility Scripts
+- `scripts/utilities/assign_faculty_departments.py` - Faculty assignment utility
+- Various testing scripts for system validation
+- Data generation scripts for development
+
+## 🆘 Troubleshooting
+
+### Common Issues
+1. **Database Connection**: Check MongoDB service and connection string
+2. **Import Errors**: Ensure virtual environment is activated
+3. **Permission Errors**: Check file permissions and database access
+
+### Getting Help
+1. Check `docs/` directory for detailed documentation
+2. Review script output for specific error messages
+3. Consult API documentation at `/docs` endpoint
+4. Check logs in `logs/` directory
+
+## 📄 License
+
+This project is part of the Advanced Timetable Scheduling System research project.
+
+## 🔗 Related Projects
+
+- **Frontend**: Advance-Timetable-Scheduling-Frontend (React application)
+- **Algorithms**: Specialized optimization algorithm implementations
+- **Documentation**: Comprehensive system documentation in `docs/`
+
+---
+
+For detailed information about any aspect of the system, please refer to the documentation in the `docs/` directory or the organized scripts in the `scripts/` directory. 
